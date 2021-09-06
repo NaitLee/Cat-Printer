@@ -9,6 +9,12 @@ English | [简体中文](README.zh-CN.md)
 - Print jpg/png images directly to cat printer from a web interface
 - (more will be here...)
 
+## How to use
+
+TODO
+
+Currently, with Python3 and Bleak, open `server.py` and go to `http://localhost:8095` in browser, open cat printer and bluetooth of your computer, then do the works.
+
 ## Why?
 
 These bluetooth cat printers, with module name GB01, GB02 and GT01, have poor support at applications.
