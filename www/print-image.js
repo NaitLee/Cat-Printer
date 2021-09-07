@@ -38,11 +38,16 @@ class ImagePrinter {
                 notice('Please preview image first');
                 return;
             }
-            notice('Printing, please wait.')
+            let mac_address = this.bluetoothMACInput.value;
+            if (mac_address == '') {
+                notice('Please select a device');
+                return;
+            }
+            notice('Printing, please wait.');
             let context = this.imagePreview.getContext('2d');
             let pbm_data = imageDataMonoToPBM(context.getImageData(0, 0, this.WIDTH, this.imagePreview.height));
             let xhr = new XMLHttpRequest();
-            xhr.open('POST', '/~print?address=' + this.bluetoothMACInput.value);
+            xhr.open('POST', '/~print?address=' + mac_address);
             xhr.setRequestHeader('Content-Type', 'application-octet-stream');
             xhr.onload = () => {
                 notice(xhr.responseText);

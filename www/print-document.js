@@ -15,6 +15,11 @@ class DocumentPrinter {
             this.threshold = this.thresholdInput.value;
         }
         this.printButton.addEventListener('click', event => {
+            let mac_address = this.bluetoothMACInput.value;
+            if (mac_address == '') {
+                notice('Please select a device');
+                return;
+            }
             html2canvas(this.container).then(canvas => {
                 notice('Printing, please wait.');
                 let context = canvas.getContext('2d');
@@ -24,7 +29,7 @@ class DocumentPrinter {
                 this.imagePreview.appendChild(canvas);
                 let pbm_data = imageDataMonoToPBM(mono_imagedata);
                 let xhr = new XMLHttpRequest();
-                xhr.open('POST', '/~print?address=' + this.bluetoothMACInput.value);
+                xhr.open('POST', '/~print?address=' + mac_address);
                 xhr.setRequestHeader('Content-Type', 'application-octet-stream');
                 xhr.onload = () => {
                     notice(xhr.responseText);

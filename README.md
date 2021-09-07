@@ -9,6 +9,7 @@ English | [简体中文](README.zh-CN.md)
 ## Features
 
 - Print jpg/png images directly to cat printer from a web interface
+- Print a document (.doc, .docx, .odt etc) by copy-paste
 - (more will be here...)
 
 ## How to use
@@ -49,21 +50,6 @@ Support for both Windows and GNU/Linux are included. And Windows release package
 Possible features:
 
 - Remote print with printer protocols
-
-### Other
-
-Routine of image data when printing:
-
-`Image.png -> paint to canvas rawdata -> monochrome filter -> collect canvas rawdata to pbm format -> send to server -> extract information -> compile to raw data for printer -> bluetooth communication to printer`
-
-Note: PBM is a easy monochrome image format:
-
-```
-P4
-# {comment}
-{width} {height}
-{raw bytes, one byte for 8 bits of 0 or 1, these consists the image visually}
-```
 
 ### Files
 
