@@ -4,6 +4,7 @@
 class ImagePrinter {
     WIDTH = 384;
     threshold = 0.6;
+    bluetoothMACInput = document.getElementById('bt_mac');
     thresholdInput = document.getElementById('filter_threshold');
     fileSelection = document.getElementById('file_selection');
     dummyImage = new Image();
@@ -31,7 +32,6 @@ class ImagePrinter {
         this.thresholdInput.onchange = event => {
             this.threshold = this.thresholdInput.value;
         }
-        this.deviceSelection.addEventListener('input', this.switchDevice.bind(this));
         this.printButton.addEventListener('click', event => {
             // this.preview();
             if (this.imagePreview.height == 0) {
