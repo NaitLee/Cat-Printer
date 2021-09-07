@@ -2,9 +2,6 @@
 declare interface ImagePrinter {
     noticeElement: HTMLParagraphElement;
     thresholdInput: HTMLInputElement;
-    bluetoothMACInput: HTMLInputElement;
-    deviceSelection: HTMLSelectElement;
-    refreshDeviceButton: HTMLButtonElement;
     fileSelection: HTMLInputElement;
     dummyImage: HTMLImageElement;
     imagePreview: HTMLCanvasElement;

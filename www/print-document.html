@@ -5,13 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print Document</title>
+    <link rel="stylesheet" href="main.css" />
 </head>
 <body>
     <main>
         <p id="notice" style="height: 2em; border: 1px dotted gray;">
             <noscript>Javascript should be enabled</noscript>
         </p>
-        <h2>WIP</h2>
+        <h2>Print Document</h2>
+        <p>
+            <input style="display: none;" type="text" id="bt_mac" value="" />
+            <span>Select device:</span><select id="device_selection"></select><button id="refresh_device">Refresh</button>
+        </p>
+        <p>
+            <span>Copy & paste document to box</span>
+            <button id="print_button">Print</button><br />
+            <span>Threshold:</span><input type="range" min="0" max="2" step="0.05" value="0.6" id="filter_threshold" />
+        </p>
+        <div style="margin: auto; border: 1px solid black; width: 384px; min-height: 3em;">
+            <div id="container" style="padding: 0.5em 0;">
+                <div contenteditable="true" style="width: 384px; min-height: 3em;"></div>
+            </div>
+        </div>
+        <p style="font-style: italic; color: gray;">From MS Office/WPS/LibreOffice to here, pasted data shall be formatted</p>
+        <p>Preview</p>
+        <div style="margin: auto; border: 1px solid gray; width: 384px; min-height: 3em;">
+            <div id="image_preview" style="width: 384px; min-height: 3em;"></div>
+        </div>
     </main>
+    <script src="html2canvas.min.js"></script>
+    <script src="main.js"></script>
+    <script src="print-document.js"></script>
 </body>
 </html>

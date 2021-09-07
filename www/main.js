@@ -1,5 +1,36 @@
 ///<reference path="main.d.ts" />
 
+let notice_element = document.getElementById('notice');
+function notice(message) {
+    notice_element.innerText = message;
+}
+let device_selection = document.getElementById('device_selection');
+let refresh_device_button = document.getElementById('refresh_device');
+let bluetooth_mac_input = document.getElementById('bt_mac');
+function switchDevice() {
+    bluetooth_mac_input.value = device_selection.selectedOptions[0].value;
+}
+if (device_selection != null && refresh_device_button != null && bluetooth_mac_input != null) {
+    refresh_device_button.addEventListener('click', event => {
+        notice('Searching devices. Please wait for 5 seconds.')
+        device_selection.childNodes.forEach(e => e.remove());
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', '/~getdevices');
+        xhr.onload = () => {
+            for (let i of xhr.responseText.split('\n')) {
+                let [name, address] = i.split(',');
+                if (address == undefined) continue;
+                let option = document.createElement('option');
+                option.value = address;
+                option.innerText = `${name} - ${address}`;
+                device_selection.appendChild(option);
+            }
+            device_selection.selectedIndex = 0;
+            switchDevice();
+        }
+        xhr.send();
+    });
+}
 function imageDataColorToMonoSquare(data, threshold) {
     let newdata_horizonal = new Uint8ClampedArray(data.data.length);
     let newdata_vertical = new Uint8ClampedArray(data.data.length);
