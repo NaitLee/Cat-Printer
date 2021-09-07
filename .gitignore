@@ -1,5 +1,9 @@
 
 bleak
+www/fabric.js
+www/fabric.min.js
+www/html2canvas.js
+www/html2canvas.min.js
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -4,6 +4,8 @@
 
 *一个友好的猫咪打印机 App/驱动，为用户而生 (GB01,GB02,GT01)*
 
+![Poster](https://repository-images.githubusercontent.com/403563361/0a315f6a-7cae-48d7-bfd4-d6fac5415d7c)
+
 ## 功能
 
 - 直接从网页界面打印 jpg/png 图像到猫咪打印机

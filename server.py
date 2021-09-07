@@ -55,7 +55,7 @@ class PrinterServer(BaseHTTPRequestHandler):
                         self.wfile.write(str(e).encode('utf-8'))
             else:
                 # local file
-                path = path[1:]
+                path = 'www/' + path[1:]
                 if os.path.exists(path):
                     self.send_response(200)
                     self.send_header('Content-Type', getmime(path))
