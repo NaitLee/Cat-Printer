@@ -23,3 +23,7 @@ a:link, a:visited {
 a:hover, a:active {
     color: darkblue;
 }
+
+main input[type="range"] {
+    width: 16em;
+}

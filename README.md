@@ -37,6 +37,9 @@ This application uses server/client module, and have fewest possible dependencie
 - Python3 & Browser
 - [fabric.min.js](https://github.com/fabricjs/fabric.js/tree/master/dist)
 - [html2canvas.min.js](https://html2canvas.hertzen.com/)
+- Any css for plain webpage, e.g. [minicss](https://minicss.org/), rename to `skin.css`
+
+Put any web-related files to folder `www`.
 
 ### Supported Platforms
 
