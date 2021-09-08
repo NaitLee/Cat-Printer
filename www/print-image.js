@@ -35,22 +35,22 @@ class ImagePrinter {
         this.printButton.addEventListener('click', event => {
             // this.preview();
             if (this.imagePreview.height == 0) {
-                notice('Please preview image first');
+                notice(i18N.get('Please preview image first'));
                 return;
             }
             let mac_address = this.bluetoothMACInput.value;
             if (mac_address == '') {
-                notice('Please select a device');
+                notice(i18N.get('Please select a device'));
                 return;
             }
-            notice('Printing, please wait.');
+            notice(i18N.get('Printing, please wait.'));
             let context = this.imagePreview.getContext('2d');
             let pbm_data = imageDataMonoToPBM(context.getImageData(0, 0, this.WIDTH, this.imagePreview.height));
             let xhr = new XMLHttpRequest();
             xhr.open('POST', '/~print?address=' + mac_address);
             xhr.setRequestHeader('Content-Type', 'application-octet-stream');
             xhr.onload = () => {
-                notice(xhr.responseText);
+                notice(i18N.get(xhr.responseText));
             }
             xhr.send(pbm_data);
         });

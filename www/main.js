@@ -12,7 +12,7 @@ function switchDevice() {
 }
 if (device_selection != null && refresh_device_button != null && bluetooth_mac_input != null) {
     refresh_device_button.addEventListener('click', event => {
-        notice('Searching devices. Please wait for 5 seconds.')
+        notice(i18N.get('Searching devices. Please wait for 5 seconds.'));
         device_selection.childNodes.forEach(e => e.remove());
         let xhr = new XMLHttpRequest();
         xhr.open('GET', '/~getdevices');

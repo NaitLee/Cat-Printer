@@ -120,6 +120,7 @@ if __name__ == '__main__':
         # Exit the server thread when the main thread terminates
         server_thread.daemon = True
         server_thread.start()
+        print('http://localhost:8095/')
         server.serve_forever()
     except KeyboardInterrupt:
         pass

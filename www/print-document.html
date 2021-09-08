@@ -19,13 +19,13 @@
             <span>Select device:</span><select id="device_selection"></select><button id="refresh_device">Refresh</button>
         </p>
         <p>
-            <span>Copy & paste document to box</span>
+            <span>Copy & paste document to box</span><button id="preview_button">Preview</button>
             <button id="print_button">Print</button><br />
-            <span>Threshold:</span><input type="range" min="0" max="2" step="0.05" value="0.6" id="filter_threshold" />
+            <span>Threshold:</span><input type="range" min="0" max="2" step="0.05" value="0.2" id="filter_threshold" />
         </p>
         <div style="margin: auto; border: 1px solid black; width: 384px; min-height: 3em;">
             <div id="container" style="padding: 0.5em 0;">
-                <div contenteditable="true" style="width: 384px; min-height: 3em;"></div>
+                <div class="reset_styles" contenteditable="true" style="width: 384px; min-height: 3em;"></div>
             </div>
         </div>
         <p style="font-style: italic; color: gray;">From MS Office/WPS/LibreOffice to here, pasted data shall be formatted</p>
@@ -34,6 +34,24 @@
             <div id="image_preview" style="width: 384px; min-height: 3em;"></div>
         </div>
     </main>
+    <textarea id="i18-N" style="display: none;">
+[zh-CN]
+Print Document=打印文档
+Javascript should be enabled=需启用 Javascript
+Select device:=选择设备：
+Refresh=刷新
+Copy & paste document to box=复制粘贴文档至框内
+Preview=预览
+Print=打印
+Threshold:=阈值：
+From MS Office/WPS/LibreOffice to here, pasted data shall be formatted=从 MS Office/WPS/LibreOffice 到这里，粘贴的数据格式会保留
+Please select a device=请选择一个设备
+Printing, please wait.=打印中，请稍候。
+Please preview image first=请先预览图像
+Searching devices. Please wait for 5 seconds.=正在查找设备。请等候 5 秒。
+OK=完成
+    </textarea>
+    <script src="i18n.js"></script>
     <script src="html2canvas.min.js"></script>
     <script src="main.js"></script>
     <script src="print-document.js"></script>

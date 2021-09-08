@@ -1,4 +1,12 @@
 
+declare interface i18NProto {
+    get(originaltext: string, language: string): string;
+    force(language: string): void;
+    recover(): void;
+}
+
+declare var i18N: i18NProto;
+
 declare interface ImagePrinter {
     noticeElement: HTMLParagraphElement;
     thresholdInput: HTMLInputElement;
