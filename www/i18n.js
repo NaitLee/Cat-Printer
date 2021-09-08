@@ -67,6 +67,7 @@
     }
 
     function get(originaltext, language) {
+        if (lang[language] == undefined) return originaltext;
         language = language || userlang || defaultlang;
         return lang[language][originaltext] || originaltext;
     }

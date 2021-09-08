@@ -13,7 +13,30 @@
         <p id="notice" style="height: 2em; border: 1px dotted gray;">
             <noscript>Javascript should be enabled</noscript>
         </p>
-        <h2>WIP</h2>
+        <h2>Custom Print</h2>
+        <p>
+            <input style="display: none;" type="text" id="bt_mac" value="" />
+            <span>Select device:</span><select id="device_selection"></select><button id="refresh_device">Refresh</button>
+        </p>
     </main>
+    <textarea id="i18-N" style="display: none;">
+[zh-CN]
+Custom Print=自定义打印
+Javascript should be enabled=需启用 Javascript
+Select device:=选择设备：
+Refresh=刷新
+Preview=预览
+Print=打印
+Threshold:=阈值：
+Please select a device=请选择一个设备
+Printing, please wait.=打印中，请稍候。
+Please preview image first=请先预览图像
+Searching devices. Please wait for 5 seconds.=正在查找设备。请等候 5 秒。
+OK=完成
+    </textarea>
+    <script src="i18n.js"></script>
+    <script src="fabric.min.js"></script>
+    <script src="main.js"></script>
+    <script src="custom-print.js"></script>
 </body>
 </html>
