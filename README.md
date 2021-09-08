@@ -6,21 +6,30 @@ English | [简体中文](README.zh-CN.md)
 
 ![Poster](https://repository-images.githubusercontent.com/403563361/0a315f6a-7cae-48d7-bfd4-d6fac5415d7c)
 
+(According to [official website](http://office.frogtosea.com/jjfa), maybe there are also normal-, piggy- and frog-shaped printers with these models)
+
 ## Features
 
 - Print jpg/png images directly to cat printer from a web interface
 - Print a document (.doc, .docx, .odt etc) by copy-paste
+- Custom print content, put text, image, QRcode on a canvas
 - (more will be here...)
 
 ## How to use
 
-TODO
+On Windows:
 
-Currently, with Python3 and Bleak, open `server.py` and go to `http://localhost:8095` in browser, open cat printer and bluetooth of your computer, then do the works.
+- Get a release, extract, open `start.bat`.
+- Make sure bluetooth of your computer is opened and cat printer is launched.
+
+On GNU/Linux:
+
+- You can also use a Windows release, or prepare dependencies according to developer note.
+- Open `server.py` in `printer` folder with `python3`.
 
 ## Why?
 
-These bluetooth cat printers, with module name GB01, GB02 and GT01, have poor support at applications.
+These bluetooth cat printers, with model name GB01, GB02 and GT01, have poor support at applications.
 
 Official apps are, proprietary, also have only mobile version.
 
@@ -30,7 +39,7 @@ Thankfully, people here are really warm-hearted, logged their experiences online
 
 ## Developer Note
 
-This application uses server/client module, and have fewest possible dependencies on server side.
+This application uses server/client model, and have fewest possible dependencies on server side.
 
 ### Prepare
 

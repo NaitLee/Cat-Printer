@@ -6,17 +6,26 @@
 
 ![Poster](https://repository-images.githubusercontent.com/403563361/0a315f6a-7cae-48d7-bfd4-d6fac5415d7c)
 
+（根据[官网](http://office.frogtosea.com/jjfa)，可能也有普通/猪猪/青蛙外观的打印机拥有此种型号）
+
 ## 功能
 
 - 直接从网页界面打印 jpg/png 图像到猫咪打印机
 - 复制粘贴文档内容（.doc, .docx, .odt 等）以打印
+- 自定义打印内容，在画布上放置文字、图片、二维码
 - （会有更多……）
 
 ## 如何使用
 
-TODO
+在 Windows 上：
 
-当前，使用 Python3 和 Bleak，打开 `server.py`，在浏览器访问 `http://localhost:8095`，开启猫咪打印机和电脑蓝牙，然后做自己想要的。
+- 获取一份 release，解压，打开 `start.bat`
+- 确保电脑蓝牙开启且猫咪打印机已启动。
+
+在 GNU/Linux：
+
+- 您也可以使用 Windows release，或者依开发者注记准备依赖。
+- 使用 `python3` 打开位于 `printer` 文件夹的 `server.py`。
 
 ## 为什么？
 
