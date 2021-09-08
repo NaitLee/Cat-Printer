@@ -8,7 +8,7 @@ class ImagePrinter {
     thresholdInput = document.getElementById('filter_threshold');
     fileSelection = document.getElementById('file_selection');
     dummyImage = new Image();
-    imagePreview = document.getElementById('image_preview');
+    canvasPreview = document.getElementById('image_preview');
     previewButton = document.getElementById('preview_button');
     printButton = document.getElementById('print_button');
     preview() {
@@ -16,9 +16,9 @@ class ImagePrinter {
         reader.onload = event1 => {
             this.dummyImage.src = event1.target.result;
             let height = this.WIDTH / this.dummyImage.width * this.dummyImage.height;
-            this.imagePreview.width = this.WIDTH;
-            this.imagePreview.height = height;
-            let context = this.imagePreview.getContext('2d');
+            this.canvasPreview.width = this.WIDTH;
+            this.canvasPreview.height = height;
+            let context = this.canvasPreview.getContext('2d');
             context.drawImage(this.dummyImage, 0, 0, this.WIDTH, height);
             let data = context.getImageData(0, 0, this.WIDTH, height);
             context.putImageData(this.monoMethod(data, this.threshold), 0, 0);
@@ -34,7 +34,7 @@ class ImagePrinter {
         }
         this.printButton.addEventListener('click', event => {
             // this.preview();
-            if (this.imagePreview.height == 0) {
+            if (this.canvasPreview.height == 0) {
                 notice(i18N.get('Please preview image first'));
                 return;
             }
@@ -44,8 +44,8 @@ class ImagePrinter {
                 return;
             }
             notice(i18N.get('Printing, please wait.'));
-            let context = this.imagePreview.getContext('2d');
-            let pbm_data = imageDataMonoToPBM(context.getImageData(0, 0, this.WIDTH, this.imagePreview.height));
+            let context = this.canvasPreview.getContext('2d');
+            let pbm_data = imageDataMonoToPBM(context.getImageData(0, 0, this.WIDTH, this.canvasPreview.height));
             let xhr = new XMLHttpRequest();
             xhr.open('POST', '/~print?address=' + mac_address);
             xhr.setRequestHeader('Content-Type', 'application-octet-stream');

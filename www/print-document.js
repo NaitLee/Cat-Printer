@@ -9,7 +9,7 @@ class DocumentPrinter {
     printButton = document.getElementById('print_button');
     previewButton = document.getElementById('preview_button');
     threshold = 0.2;
-    imagePreview = document.getElementById('image_preview');
+    canvasPreview = document.getElementById('image_preview');
     monoMethod = imageDataColorToMonoSquare;
     constructor() {
         this.thresholdInput.onchange = event => {
@@ -21,7 +21,7 @@ class DocumentPrinter {
                 notice(i18N.get('Please select a device'));
                 return;
             }
-            if (this.imagePreview.children.length == 0) {
+            if (this.canvasPreview.children.length == 0) {
                 notice(i18N.get('Please preview image first'));
                 return;
             }
@@ -42,13 +42,13 @@ class DocumentPrinter {
             });
         });
         this.previewButton.addEventListener('click', event => {
-            if (this.imagePreview.children[0] != null) this.imagePreview.children[0].remove();
+            if (this.canvasPreview.children[0] != null) this.canvasPreview.children[0].remove();
             html2canvas(this.container).then(canvas => {
                 let context = canvas.getContext('2d');
                 let imagedata = context.getImageData(0, 0, this.WIDTH, canvas.height);
                 let mono_imagedata = this.monoMethod(imagedata, this.threshold);
                 context.putImageData(mono_imagedata, 0, 0);
-                this.imagePreview.appendChild(canvas);
+                this.canvasPreview.appendChild(canvas);
             });
         })
     }

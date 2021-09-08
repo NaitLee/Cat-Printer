@@ -37,7 +37,8 @@ TODO
 - Python3 与浏览器
 - [fabric.min.js](https://github.com/fabricjs/fabric.js/tree/master/dist)
 - [html2canvas.min.js](https://html2canvas.hertzen.com/)
-- 任何纯网页可用的 css，如 [minicss](https://minicss.org/)，重命名为 `skin.css`
+- [qrcode.min.js](https://davidshimjs.github.io/qrcodejs/)
+- （可选）任何纯网页可用的 css，如 [minicss](https://minicss.org/)，重命名为 `skin.css`
 
 将 web 相关的文件放在 `www` 文件夹中。
 
@@ -47,7 +48,7 @@ TODO
 
 ### 计划
 
-- 支持高级编辑，如同官方应用 (iPrint & 精准学习)
+- 更好的双色转换
 - 使 web 界面的远程打印标准化/兼容/安全
 
 可能的功能：

@@ -15,6 +15,7 @@ main.mainpage p a {
     display: inline-block;
     font-size: larger;
     width: 10em;
+    padding: 0.5em 0;
 }
 
 a:link, a:visited {

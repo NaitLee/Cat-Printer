@@ -13,7 +13,7 @@ declare interface ImagePrinter {
     bluetoothMACInput: HTMLInputElement;
     fileSelection: HTMLInputElement;
     dummyImage: HTMLImageElement;
-    imagePreview: HTMLCanvasElement;
+    canvasPreview: HTMLCanvasElement;
     previewButton: HTMLButtonElement;
     printButton: HTMLButtonElement;
     monoMethod: Function;
@@ -24,7 +24,7 @@ declare interface DocumentPrinter {
     bluetoothMACInput: HTMLInputElement;
     container: HTMLDivElement;
     printButton: HTMLButtonElement;
-    imagePreview: HTMLDivElement;
+    canvasPreview: HTMLDivElement;
     monoMethod: Function;
 }
 
