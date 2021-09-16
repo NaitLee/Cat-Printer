@@ -10,6 +10,7 @@ let bluetooth_mac_input = document.getElementById('bt_mac');
 function switchDevice() {
     bluetooth_mac_input.value = device_selection.selectedOptions[0].value;
 }
+device_selection.addEventListener('input', switchDevice);
 if (device_selection != null && refresh_device_button != null && bluetooth_mac_input != null) {
     refresh_device_button.addEventListener('click', event => {
         notice(i18N.get('Searching devices. Please wait for 5 seconds.'));
