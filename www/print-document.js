@@ -4,7 +4,7 @@
 class DocumentPrinter {
     WIDTH = 384;
     thresholdInput = document.getElementById('filter_threshold');
-    bluetoothMACInput = document.getElementById('bt_mac');
+    bluetoothMACInput = document.getElementById('bluetooth_address_input');
     container = document.getElementById('container');
     printButton = document.getElementById('print_button');
     previewButton = document.getElementById('preview_button');

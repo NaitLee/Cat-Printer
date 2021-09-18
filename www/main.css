@@ -2,16 +2,16 @@ body {
     text-align: center;
     margin: 0;
     font-size: large;
-    font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+    font-family: 'Noto Sans', 'Segoe UI', sans-serif;
 }
 
-main.mainpage p {
+main.mainpage nav {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
 }
 
-main.mainpage p a {
+main.mainpage nav a {
     display: inline-block;
     font-size: larger;
     width: 10em;
@@ -27,6 +27,16 @@ a:hover, a:active {
 
 main input[type="range"] {
     width: 16em;
+}
+
+#notice {
+    height: 2em;
+    border-top: 1px dotted currentColor;
+    border-bottom: 1px dotted currentColor;
+    position: sticky;
+    top: 0;
+    margin: 8px 0;
+    width: 100%;
 }
 
 .reset_styles {

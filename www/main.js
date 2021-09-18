@@ -6,7 +6,7 @@ function notice(message) {
 }
 let device_selection = document.getElementById('device_selection');
 let refresh_device_button = document.getElementById('refresh_device');
-let bluetooth_mac_input = document.getElementById('bt_mac');
+let bluetooth_mac_input = document.getElementById('bluetooth_address_input');
 function switchDevice() {
     bluetooth_mac_input.value = device_selection.selectedOptions[0].value;
 }
@@ -31,6 +31,7 @@ if (device_selection != null && refresh_device_button != null && bluetooth_mac_i
         }
         xhr.send();
     });
+    refresh_device_button.click();
 }
 function imageDataColorToMonoSquare(data, threshold) {
     let newdata_horizonal = new Uint8ClampedArray(data.data.length);

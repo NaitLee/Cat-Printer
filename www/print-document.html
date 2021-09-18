@@ -10,12 +10,12 @@
 </head>
 <body>
     <main>
-        <p id="notice" style="height: 2em; border: 1px dotted gray;">
+        <p id="notice">
             <noscript>Javascript should be enabled</noscript>
         </p>
         <h2>Print Document</h2>
         <p>
-            <input style="display: none;" type="text" id="bt_mac" value="" />
+            <input style="display: none;" type="text" id="bluetooth_address_input" value="" />
             <span>Select device:</span><select id="device_selection"></select><button id="refresh_device">Refresh</button>
         </p>
         <p>
@@ -28,7 +28,7 @@
                 <div class="reset_styles" contenteditable="true" style="width: 384px; min-height: 3em;"></div>
             </div>
         </div>
-        <p style="font-style: italic; color: gray;">From Webpage/MS Office/WPS/LibreOffice to here, pasted data shall be formatted</p>
+        <p><i>From Webpage/MS Office/WPS/LibreOffice to here, pasted data shall be formatted</i></p>
         <p>Preview</p>
         <div id="image_preview" style="width: 384px; margin: auto;"></div>
     </main>

@@ -4,7 +4,7 @@
 class CustomPrinter {
     WIDTH = 384;
     threshold = 0.6;
-    bluetoothMACInput = document.getElementById('bt_mac');
+    bluetoothMACInput = document.getElementById('bluetooth_address_input');
     thresholdInput = document.getElementById('filter_threshold');
     fileSelection = document.createElement('input');
     dummyImage = new Image();
@@ -60,10 +60,13 @@ class CustomPrinter {
         this.actionInsertQR.addEventListener('click', event => {
             let div = document.createElement('div');
             new QRCode(div, prompt(i18N.get('Content of QRCode:')));
-            // QRCode generation is async, currently no better way than wait for a while
+            // QRCode generation is async, currently have no better way than waiting for a while
             setTimeout(() => {
-                let fimage = new fabric.Image(div.lastChild, {});
-                fimage.scale(this.WIDTH / div.lastChild.width);
+                let fimage = new fabric.Image(div.lastChild, {
+                    left: this.WIDTH / 4,
+                    top: this.WIDTH / 4
+                });
+                fimage.scale((this.WIDTH / 2) / div.lastChild.width);
                 this.fabricCanvas.add(fimage);
             }, 1000);
         });

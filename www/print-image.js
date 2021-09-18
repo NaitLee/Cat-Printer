@@ -4,7 +4,7 @@
 class ImagePrinter {
     WIDTH = 384;
     threshold = 0.6;
-    bluetoothMACInput = document.getElementById('bt_mac');
+    bluetoothMACInput = document.getElementById('bluetooth_address_input');
     thresholdInput = document.getElementById('filter_threshold');
     fileSelection = document.getElementById('file_selection');
     dummyImage = new Image();
