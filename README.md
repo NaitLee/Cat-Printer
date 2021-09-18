@@ -2,7 +2,7 @@ English | [简体中文](README.zh-CN.md)
 
 # Cat-Printer
 
-*A friendly cat printer App/driver for everyone (GB01,GB02,GT01)*
+*A friendly cat (kitty) printer App/driver for everyone (GB01,GB02,GT01)*
 
 ![Poster](https://repository-images.githubusercontent.com/403563361/0a315f6a-7cae-48d7-bfd4-d6fac5415d7c)
 
@@ -17,7 +17,7 @@ English | [简体中文](README.zh-CN.md)
 
 ## How to use
 
-On Windows:
+On Windows 10:
 
 - Get a release, extract, open `start.bat`.
 - Make sure bluetooth of your computer is opened and cat printer is launched.
@@ -26,6 +26,13 @@ On GNU/Linux:
 
 - You can also use a Windows release, or prepare dependencies according to developer note.
 - Open `server.py` in `printer` folder with `python3`.
+
+Notes:
+
+- Newest Firefox users need to manually allow the permission of extracting canvas data, at left side of address bar after clicking preview button
+- Windows version needs to be at least 10 (`10.0.16299`)
+- GNU/Linux needs BlueZ (`bluetoothctl`)
+- Maybe also compatible to Mac (Darwin) with CoreBluetooth Framework
 
 ## Why?
 
@@ -36,6 +43,14 @@ Official apps are, proprietary, also have only mobile version.
 I hate both proprietary and platform-binding things. So I decided to make this.
 
 Thankfully, people here are really warm-hearted, logged their experiences online in a [central repo](https://github.com/JJJollyjim/catprinter), and I am able to walk further 😃
+
+## Trivial
+
+- Many one choose these cat thermal printers because they are cute... or, just cheap 🙃
+
+- Here we tell "**Cat Printer**" because other developers also call the printer as this, but what oversea shops call is "**Kitty Printer**". Search engines, please optimize it 😝
+
+- The official app is protected by law & copyright. I don't know if my work is not good...
 
 ## Developer Note
 

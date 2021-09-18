@@ -17,7 +17,7 @@
 
 ## 如何使用
 
-在 Windows 上：
+在 Windows 10 上：
 
 - 获取一份 release，解压，打开 `start.bat`
 - 确保电脑蓝牙开启且猫咪打印机已启动。
@@ -26,6 +26,13 @@
 
 - 您也可以使用 Windows release，或者依开发者注记准备依赖。
 - 使用 `python3` 打开位于 `printer` 文件夹的 `server.py`。
+
+备注：
+
+- 最新的 Firefox 用户需要手动允许提取画布信息的权限（点击预览后，在地址栏左方）
+- Windows 版本至少为 10 (`10.0.16299`)
+- GNU/Linux 需要 BlueZ (`bluetoothctl`)
+- 可能也兼容有 CoreBluetooth 框架的 Mac (Darwin)
 
 ## 为什么？
 
@@ -36,6 +43,14 @@
 我讨厌专有软件和平台绑架。所以我做了这个。
 
 幸运的是，这里的热心肠网友将他们的经验记录到了一个[中心仓库](https://github.com/JJJollyjim/catprinter)，因此我可以走得更远 😃
+
+## 花絮
+
+- 很多人选择此种热敏打印机，因为它可爱……或者，只是便宜 🙃
+
+- 其他开发者叫它“猫打印机”（"Cat Printer"），但国外商店叫它“猫咪打印机”（"Kitty Printer"）。在英文文档有差别，提出以优化搜索引擎结果 😝
+
+- 官方 App 受法律、版权、专利保护。不知道此 repo 是否合理……
 
 ## 开发者注记
 
