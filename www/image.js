@@ -1,0 +1,211 @@
+
+/**
+ * Convert colored image to grayscale.
+ * @param {Uint8ClampedArray} image_data `data` property of an ImageData instance,  
+ * i.e. `canvas.getContext('2d').getImageData(...).data`  
+ * @param {Uint8ClampedArray} mono_data an `Uint8ClampedArray` that have the size `w * h`  
+ * i.e. `image_data.length / 4`  
+ * The result data will be here, as a 8-bit grayscale image data.
+ * @param {number} w width of image
+ * @param {number} h height of image
+ * @param {boolean} transparencyAsWhite whether render opacity as white rather than black
+ */
+function monoGrayscale(image_data, mono_data, w, h, transparencyAsWhite) {
+    let p, q, r, g, b, a, m;
+    for (let j = 0; j < h; j++) {
+        for (let i = 0; i < w; i++) {
+            p = j * w + i;
+            q = p * 4;
+            [r, g, b, a] = image_data.slice(q, q + 4);
+            a /= 255;
+            if (a < 1 && transparencyAsWhite) {
+                a = 1 - a;
+                r += (255 - r) * a;
+                g += (255 - g) * a;
+                b += (255 - b) * a;
+            }
+            else { r *= a; g *= a; b *= a; }
+            m = Math.floor(r * 0.2125 + g * 0.7154 + b * 0.0721);
+            mono_data[p] = m;
+        }
+    }
+}
+
+/**
+ * The most simple monochrome algorithm, any value bigger than threshold is white, otherwise black.
+ * @param {Uint8ClampedArray} data the grayscale data, mentioned in `monoGrayscale`. **will be modified in-place**
+ * @param {number} w width of image
+ * @param {number} h height of image
+ * @param {number} t threshold
+ */
+function monoDirect(data, w, h, t) {
+    let p;
+    for (let j = 0; j < h; j++) {
+        for (let i = 0; i < w; i++) {
+            p = j * w + i;
+            data[p] = data[p] > t ? 255 : 0;
+        }
+    }
+}
+
+/**
+ * The widely used Floyd Steinberg algorithm, the most "natual" one.
+ * @param {Uint8ClampedArray} data the grayscale data, mentioned in `monoGrayscale`. **will be modified in-place**
+ * @param {number} w width of image
+ * @param {number} h height of image
+ * @param {number} t threshold
+ */
+function monoSteinberg(data, w, h, t) {
+    let p, m, n, o;
+    function adjust(x, y, delta) {
+        if (
+            x < 0 || x >= w ||
+            y < 0 || y >= h
+        ) return;
+        p = y * w + x;
+        data[p] += delta;
+    }
+    for (let j = 0; j < h; j++) {
+        for (let i = 0; i < w; i++) {
+            p = j * w + i;
+            m = data[p];
+            n = m > t ? 255 : 0;
+            o = m - n;
+            data[p] = n;
+            adjust(i + 1, j    , o * 7 / 16);
+            adjust(i - 1, j + 1, o * 3 / 16);
+            adjust(i    , j + 1, o * 5 / 16);
+            adjust(i + 1, j + 1, o * 1 / 16);
+        }
+    }
+}
+
+/**
+ * (Work in Progress...)
+ */
+function monoHalftone(data, w, h, t) {}
+
+/**
+ * My own toy algorithm used in old versions. Not so natual.  
+ * It have 2 pass, horizonally and vertically.
+ * @param {Uint8ClampedArray} data the grayscale data, mentioned in `monoGrayscale`. **will be modified in-place**
+ * @param {number} w width of image
+ * @param {number} h height of image
+ * @param {number} t threshold
+ */
+function monoLegacy(data, w, h, t) {
+    let data_h = data.slice();
+    let data_v = data.slice();
+    monoLegacyH(data_h, w, h, t);
+    monoLegacyV(data_v, w, h, t);
+    for (let i = 0; i < data.length; i++) {
+        data[i] = data_h[i] & data_v[i];
+    }
+}
+function monoLegacyH(data, w, h, t) {
+    let v = 0, p;
+    for (let j = 0; j < h; j++) {
+        for (let i = 0; i < w; i++) {
+            p = j * w + i;
+            v += data[p];
+            if (v >= t) {
+                data[p] = 255;
+                v = 0;
+            } else data[p] = 0;
+        }
+        v = 0;
+    }
+}
+function monoLegacyV(data, w, h, t) {
+    let v = 0, p;
+    for (let i = 0; i < w; i++) {
+        for (let j = 0; j < h; j++) {
+            p = j * w + i;
+            v += data[p];
+            if (v >= t) {
+                data[p] = 255;
+                v = 0;
+            } else data[p] = 0;
+        }
+        v = 0;
+    }
+}
+
+/**
+ * Slightly modified from `monoLegacy`, but still messy.  
+ * But, try the horizonal and vertical sub algorithm!
+ * @param {Uint8ClampedArray} data the grayscale data, mentioned in `monoGrayscale`. **will be modified in-place**
+ * @param {number} w width of image
+ * @param {number} h height of image
+ * @param {number} t threshold
+ */
+function monoNew(data, w, h, t) {
+    let data_h = data.slice();
+    let data_v = data.slice();
+    monoNewH(data_h, w, h, t);
+    monoNewV(data_v, w, h, t);
+    for (let i = 0; i < data.length; i++) {
+        data[i] = data_h[i] & data_v[i];
+    }
+}
+function monoNewH(data, w, h, t) {
+    t = (t - 127) / 4 + 1;
+    let v = 0, p;
+    for (let j = 0; j < w; j++) {
+        for (let i = 0; i < h; i++) {
+            p = j * h + i;
+            v += data[p] + t;
+            if (v >= 255) {
+                data[p] = 255;
+                v -= 255;
+            } else data[p] = 0;
+        }
+        v = 0;
+    }
+}
+function monoNewV(data, w, h, t) {
+    t = (t - 127) / 4 + 1;
+    let v = -1, p;
+    for (let i = 0; i < h; i++) {
+        for (let j = 0; j < w; j++) {
+            p = j * h + i;
+            v += data[p] + t;
+            if (v >= 255) {
+                data[p] = 255;
+                v -= 255;
+            } else data[p] = 0;
+        }
+        v = 0;
+    }
+}
+
+/**
+ * Convert a monochrome image data to PBM mono image file data.  
+ * Returns a Blob containing the file data.
+ * @param {Uint8ClampedArray} data the data that have a size of `w * h`
+ * @param {number} w width of image
+ * @param {number} h height of image
+ * @returns {Blob}
+ */
+function mono2pbm(data, w, h) {
+    let result = new Uint8ClampedArray(data.length / 8);
+    let slice, p;
+    for (let i = 0; i < result.length; i++) {
+        p = i * 8;
+        slice = data.slice(p, p + 8);
+        // Merge 8 bytes to 1 byte, and negate the bits
+        // expecting in the data there's only 255 (0b11111111) or 0 (0b00000000)
+        result[i] = (
+            slice[0] & 0b10000000 |
+            slice[1] & 0b01000000 |
+            slice[2] & 0b00100000 |
+            slice[3] & 0b00010000 |
+            slice[4] & 0b00001000 |
+            slice[5] & 0b00000100 |
+            slice[6] & 0b00000010 |
+            slice[7] & 0b00000001
+        ) ^ 0b11111111;
+    }
+    let pbm_data = new Blob([`P4\n${w} ${h}\n`, result]);
+    return pbm_data;
+}

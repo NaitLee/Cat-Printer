@@ -1,0 +1,57 @@
+
+YEAR 2022
+
+MARCH
+
+31st
+
+Well, frontend development is just ongoing.
+
+APRIL
+
+1st
+
+Costed one hour try to find an event propagation problem,
+but finally found it's a matter of CSS selector.
+
+BTW frontend can communicate with backend now.
+
+2nd
+
+(Formally) Started playing with Android.
+
+Costed 4 hours to find why Java class (on android) always can't be found,
+but finally realized pyjnius can't work with python thread/subprocess,
+while I'm using ThreadingHTTPServer.
+
+See "Note" around:
+    https://python-for-android.readthedocs.io/en/latest/buildoptions/#webview
+
+NEVER MISS ANY SENTENCE OF A DOCUMENT
+
+3rd
+
+Costed the whole day to solve WebView problem --
+    it doesn't do reaction to <input type="file"> by default.
+
+Finally done with library AdvancedWebView, but still with some hacks.
+
+... It's now 4th 2:00 a.m. though
+
+4th
+
+Purged many small problems.
+
+Wished to release it today, but no luck...
+
+5th
+
+Bundle script, optimized project structure.
+
+It's finally ready...
+
+6th
+
+Documentation.
+
+What else? First Release!

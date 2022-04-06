@@ -1,85 +1,107 @@
-English | [简体中文](README.zh-CN.md)
 
 # Cat-Printer
 
-*A friendly cat (kitty) printer App/driver for everyone (GB01,GB02,GT01)*
+A project that provides support to some Bluetooth "Cat Printer" models, on *many* platforms!
 
-![Poster](https://repository-images.githubusercontent.com/403563361/0a315f6a-7cae-48d7-bfd4-d6fac5415d7c)
+## Models
 
-(According to [official website](http://office.frogtosea.com/jjfa), maybe there are also normal-, piggy- and frog-shaped printers with these models)
+Currently:  
+  GB01, GB02, and GT01
 
 ## Features
 
-- Print jpg/png images directly to cat printer from a web interface
-- Print a document (.doc, .docx, .odt etc) by copy-paste
-- Custom print content, put text, image, QRcode on a canvas
-- (more will be here...)
+- Simple!
+  - Operate via a Web UI just in browser,
+  - or get the Android release!
+- ~~Feature-rich~~
+  - Currently it is in Alpha stage. More will be there soon!
+  - You can still use the legacy version (0.0.2), with some more editing features
+- Friendly!
+  - Language support! You can participate in translation!
+  - Good user interface, with PC/mobile/light/dark mode variants! (system config adaptive)
+- Cross platform!
+  - Newer Windows 10 and above
+  - GNU/Linux
+  - MacOS *(Needs testing)*
+  - and a lot of extra efforts for Android!
+- Free, as in [freedom](https://www.gnu.org/philosophy/free-sw.html)!
+  - Unlike the "official" proprietary app,  
+    this project is for everyone that concerns *open-mind and freedom*!
+- and Fun!
+  - Do whatever you like!
 
-## How to use
+## Get Started
 
-On Windows 10:
+### Android
 
-- Get a release, extract, open `start.bat`.
-- Make sure bluetooth of your computer is opened and cat printer is launched.
+Get the newest apk release and install, then well done!
 
-On GNU/Linux:
+It may ask for background location permission, which is mysterious to me.  
+You can deny it safely.
 
-- You can also use a Windows release, or prepare dependencies according to developer note.
-- Open `server.py` in `printer` folder with `python3`.
+### Windows:
 
-Notes:
+Get the newest release archive with "windows" in the file name,  
+extract to somewhere and run `start.bat`
 
-- Newest Firefox users need to manually allow the permission of extracting canvas data, at left side of address bar after clicking preview button
-- Windows version needs to be at least 10 (`10.0.16299`)
-- GNU/Linux needs BlueZ (`bluetoothctl`)
-- Maybe also compatible to Mac (Darwin) with CoreBluetooth Framework
+### GNU/Linux
 
-## Why?
+You can get the "pure" release, extract it, fire a terminal inside and run:  
+```bash
+python3 server.py
+```
 
-These bluetooth cat printers, with model name GB01, GB02 and GT01, have poor support at applications.
+On Arch Linux based distros you may first install `bluez`, as it's often missing  
+```bash
+sudo pacman -S bluez bluez-utils
+```
 
-Official apps are, proprietary, also have only mobile version.
+### MacOS
 
-I hate both proprietary and platform-binding things. So I decided to make this.
+For MacOS please install [Python 3](https://www.python.org/).
 
-Thankfully, people here are really warm-hearted, logged their experiences online in a [central repo](https://github.com/JJJollyjim/catprinter), and I am able to walk further 😃
+Fetch a "pure" release and do the same in a shell:  
+```bash
+python3 server.py
+```
 
-## Trivial
+Currently in Mac the browser will not pop up automatically. Please run manually and go to `http://127.0.0.1:8095`
 
-- Many one choose these cat thermal printers because they are cute... or, just cheap 🙃
 
-- Here we tell "**Cat Printer**" because other developers also call the printer as this, but what oversea shops call is "**Kitty Printer**". Search engines, please optimize it 😝
+### Note
 
-- The official app is protected by law & copyright. I don't know if my work is not good...
+For all supported platforms,  
+You can also use "pure" edition once you have [Python 3](https://www.python.org/) installed,  
+or "bare" edition if you also managed to install `bleak` via `pip`.
 
-## Developer Note
+See the [releases](./releases) now! (`0.0.*` versions are legacy/deprecated)
 
-This application uses server/client model, and have fewest possible dependencies on server side.
+## Problems?
 
-### Prepare
+Please open an issue if there's something in your mind!
 
-- Python3 & Browser
-- [fabric.min.js](https://github.com/fabricjs/fabric.js/tree/master/dist)
-- [html2canvas.min.js](https://html2canvas.hertzen.com/)
-- [qrcode.min.js](https://davidshimjs.github.io/qrcodejs/)
-- (Optional) Any css for plain webpage, e.g. [minicss](https://minicss.org/), rename to `skin.css`
+Of course PRs are welcome if you can handle them!
 
-Put any web-related files to folder `www`.
+## License
 
-### Supported Platforms
+Copyright © 2022 NaitLee Soft. Some rights reserved.
 
-Support for both Windows and GNU/Linux are included. And Windows release package will contain all needed things for a **normal** user to play with.
+See file `COPYING`, `LICENSE`, and detail of used JavaScript in file `www/jslicense.html`
 
-### Plans
+--------
 
-- Smoother mono-color converting
-- Make remote-print by web interface more standard/compatible/secure
+## Development
 
-Possible features:
+You may interested in language support, anyway. See the translation files in directory `www/lang`!
 
-- Remote print with printer protocols
+Also interested in code development? See [development.md](development.md)!
 
-### Files
+### Credits
 
-- `server.py`: Contains a BaseHTTP server that hooks user actions and printer driver
-- `printer.py`: Contains the driver of bluetooth cat printer, which depends on bleak. You can also run this file in commandline.
+- Of course, Python & the Web!
+- [Bleak](https://bleak.readthedocs.io/en/latest/) BLE lib! The overall Hero!
+- [roddeh-i18n](https://github.com/roddeh/i18njs), good work!
+- [python-for-android](https://python-for-android.readthedocs.io/en/latest/), though there are some painful troubles
+- [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) for saving my life from Java
+- Stack Overflow & the whole Internet, you let me know Android `Activity` all from empty
+- ... Everyone is Awesome!

@@ -1,0 +1,9 @@
+
++ Summary the hacks to p4a, bleak p4a recipe, p4a webview bootstrap, and AdvancedWebView
++ More frontend usability, more functions
++ A better layout for mobile?
++ Better Canvas mode, (re-)consider fabric.js
++ Implement Document mode, (re-)consider html2canvas.js
++ Write good help/manual
++ Make error notice short while let users see detailed help/manual for what-to-do
++ ...

@@ -1,215 +1,256 @@
+'Cat Printer - Serve a Web UI'
 
-from http.server import HTTPServer, BaseHTTPRequestHandler
-import socketserver, threading, urllib, os, asyncio, tempfile, platform
+# if pylint is annoying you, see file .pylint-rc
+
+import os
+import sys
+import json
+import asyncio
+import platform
+# Don't use ThreadingHTTPServer if you're going to use pyjnius!
+from http.server import BaseHTTPRequestHandler, HTTPServer #, ThreadingHTTPServer
+from bleak.exc import BleakDBusError, BleakError
 from printer import PrinterDriver
-import bleak
 
-def urlvar(path):
-    a = path.split('?')
-    d = []
-    f = {}
-    if len(a) > 1:
-        b = a[1].split('&')
-        for i in b:
-            d.append(i.split('='))
-    for i in d:
-        if len(i) == 1:
-            i.append('1')
-        f[i[0]] = i[1]
-    return f
+class DictAsObject(dict):
+    """ Let you use a dict like an object in JavaScript.
+    """
+    def __getattr__(self, key):
+        return self.get(key, None)
+    def __setattr__(self, key, value):
+        self[key] = value
 
-mimetypes = {
-    'html': 'text/html',
-    'txt': 'text/plain',
-    'js': 'text/javascript',
-    'css': 'text/css'
+class PrinterServerError(Exception):
+    'Error of PrinterServer'
+    code: int
+    name: str
+    details: str
+    def __init__(self, *args, code=1):
+        super().__init__(*args)
+        len_args = len(args)
+        self.code = code
+        if len_args > 0:
+            self.name = args[0]
+        if len_args > 1:
+            self.details = args[1]
+
+Printer = PrinterDriver()
+server = None
+
+def log(message):
+    'For logging a message'
+    print(message)
+
+mime_type = {
+    'html': 'text/html;charset=utf-8',
+    'css': 'text/css;charset=utf-8',
+    'js': 'text/javascript;charset=utf-8',
+    'txt': 'text/plain;charset=utf-8',
+    'json': 'application/json;charset=utf-8',
+    'png': 'image/png',
+    'octet-stream': 'application/octet-stream'
 }
-def getmime(path):
-    global mimetypes
-    ext = path.split('.')[-1]
-    return mimetypes.get(ext, 'application/octet-stream')
+def mime(url: str):
+    'Get pre-defined MIME type of a certain url by extension name'
+    return mime_type.get(url.rsplit('.', 1)[-1], mime_type['octet-stream'])
 
 class PrinterServer(BaseHTTPRequestHandler):
+    '(Local) server for Cat Printer Web interface'
     buffer = 4 * 1024 * 1024
-    driver = PrinterDriver()
+    max_payload = buffer * 16
+    printer_address: str = None
+    settings = DictAsObject({
+        'config_path': 'config.json',
+        'is_android': False,
+        'printer_address': None,
+        'scan_time': 3,
+        'frequency': 0.8,
+        'dry_run': False
+    })
+    def log_request(self, _code=200, _size=0):
+        pass
+    def log_error(self, *_args):
+        pass
     def do_GET(self):
+        'Called when server get a GET http request'
+        path = 'www' + self.path
         if self.path == '/':
-            self.path = '/index.html'
-        path = urllib.parse.unquote(self.path)
-        # v = urlvar(path)
-        path = path.split('?')[0]
-        if len(path) >= 2:
-            if path[0:2] == '/~':
-                action = path[2:]
-                if action == 'getdevices':
-                    try:
-                        devices = asyncio.run(bleak.BleakScanner.discover())
-                        self.send_response(200)
-                        self.send_header('Content-Type', 'text/plain')
-                        self.end_headers()
-                        self.wfile.write('\n'.join([('%s,%s' % (x.name, x.address)) for x in devices]).encode('utf-8'))
-                    except Exception as e:
-                        self.send_response(500)
-                        self.send_header('Content-Type', 'text/plain')
-                        self.end_headers()
-                        self.wfile.write(str(e).encode('utf-8'))
-            else:
-                # local file
-                path = 'www/' + path[1:]
-                if os.path.exists(path):
-                    self.send_response(200)
-                    self.send_header('Content-Type', getmime(path))
-                    # self.send_header('Cache-Control', 'public, max-age=86400')
-                    self.end_headers()
-                    with open(path, 'rb') as f:
-                        while True:
-                            data = f.read(self.buffer)
-                            if data:
-                                self.wfile.write(data)
-                            else:
-                                break
-                    return
-                else:
-                    self.send_response(404)
-                    self.send_header('Content-Type', 'text/plain')
-                    self.end_headers()
-                    self.wfile.write(b'Not Found')
-                    return
-    def do_POST(self):
-        if self.headers.get('Content-Type', '') == 'application/ipp':
-            # https://datatracker.ietf.org/doc/html/rfc8010
-            self.handle_ipp()
+            path += 'index.html'
+        if '/..' in path:
             return
-        path = urllib.parse.unquote(self.path)
-        v = urlvar(path)
-        path = path.split('?')[0]
-        if len(path) >= 2:
-            if path[0:2] == '/~':
-                action = path[2:]
-                if action == 'print':
-                    if 'mtu' in v:
-                        self.driver.mtu = v['mtu']
-                    if 'feed_after' in v:
-                        self.driver.feed_after = v['feed_after']
-                    try:
-                        content_length = int(self.headers.get('Content-Length'))
-                        data = self.rfile.read(content_length)
-                        asyncio.run(self.driver.print_data(data, v['address']))
-                        self.send_response(200)
-                        self.send_header('Content-Type', 'text/plain')
-                        self.end_headers()
-                        self.wfile.write(b'OK')
-                    except Exception as e:
-                        self.send_response(500)
-                        self.send_header('Content-Type', 'text/plain')
-                        self.end_headers()
-                        self.wfile.write(str(e).encode('utf-8'))
-            else:
-                self.send_response(400)
-                self.send_header('Content-Type', 'text/plain')
-                self.end_headers()
-                self.wfile.write(b'Bad Request')
-    def handle_ipp(self):
-        path = urllib.parse.unquote(self.path)
-        printer_name = path[1:]
-        data = self.rfile.read(int(self.headers.get('Content-Length', 0)))
-        # len_data = len(data)
-        # ipp_version_number = data[0:2]
-        # ipp_operation_id = data[2:4]
-        # ipp_request_id = data[4:8]
-        ipp_operation_attributes_tag = data[8]
-        attributes = {}
-        data_to_print = b''
-        # b'\x01'[0] == int(1)
-        if ipp_operation_attributes_tag == b'\x01'[0]:
-            pointer = 9
-            next_name_length_at = 10
-            next_value_length_at = 10
-            name = b''
-            value = b''
-            while data[pointer] != b'\x03'[0]:
-                tag = data[pointer:pointer + 1]
-                pointer += 1
-                if tag[0] < 0x10:   # delimiter-tag
-                    continue
-                next_name_length_at = pointer + data[pointer] * 0x0100 + data[pointer + 1] + 2
-                pointer += 2
-                while pointer < next_name_length_at:
-                    name = name + data[pointer:pointer + 1]
-                    pointer += 1
-                next_value_length_at = pointer + data[pointer] * 0x0100 + data[pointer + 1] + 2
-                pointer += 2
-                while pointer < next_value_length_at:
-                    value = value + data[pointer:pointer + 1]
-                    pointer += 1
-                attributes[name] = (tag, value)
-                name = b''
-                value = b''
-            pointer += 1
-            data_to_print = data[pointer:]
-        if data_to_print == b'':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/ipp')
+        if not os.path.isfile(path):
+            self.send_response(404)
+            self.send_header('Content-Type', mime('txt'))
             self.end_headers()
-            self.wfile.write(
-                b'\x01\x01\x00\x00\x00\x00\x00\x01\x01\x03'
+            return
+        self.send_response(200)
+        self.send_header('Content-Type', mime(path))
+        # self.send_header('Content-Size', str(os.stat(path).st_size))
+        self.end_headers()
+        with open(path, 'rb') as file:
+            while True:
+                chunk = file.read(self.buffer)
+                if not self.wfile.write(chunk):
+                    break
+        return
+    def api_success(self):
+        'Called when a simple API call is being considered successful'
+        self.send_response(200)
+        self.send_header('Content-Type', mime('json'))
+        self.end_headers()
+        self.wfile.write(b'{}')
+    def api_fail(self, error_json, error=None):
+        'Called when an API call is failed'
+        self.send_response(500)
+        self.send_header('Content-Type', mime('json'))
+        self.end_headers()
+        self.wfile.write(json.dumps(error_json).encode('utf-8'))
+        self.wfile.flush()
+        if isinstance(error, Exception):
+            raise error
+    def load_config(self):
+        'Load config file, or if not exist, create one with default'
+        if os.environ.get("P4A_BOOTSTRAP") is not None:
+            self.settings['is_android'] = True
+            from android.storage import app_storage_path    # pylint: disable=import-error
+            settings_path = app_storage_path()
+            os.makedirs(settings_path, exist_ok=True)
+            self.settings['config_path'] = os.path.join(
+                settings_path, 'config.json'
             )
+        if os.path.exists(self.settings.config_path):
+            with open(self.settings.config_path, 'r', encoding='utf-8') as file:
+                self.settings = DictAsObject(json.load(file))
+        else:
+            self.save_config()
+    def save_config(self):
+        'Save config file'
+        with open(self.settings.config_path, 'w', encoding='utf-8') as file:
+            json.dump(self.settings, file, indent=4)
+    def handle_api(self):
+        'Handle API request from POST'
+        content_length = int(self.headers.get('Content-Length'))
+        body = self.rfile.read(content_length)
+        api = self.path[1:]
+        if api == 'print':
+            if self.settings.printer_address is None:
+                # usually can't encounter, though
+                raise PrinterServerError('No printer address specified')
+            Printer.dry_run = self.settings.dry_run
+            Printer.frequency = float(self.settings.frequency)
+            loop = asyncio.new_event_loop()
+            try:
+                devices = loop.run_until_complete(
+                    Printer.print_data(body, self.settings.printer_address)
+                )
+                self.api_success()
+            finally:
+                loop.close()
+            return
+        data = DictAsObject(json.loads(body))
+        if api == 'devices':
+            loop = asyncio.new_event_loop()
+            try:
+                devices = loop.run_until_complete(
+                    Printer.search_all_printers(float(self.settings.scan_time))
+                )
+            finally:
+                loop.close()
+            devices_list = [{
+                'name': device.name,
+                'address': device.address
+            } for device in devices]
+            self.send_response(200)
+            self.send_header('Content-Type', mime('json'))
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                'devices': devices_list
+            }).encode('utf-8'))
+            return
+        if api == 'query':
+            self.load_config()
+            self.send_response(200)
+            self.send_header('Content-Type', mime('json'))
+            self.end_headers()
+            self.wfile.write(json.dumps(self.settings).encode('utf-8'))
+            return
+        if api == 'set':
+            for key in data:
+                self.settings[key] = data[key]
+            self.save_config()
+            self.api_success()
+            return
+        if api == 'exit':
+            self.api_success()
+            self.save_config()
+            # Only usable when using ThreadingHTTPServer
+            # server.shutdown()
+            sys.exit(0)
+    def do_POST(self):
+        'Called when server get a POST http request'
+        content_length = int(self.headers.get('Content-Length', -1))
+        if (content_length == -1 or
+            content_length > self.max_payload
+        ):
+            self.send_response(400)
+            self.send_header('Content-Type', mime('txt'))
+            self.end_headers()
             return
         try:
-            devices = asyncio.run(bleak.BleakScanner.discover())
-            target_device = ''
-            for i in devices:
-                if i.name == printer_name:
-                    target_device = i.address
-            if target_device != '':
-                platform_system = platform.system()
-                temp_dir = tempfile.mkdtemp()
-                temp_file_ps = os.path.join(temp_dir, 'temp.ps')
-                temp_file_pbm = os.path.join(temp_dir, 'temp.pbm')
-                f = open(temp_file_ps, 'wb')
-                f.write(data_to_print)
-                f.close()
-                # https://ghostscript.com/doc/9.54.0/Use.htm#Output_device
-                ghostscript_exe = 'gs'
-                if platform_system == 'Windows':
-                    ghostscript_exe = 'gswin32c.exe'
-                elif platform_system == 'Linux':
-                    ghostscript_exe = 'gs'
-                elif platform_system == 'OS/2':
-                    ghostscript_exe = 'gsos2'
-                return_code = os.system('%s -q -sDEVICE=pbmraw -dNOPAUSE -dBATCH -dSAFER -dFIXEDMEDIA -g384x543 -r46.4441219158x46.4441219158 -dFitPage -sOutputFile="%s" "%s"' % (ghostscript_exe, temp_file_pbm, temp_file_ps))
-                if return_code == 0:
-                    asyncio.run(self.driver.print_file(temp_file_pbm, target_device))
-                else:
-                    raise Exception('Error on invoking Ghostscript')
-                # print(data_to_print)
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/ipp')
-            self.end_headers()
-            self.wfile.write(
-                b'\x01\x01\x00\x00\x00\x00\x00\x01\x01\x03'
-            )
-        except Exception as _:
-            self.send_response(500)
-            self.send_header('Content-Type', 'application/ipp')
-            self.end_headers()
-            self.wfile.write(b'')
+            self.handle_api()
+            return
+        except BleakDBusError as e:
+            self.api_fail({
+                'code': -2,
+                'name': e.dbus_error,
+                'details': e.dbus_error_details
+            })
+        except BleakError as e:
+            self.api_fail({
+                'code': -3,
+                'name': 'BleakError',
+                'details': str(e)
+            })
+        except PrinterServerError as e:
+            self.api_fail({
+                'code': e.code,
+                'name': e.name,
+                'details': e.details
+            })
+        except Exception as e:
+            self.api_fail({
+                'code': -1,
+                'name': 'Exception',
+                'details': str(e)
+            }, e)
 
-
-class ThreadedHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
-    """ Handle requests in a separate thread. """
-
-if __name__ == '__main__':
-    address, port = '', 8095
-    server = ThreadedHTTPServer((address, port), PrinterServer)
+def serve():
+    'Start server'
+    address, port = '127.0.0.1', 8095
+    listen_all = False
+    if '-a' in sys.argv:
+        print('Will listen on ALL addresses')
+        listen_all = True
+    global server
+    # Again, Don't use ThreadingHTTPServer if you're going to use pyjnius!
+    server = HTTPServer(('' if listen_all else address, port), PrinterServer)
+    service_url = f'http://{address}:{port}/'
+    if '-s' in sys.argv:
+        print(service_url)
+    else:
+        operating_system = platform.uname().system
+        if operating_system == 'Windows':
+            os.system(f'start {service_url} > NUL')
+        elif operating_system == 'Linux':
+            os.system(f'xdg-open {service_url} &> /dev/null')
+        # TODO: I don't know about macOS
+        # elif operating_system == 'macOS':
+        else:
+            print(f'Will serve application at: {service_url}')
     try:
-        # Start a thread with the server -- that thread will then start one
-        # more thread for each request
-        server_thread = threading.Thread(target=server.serve_forever)
-        # Exit the server thread when the main thread terminates
-        server_thread.daemon = True
-        server_thread.start()
-        print('http://localhost:8095/')
         server.serve_forever()
     except KeyboardInterrupt:
         pass
+
+if __name__ == '__main__':
+    serve()

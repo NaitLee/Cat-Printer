@@ -1,0 +1,30 @@
+
+# Apply this pylint-rc for better experience
+# Configurable in VSCode settings `python.linting.pylintArgs`
+# $ pylint --rcfile=.pylint-rc
+
+[MASTER]
+jobs=4
+
+[BASIC]
+class-const-naming-style=snake_case
+const-naming-style=snake_case
+
+[MESSAGES CONTROL]
+disable=broad-except,
+        global-statement,
+        fixme,
+        import-outside-toplevel
+
+[BASIC]
+good-names=i,
+           j,
+           k,
+           ex,
+           Run,
+           _,
+           e,
+           do_GET,
+           do_POST,
+           do_HEAD,
+           do_PUT

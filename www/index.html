@@ -2,30 +2,133 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Printer Center</title>
+    <title>Cat Printer</title>
     <link rel="stylesheet" href="main.css" />
-    <link rel="stylesheet" href="skin.css" />
+    <link rel="icon" href="icon.png" />
 </head>
 <body>
-    <main class="mainpage">
-        <h1>Printer Center</h1>
-        <nav>
-            <a href="print-image.html" target="_blank">Print Image</a>
-            <a href="print-document.html" target="_blank">Print Document</a>
-            <a href="custom-print.html" target="_blank">Custom Print</a>
-            <a href="help/index.html" target="_blank">Help</a>
-        </nav>
+    <main>
+        <div class="left">
+            <h1 id="title" data-i18n="cat-printer">Cat Printer</h1>
+            <div id="notice">
+                <noscript>
+                    <span class="noscript">Please enable JavaScript!</span>
+                </noscript>
+            </div>
+            <div class="panel" id="panel-print">
+                <a href="#" data-i18n="print" data-default>Print</a>
+                <label for="device-options" data-i18n="device-">Device:</label>
+                <select id="device-options">
+                    <!-- Initialized by script -->
+                </select>
+                <button id="device-refresh" data-i18n="refresh">Refresh</button>
+                <br />
+                <label data-i18n="mode-">Mode:</label>
+                <label>
+                    <input type="radio" name="mode" value="mode-canvas" checked />
+                    <span data-i18n="canvas">Canvas</span>
+                </label>
+                <!-- <label>
+                    <input type="radio" name="mode" value="mode-document" />
+                    <span data-i18n="document">Document</span>
+                </label><br /> -->
+                <button id="insert-picture" data-i18n="insert-picture">Insert Picture</button><br />
+            </div>
+            <div class="panel expanded" id="panel-help">
+                <a href="#" data-i18n="help">Help</a>
+                <div>
+                    <p data-i18n="coming-soon-">Coming Soon...</p>
+                    <p>
+                        <!-- LibreJS doesn't work with dynamically inserted script tag. Going to complain -->
+                        <a href="jslicense.html" data-jslicense="1"
+                        data-i18n="javascript-license-information">JavaScript License Information</a>
+                    </p>
+                </div>
+            </div>
+            <div class="panel" id="panel-settings">
+                <a href="#" data-i18n="settings">Settings</a>
+                <div class="sub panel">
+                    <a href="#" data-i18n="image">Image</a>
+                    <label data-i18n="monochrome-algorithm-">Monochrome Algorithm:</label><br />
+                    <label>
+                        <input type="radio" name="algo" value="algo-direct" />
+                        <span data-i18n="direct">Direct</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="algo" value="algo-steinberg" checked />
+                        <span data-i18n="floyd-steinberg">Floyd Steinberg</span>
+                    </label><br />
+                    <!-- <label>
+                        <input type="radio" name="algo" value="algo-halftone" />
+                        <span data-i18n="halftone">Halftone</span>
+                    </label> -->
+                    <label>
+                        <input type="radio" name="algo" value="algo-new-h" />
+                        <span data-i18n="wave">Wave</span>
+                    </label>
+                    <!-- <label>
+                        <input type="radio" name="algo" value="algo-new-v" />
+                        <span data-i18n="fall">Fall</span>
+                    </label> -->
+                    <label>
+                        <input type="radio" name="algo" value="algo-legacy" />
+                        <span data-i18n="legacy">Legacy</span>
+                    </label><br />
+                    <label for="threshold" data-i18n="threshold-">Threshold:</label>
+                    <input type="range" min="0" max="255" value="128" id="threshold" step="8" data-default />
+                    <br />
+                    <input type="checkbox" name="transparent-as-white" id="transparent-as-white" checked />
+                    <label for="transparent-as-white" data-i18n="transparent-as-white">Transparent as White</label>
+                </div>
+                <div class="sub panel">
+                    <a href="#" data-i18n="printer">Printer</a>
+                    <label for="scan-time" data-i18n="scan-time-">Scan Time:</label>
+                    <input type="number" name="scan-time" id="scan-time" min="1" max="10" value="3" />
+                    <span data-i18n="-seconds">seconds</span>
+                    <br />
+                    <label for="frequency" data-i18n="transmission-speed-">Data Speed:</label>
+                    <select id="frequency">
+                        <option value="1.0" data-i18n="low">Low</option>
+                        <option value="0.8" data-i18n="moderate" selected>Moderate</option>
+                        <option value="0.6" data-i18n="high">High</option>
+                    </select>
+                    <br />
+                    <input type="checkbox" name="dry-run" id="dry-run" />
+                    <label for="dry-run" data-i18n="dry-run">Dry Run</label>
+                </div>
+                <div class="sub panel">
+                    <a href="#" data-i18n="system">System</a>
+                    <input type="checkbox" name="no-animation" id="no-animation" />
+                    <label for="no-animation" data-i18n="disable-page-animation">Disable Page Animation</label>
+                </div>
+                <div class="center">
+                    <button id="button-exit" data-i18n="exit">Exit</button>
+                </div>
+            </div>
+            <div class="panel hidden" id="panel-error">
+                <a href="#" data-i18n="error-message">Error Message</a>
+                <p data-i18n="you-can-seek-for-help-with-detailed-info-below">You can seek for help with detailed info below.</p>
+                <div id="error-record"></div>
+            </div>
+            <div class="center">
+                <!-- <button id="button-preview" data-i18n="preview">Preview</button> -->
+                <button id="button-print" data-i18n="print">Print</button>
+            </div>
+        </div>
+        <div class="right">
+            <canvas id="control-canvas" class="disabled" width="384" height="384"></canvas>
+            <div id="control-document" class="disabled" contenteditable="true"></div>
+            <canvas id="preview" width="384" height="384"></canvas>
+            <div class="center">
+                <!-- <button id="canvas-expand" data-i18n="expand">Expand</button>
+                <button id="canvas-crop" data-i18n="crop">Crop</button> -->
+            </div>
+        </div>
     </main>
-    <textarea id="i18-N" style="display: none;">
-[zh-CN]
-Printer Center=打印机中心
-Print Image=打印图片
-Print Document=打印文档
-Custom Print=自定义打印
-Help=帮助
-    </textarea>
-    <script src="i18n.js"></script>
+    <div id="hidden" class="hidden">
+        <!-- Hidden area for putting elements -->
+    </div>
+    <script src="loader.js"></script>
 </body>
 </html>
