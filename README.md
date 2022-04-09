@@ -1,3 +1,4 @@
+English | [Deutsch](./README.de_DE.md)
 
 # Cat-Printer
 
@@ -6,7 +7,8 @@ A project that provides support to some Bluetooth "Cat Printer" models, on *many
 ## Models
 
 Currently:  
-  GB01, GB02, and GT01
+  GB01, GB02, and GT01  
+  maybe GB03 in the current repo state
 
 ## Features
 
