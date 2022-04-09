@@ -50,6 +50,14 @@
         "you-can-close-this-page-manually": "您可手动关闭此页面",
         "please-enable-bluetooth": "请启用蓝牙",
         "error-happened-please-check-error-message": "发生错误，请检查错误消息",
-        "you-can-seek-for-help-with-detailed-info-below": "您可以使用以下详细信息寻求帮助。"
+        "you-can-seek-for-help-with-detailed-info-below": "您可以使用以下详细信息寻求帮助。",
+
+        "or-try-to-scan-longer": "或者尝试延长扫描时间",
+        "print-pbm-image-to-cat-printer": "打印 PBM 图片到猫咪打印机。",
+        "supported-models-": "支持的型号：",
+        "path-to-pbm-file-dash-for-stdin": "PBM 文件的位置。“-” 作为标准输入。",
+        "scan-for-specified-seconds": "扫描指定的时长。",
+        "specify-printer-mac-address": "指定打印机的 MAC 地址",
+        "communication-frequency-0.8-or-1-recommended": "通讯频率。推荐 0.8 或 1。"
     }
 }

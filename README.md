@@ -74,7 +74,7 @@ For all supported platforms,
 You can also use "pure" edition once you have [Python 3](https://www.python.org/) installed,  
 or "bare" edition if you also managed to install `bleak` via `pip`.
 
-See the [releases](./releases) now! (`0.0.*` versions are legacy/deprecated)
+See the [releases](https://github.com/NaitLee/Cat-Printer/releases) now!
 
 ## Problems?
 

@@ -374,7 +374,7 @@ class Main {
             putEvent('#button-print', 'click', this.print, this);
             putEvent('#device-refresh', 'click', this.searchDevices, this);
             this.attachSetter('#scan-time', 'change', 'scan_time');
-            this.attachSetter('#device-options', 'input', 'printer_address');
+            this.attachSetter('#device-options', 'input', 'printer');
             this.attachSetter('input[name="algo"]', 'change', 'mono_algorithm');
             this.attachSetter('#transparent-as-white', 'change', 'transparent_as_white');
             this.attachSetter('#dry-run', 'change', 'dry_run',
@@ -482,7 +482,7 @@ class Main {
         let search_result = await callApi('/devices', null, this.bluetoothProblemHandler);
         if (search_result === null) return;
         let devices = search_result.devices;
-        this.deviceOptions.childNodes.forEach(e => e.remove());
+        [... this.deviceOptions.children].forEach(e => e.remove());
         if (devices.length === 0) {
             Notice.notice('no-available-devices-found');
             hint('#device-refresh');
@@ -492,8 +492,8 @@ class Main {
         hint('#insert-picture');
         devices.forEach(device => {
             let option = document.createElement('option');
-            option.value = device.address;
-            option.innerText = `${device.name}-${device.address.slice(12, 14)}${device.address.slice(15)}`;
+            option.value = `${device.name},${device.address}`;
+            option.innerText = `${device.name}-${device.address.slice(3, 5)}${device.address.slice(0, 2)}`;
             this.deviceOptions.appendChild(option);
         });
         this.deviceOptions.dispatchEvent(new Event('input'));
