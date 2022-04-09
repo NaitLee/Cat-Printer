@@ -51,6 +51,14 @@
         "you-can-close-this-page-manually": "You can close this page manually",
         "please-enable-bluetooth": "Please enable Bluetooth",
         "error-happened-please-check-error-message": "Error happened, please check error message",
-        "you-can-seek-for-help-with-detailed-info-below": "You can seek for help with detailed info below."
+        "you-can-seek-for-help-with-detailed-info-below": "You can seek for help with detailed info below.",
+
+        "or-try-to-scan-longer": "Or try to scan longer",
+        "print-pbm-image-to-cat-printer": "Print PBM image to Cat Printer.",
+        "supported-models-": "Supported models:",
+        "path-to-pbm-file-dash-for-stdin": "Path to PBM file. '-' for stdin.",
+        "scan-for-specified-seconds": "Scan for specified seconds",
+        "specify-printer-mac-address": "Specify printer MAC address",
+        "communication-frequency-0.8-or-1-recommended": "Communication frequency. 0.8 or 1 recommended."
     }
 }

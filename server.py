@@ -58,11 +58,10 @@ class PrinterServer(BaseHTTPRequestHandler):
     '(Local) server for Cat Printer Web interface'
     buffer = 4 * 1024 * 1024
     max_payload = buffer * 16
-    printer_address: str = None
     settings = DictAsObject({
         'config_path': 'config.json',
         'is_android': False,
-        'printer_address': None,
+        'printer': None,
         'scan_time': 3,
         'frequency': 0.8,
         'dry_run': False
@@ -133,15 +132,16 @@ class PrinterServer(BaseHTTPRequestHandler):
         body = self.rfile.read(content_length)
         api = self.path[1:]
         if api == 'print':
-            if self.settings.printer_address is None:
+            if self.settings.printer is None:
                 # usually can't encounter, though
                 raise PrinterServerError('No printer address specified')
             Printer.dry_run = self.settings.dry_run
             Printer.frequency = float(self.settings.frequency)
+            Printer.name, Printer.address = self.settings.printer.split(',')
             loop = asyncio.new_event_loop()
             try:
                 devices = loop.run_until_complete(
-                    Printer.print_data(body, self.settings.printer_address)
+                    Printer.print_data(body)
                 )
                 self.api_success()
             finally:

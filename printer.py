@@ -4,13 +4,27 @@ import io
 import sys
 import argparse
 import asyncio
+from typing import List, Union, Any, Mapping
 from bleak import BleakClient, BleakScanner
 from bleak.exc import BleakError, BleakDBusError
+
+try:
+    from i18n import I18n
+except ImportError:
+    class I18n():
+        def __init__(self, _search_path=None, _lang=None, _fallback=None):
+            pass
+        def __getitem__(self, keys):
+            if not isinstance(keys, tuple):
+                keys = (keys, )
+            return '  '.join([str(x) for x in keys])
+
+i18n = I18n('www/lang')
 
 class PrinterError(Exception):
     'Error of Printer driver'
 
-models = ('GB01', 'GB02', 'GT01')
+models = ('GT01', 'GB01', 'GB02', 'GB03')
 
 crc8_table = [
     0x00, 0x07, 0x0e, 0x09, 0x1c, 0x1b, 0x12, 0x15, 0x38, 0x3f, 0x36, 0x31,
@@ -38,7 +52,7 @@ crc8_table = [
 ]
 
 
-def crc8(data):
+def crc8(data: Union[bytes, bytearray]):
     'crc8 hash'
     crc = 0
     for byte in data:
@@ -46,7 +60,7 @@ def crc8(data):
     return crc & 0xFF
 
 
-def set_attr_if_not_none(obj, attrs):
+def set_attr_if_not_none(obj: Any, attrs: Mapping[str, str]):
     ''' set the attribute of `obj` if the value is not `None`
         `attrs` is `dict` of attr-value pair
     '''
@@ -56,20 +70,26 @@ def set_attr_if_not_none(obj, attrs):
             setattr(obj, name, value)
 
 
-def reverse_binary(value):
+def reverse_binary(value: int):
     'Get the binary value of `value` and return the binary-reversed form of it as an `int`'
     return int(f"{bin(value)[2:]:0>8}"[::-1], 2)
 
 
-def make_command(command, payload):
-    'Make a `bytes` with command data, which can be sent to printer directly to operate'
+def make_command(command: int, payload: Union[bytes, bytearray], *, prefix: List[int]=None) -> bytearray:
+    'Make a `bytearray` with command data, which can be sent to printer directly to operate'
     if len(payload) > 0x100:
         raise Exception('Too large payload')
-    message = bytearray([0x51, 0x78, command, 0x00, len(payload), 0x00])
-    message += payload
-    message.append(crc8(payload))
-    message.append(0xFF)
-    return bytes(message)
+    message = bytearray()
+    if prefix is not None:
+        message += prefix
+    message += bytearray([
+        0x51, 0x78,
+        command, 0x00,
+        len(payload), 0x00,
+        *payload, crc8(payload),
+        0xFF
+    ])
+    return message
 
 
 class PrinterCommands():
@@ -97,6 +117,7 @@ class PBMData():
         self.height = height
         self.data = data
         self.args = {
+            # setting to \x01 may make it faster. but don't know if there are drawbacks
             PrinterCommands.DrawingMode: b'\x00',
             PrinterCommands.SetEnergy: b'\xE0\x2E',
             PrinterCommands.SetQuality: b'\x05'
@@ -108,6 +129,12 @@ class PBMData():
 
 class PrinterDriver():
     'Manipulator of the printer'
+
+    name: str = None
+    'The Bluetooth name of the printer'
+
+    address: str = None
+    'The Bluetooth MAC address of the printer'
 
     frequency = 0.8
     ''' Time to wait between communication to printer, in seconds,
@@ -167,6 +194,10 @@ class PrinterDriver():
 
     def _pbm_data_to_raw(self, data: PBMData):
         buffer = bytearray()
+        # new/old print command
+        if self.name == 'GB03':
+            buffer.append(0x12)
+        buffer += bytearray([0x51, 0x78, 0xa3, 0x00, 0x01, 0x00, 0x00, 0x00, 0xff])
         for key in data.args:
             buffer += make_command(key, data.args[key])
         buffer += make_command(
@@ -187,11 +218,11 @@ class PrinterDriver():
                 )
                 # buffer += make_command(
                 #     PrinterCommands.UpdateDevice,
-                #     bytes([0x00])
+                #     bytearray([0x00])
                 # )
             buffer += make_command(
                 PrinterCommands.DrawBitmap,
-                bytes([reverse_binary(x) for x in data_for_a_line])
+                bytearray([reverse_binary(x) for x in data_for_a_line])
             )
         buffer += make_command(
             PrinterCommands.LatticeControl,
@@ -201,12 +232,13 @@ class PrinterDriver():
         if self.feed_after > 0:
             buffer += make_command(
                 PrinterCommands.FeedPaper,
-                bytes([self.feed_after % 256, self.feed_after // 256])
+                bytearray([self.feed_after % 256, self.feed_after // 256])
             )
         return buffer
 
-    async def send_buffer(self, buffer: bytearray, address: str):
+    async def send_buffer(self, buffer: bytearray, address: str=None):
         'Send manipulation data (buffer) to the printer via bluetooth'
+        address = address or self.address
         client = BleakClient(address, timeout=5.0)
         await client.connect()
         count = 0
@@ -224,7 +256,7 @@ class PrinterDriver():
                 break
         await client.disconnect()
 
-    async def search_all_printers(self, timeout):
+    async def search_all_printers(self, timeout: int):
         ''' Search for all printers around with bluetooth.
             Only known-working models will show up.
         '''
@@ -235,7 +267,7 @@ class PrinterDriver():
             if device.name in models:
                 result.append(device)
         return result
-    async def search_printer(self, timeout):
+    async def search_printer(self, timeout: int):
         'Search for a printer, returns `None` if not found'
         timeout = timeout or 3
         devices = await self.search_all_printers(timeout)
@@ -243,14 +275,16 @@ class PrinterDriver():
             return devices[0]
         return None
 
-    async def print_file(self, path: str, address: str):
+    async def print_file(self, path: str, address: str=None):
         'Method to print the specified PBM image at `path` with printer at specified MAC `address`'
+        address = address or self.address
         pbm_data = self._read_pbm(path)
         buffer = self._pbm_data_to_raw(pbm_data)
         await self.send_buffer(buffer, address)
 
-    async def print_data(self, data: bytes, address: str):
+    async def print_data(self, data: bytes, address: str=None):
         'Method to print the specified PBM image `data` with printer at specified MAC `address`'
+        address = address or self.address
         pbm_data = self._read_pbm(None, data)
         buffer = self._pbm_data_to_raw(pbm_data)
         await self.send_buffer(buffer, address)
@@ -259,46 +293,47 @@ class PrinterDriver():
 async def _main():
     'Main routine for direct command line execution'
     parser = argparse.ArgumentParser(
-        description='''Print an PBM image to a Cat/Kitty Printer, of model GB01, GB02 or GT01.'''
+        description='  '.join([
+            i18n['print-pbm-image-to-cat-printer'],
+            i18n['supported-models-'],
+            str(models)
+        ])
     )
     parser.add_argument('file', default='-', metavar='FILE', type=str,
-                        help='PBM image file to print, use \'-\' to read from stdin')
+                        help=i18n['path-to-pbm-file-dash-for-stdin'])
     exgr = parser.add_mutually_exclusive_group()
-    exgr.add_argument('-s', '--scan', metavar='DELAY', default=3.0, required=False, type=float,
-                      help='Scan for a printer for specified seconds')
+    exgr.add_argument('-s', '--scan', metavar='TIME', default=3.0, required=False, type=float,
+                      help=i18n['scan-for-specified-seconds'])
     exgr.add_argument('-a', '--address', metavar='xx:xx:xx:xx:xx:xx', required=False, type=str,
-                      help='The printer\'s bluetooth MAC address')
-    parser.add_argument('-p', '--feed', required=False, type=int,
-                        help='Extra paper to feed after printing')
-    parser.add_argument('-f', '--freq', required=False, type=float,
-                        help='Communication frequency, in seconds. ' +
-                        'set a bit higher (eg. 1 or 1.2) if printed content is teared/have gaps')
+                      help=i18n['specify-printer-mac-address'])
+    parser.add_argument('-f', '--freq', metavar='FREQ', required=False, type=float,
+                        help=i18n['communication-frequency-0.8-or-1-recommended'])
     parser.add_argument('-d', '--dry', required=False, action='store_true',
-                        help='Emulate the printing process, but actually print nothing ("dry run")')
-    parser.add_argument('-m', '--mtu', required=False, type=int,
-                        help='MTU of bluetooth packet (Advanced)')
+                        help=i18n['dry-run-test-print-process-only'])
     cmdargs = parser.parse_args()
     addr = cmdargs.address
     printer = PrinterDriver()
     if not addr:
-        print('Cat Printer :3')
-        print(f' * Finding printer devices via bluetooth in {cmdargs.scan} seconds')
+        print(i18n['cat-printer'])
+        print(i18n['scanning-for-devices'])
         device = await printer.search_printer(cmdargs.scan)
         if device is not None:
-            print(f' * Will print through {device.name} {device.address}')
+            print(i18n['printing'])
         else:
-            print(' ! No device found. Please check if the printer is powered on.')
-            print(' ! Or try to scan longer with \'-s 6.0\'')
+            print(i18n['no-available-devices-found'])
+            print(i18n['please-check-if-the-printer-is-down'])
+            print(i18n['or-try-to-scan-longer'])
             sys.exit(1)
     if cmdargs.dry:
-        print(' * DRY RUN')
+        print(i18n['dry-run'])
     set_attr_if_not_none(printer, {
-        'feed_after': cmdargs.feed,
+        'name': device.name,
+        'address': device.address,
         'frequency': cmdargs.freq,
-        'mtu': cmdargs.mtu,
-        'dry': cmdargs.dry
+        'dry_run': cmdargs.dry
     })
-    await printer.print_file(cmdargs.file, addr)
+    await printer.print_file(cmdargs.file)
+    print(i18n['finished'])
 
 async def main():
     'Run the `_main` routine while catching exceptions'
@@ -311,7 +346,7 @@ async def main():
             (isinstance(e, BleakDBusError) and
             getattr(e, 'dbus_error') == 'org.bluez.Error.NotReady')
         ):
-            print(' ! Please enable bluetooth on this machine :3')
+            print(i18n['please-enable-bluetooth'])
             sys.exit(1)
         else:
             raise
