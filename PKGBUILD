@@ -1,3 +1,5 @@
+# Maintainer : 
+
 pkgname=cat-printer-git
 pkgver=r28.10e9ba0
 pkgrel=1
@@ -13,4 +15,8 @@ sha256sums=('SKIP')
 pkgver() {
   cd "$pkgname"
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+package() {
+    mkdir -p "$pkgdir/usr/bin"
+    mkdir -p "$pkgdir/usr/share/cat-printer"
 }
