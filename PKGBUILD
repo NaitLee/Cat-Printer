@@ -21,4 +21,20 @@ pkgver() {
 package() {
     mkdir -p "$pkgdir/usr/bin"
     mkdir -p "$pkgdir/usr/share/cat-printer"
+    cp -r "$srcdir/cat-printer-git"/* "$pkgdir/usr/share/cat-printer/"
+    rm -rf "$pkgdir/usr/share/cat-printer/build-"*
+    rm -rf "$pkgdir/usr/share/cat-printer/dev-diary.txt"
+    rm -rf "$pkgdir/usr/share/cat-printer/TODO"
+    cat <<EOF > "$pkgdir/usr/bin/cat-printer"
+#!/bin/sh
+cd /usr/share/cat-printer
+python3 printer.py "\$@"
+EOF
+    chmod +x "$pkgdir/usr/bin/cat-printer"
+    cat <<EOF > "$pkgdir/usr/bin/cat-printer-server"
+#!/bin/sh
+cd /usr/share/cat-printer
+python3 server.py "\$@"
+EOF
+    chmod +x "$pkgdir/usr/bin/cat-printer-server"
 }
