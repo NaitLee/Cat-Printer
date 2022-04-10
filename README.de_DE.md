@@ -1,14 +1,17 @@
 
 # Cat-Printer
 
-Ein Projekt, das Unterstützung für einige Bluetooth-"Cat Printer"-Modelle auf *vielen* Plattformen bietet!
+🐱🖨 Ein Projekt, das Unterstützung für einige Bluetooth-"Cat Printer"-Modelle auf *vielen* Plattformen bietet!
 
 ## unterstützte Geräte
 
 Gegenwärtig:
-- GB01
-- GB02
-- GT01
+
+|             |                   |
+|-------------|-------------------|
+| Supported   | GB01, GB02, GT01  |
+| Maybe       | GB03              |
+| Planned     | N/A               |
 
 ## Funktionen
 
@@ -17,7 +20,6 @@ Gegenwärtig:
   - oder besorgen Sie sich die Android-Version!
 - ~~Umfangreiche Funktionen~~
   - Derzeit befindet sich die Software im Alpha-Stadium. Mehr wird es bald geben!
-  - Sie können immer noch die Vorgängerversion (0.0.2) verwenden, die einige weitere Bearbeitungsfunktionen bietet
 - Friendly!
   - Sprachunterstützung! Sie können sich an der Übersetzung beteiligen!
   - Gute Benutzeroberfläche, mit PC-/Mobil-/Licht-/Dunkelmodus-Varianten! (Systemkonfiguration adaptiv)
@@ -40,13 +42,13 @@ Holen Sie sich die neueste apk-Version und installieren Sie sie.
 Es kann sein, dass es um die Erlaubnis bittet, den Standort im Hintergrund zu finden, was mir ein Rätsel ist.  
 Sie können es sicher verweigern.
 
-### Windows:
+### Windows
 
 Holen Sie sich die neueste Version des Archivs mit "windows" im Dateinamen, entpacken Sie es an einen beliebigen Ort und führen Sie "start.bat" aus.
 
 ### GNU/Linux
 
-Sie können sich die "reine" Version besorgen, sie extrahieren, ein Terminal starten und dies ausführen:  
+Sie können sich die "reine(pure)" Version besorgen, sie extrahieren, ein Terminal starten und dies ausführen:  
 ```bash
 python3 server.py
 ```
@@ -60,7 +62,7 @@ sudo pacman -S bluez bluez-utils
 
 Für MacOS installieren Sie bitte [Python 3](https://www.python.org/).
 
-Holen Sie eine "reine" Version und tun Sie dasselbe in einer Shell wie bei Linux:  
+Holen Sie eine "reine(pure)" Version und tun Sie dasselbe in einer Shell wie bei Linux:  
 ```bash
 python3 server.py
 ```
