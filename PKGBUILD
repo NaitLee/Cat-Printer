@@ -7,7 +7,7 @@ pkgdesc="A project that provides support to some Bluetooth Cat Printer models, o
 arch=('any')
 url="https://github.com/NaitLee/Cat-Printer"
 license=('GPL')
-depends=('python' 'bluez' 'bluez-utils')
+depends=('python' 'bluez' 'bluez-utils' 'python-bleak')
 makedepends=('git')
 provides=("cat-printer=${pkgver}")
 source=("$pkgname::git+https://github.com/NaitLee/Cat-Printer.git")
