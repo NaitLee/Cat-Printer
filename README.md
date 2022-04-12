@@ -4,6 +4,8 @@ English | [Deutsch](./readme.i18n/README.de_DE.md) | [简体中文](./readme.i18
 
 🐱🖨 A project that provides support to some Bluetooth "Cat Printer" models, on *many* platforms!
 
+[![cat-printer-poster](https://repository-images.githubusercontent.com/403563361/ad018f6e-3a6e-4028-84b2-205f7d35c22b)](https://repository-images.githubusercontent.com/403563361/ad018f6e-3a6e-4028-84b2-205f7d35c22b)
+
 ## Models
 
 Currently:
