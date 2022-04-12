@@ -26,10 +26,12 @@ class I18n():
                 self.load_file(os.path.join(search_path, name))
 
     def load_file(self, name):
+        'Load an i18n json file'
         with open(name, 'r', encoding='utf-8') as file:
             self.load_data(file.read())
 
     def load_data(self, raw_json):
+        'Load i18n json data (from str)'
         data = json.loads(raw_json)
         for key in data['values']:
             self.data['values'][key] = data['values'][key]
@@ -60,5 +62,5 @@ class I18n():
                 if string is None:
                     string = data
                 for j in i:
-                    string = string.replace('%%{%s}' % j, i[j])
+                    string = string.replace(f'%%{j}', i[j])
         return string

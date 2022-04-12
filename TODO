@@ -1,8 +1,16 @@
 
+Note: not ordered. do whatever I/you want
+
++ Check GB03, again
 + Hacky text printing, typewriter-like, with PF2 font
-+ Better MTU/freq moderation
+  ok I won't forget frontend, but it's different
 + Better CLI, e.g. invoke imagemagick if input is not PBM
-+ (Re-)support CUPS & IPP
++ Consider better MTU adaption
++ Consider better BLE traffic regulation, with BLE notification
++ Consider the printer 'text' mode, it can make things faster
++ Consider more control to something like 'energy'
++ Consider keeping server backend (more) secure to be used by IPP
++ Clean up CUPS/IPP code
 + Make a build guide for android:
   Summary the hacks to p4a, bleak p4a recipe, p4a webview bootstrap, and AdvancedWebView
 + More frontend usability, more functions

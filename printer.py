@@ -9,11 +9,14 @@ from bleak import BleakClient, BleakScanner
 from bleak.exc import BleakError, BleakDBusError
 
 try:
-    from i18n import I18n
+    from additional.i18n import I18n
 except ImportError:
     class I18n():
+        'Dummy i18n in case "full" version is missing'
+
         def __init__(self, _search_path=None, _lang=None, _fallback=None):
             pass
+
         def __getitem__(self, keys):
             if not isinstance(keys, tuple):
                 keys = (keys, )
@@ -21,8 +24,10 @@ except ImportError:
 
 i18n = I18n('www/lang')
 
+
 class PrinterError(Exception):
     'Error of Printer driver'
+
 
 models = ('GT01', 'GB01', 'GB02', 'GB03')
 
@@ -75,7 +80,10 @@ def reverse_binary(value: int):
     return int(f"{bin(value)[2:]:0>8}"[::-1], 2)
 
 
-def make_command(command: int, payload: Union[bytes, bytearray], *, prefix: List[int]=None) -> bytearray:
+def make_command(
+    command: int, payload: Union[bytes, bytearray], *,
+    prefix: List[int] = None
+) -> bytearray:
     'Make a `bytearray` with command data, which can be sent to printer directly to operate'
     if len(payload) > 0x100:
         raise Exception('Too large payload')
@@ -164,40 +172,48 @@ class PrinterDriver():
     def _read_pbm(self, path: str = None, data: bytes = None):
         if path is not None and path != '-':
             file = open(path, 'rb')
-        elif data is not None:
-            file = io.BytesIO(data)
-        else:
-            file = sys.stdin.buffer
-        signature = file.readline()
-        if signature != b'P4\n':
-            raise Exception('Specified file is not a PBM image')
-        width, height = self.standard_width, 0
-        while True:
-            # There can be comments. Skip them
-            line = file.readline()[0:-1]
-            if line[0:1] != b'#':
-                break
-        width, height = [int(x) for x in line.split(b' ')[0:2]]
-        if width != self.standard_width:
-            raise Exception('PBM image width is not 384px')
-        expected_data_size = self.pbm_data_per_line * height
-        data = file.read()
-        if path is not None and path != '-':
+            data = file.read()
             file.close()
-        data_size = len(data)
-        if data_size != expected_data_size:
-            raise Exception('Broken PBM file data')
-        if self.dry_run:
-            # Dry run: put blank data
-            data = b'\x00' * expected_data_size
-        return PBMData(width, height, data)
+        elif data is not None:
+            pass
+        else:
+            data = sys.stdin.buffer.read()
+        if data[0:3] != b'P4\n':
+            raise Exception('Specified file is not a PBM image')
+        # there can be several "chunks", by e.g. cat-ing several files, or ghostscript output
+        chunks = data.split(b'P4\n')[1:]
+        result = b''
+        total_height = 0
+        for chunk in chunks:
+            page = io.BytesIO(chunk)
+            while True:
+                # There can be comments. Skip them
+                line = page.readline()[0:-1]
+                if line[0:1] != b'#':
+                    break
+            width, height = [int(x) for x in line.split(b' ')[0:2]]
+            if width != self.standard_width:
+                raise Exception('PBM image width is not 384px')
+            total_height += height
+            expected_data_size = self.pbm_data_per_line * height
+            raw_data = page.read()
+            data_size = len(raw_data)
+            if data_size != expected_data_size:
+                raise Exception('Broken PBM file data')
+            if self.dry_run:
+                # Dry run: put blank data
+                result += b'\x00' * expected_data_size
+            else:
+                result += raw_data
+        return PBMData(self.standard_width, total_height, result)
 
     def _pbm_data_to_raw(self, data: PBMData):
         buffer = bytearray()
         # new/old print command
         if self.name == 'GB03':
             buffer.append(0x12)
-        buffer += bytearray([0x51, 0x78, 0xa3, 0x00, 0x01, 0x00, 0x00, 0x00, 0xff])
+        buffer += bytearray([0x51, 0x78, 0xa3, 0x00,
+                            0x01, 0x00, 0x00, 0x00, 0xff])
         for key in data.args:
             buffer += make_command(key, data.args[key])
         buffer += make_command(
@@ -236,7 +252,7 @@ class PrinterDriver():
             )
         return buffer
 
-    async def send_buffer(self, buffer: bytearray, address: str=None):
+    async def send_buffer(self, buffer: bytearray, address: str = None):
         'Send manipulation data (buffer) to the printer via bluetooth'
         address = address or self.address
         client = BleakClient(address, timeout=5.0)
@@ -267,6 +283,7 @@ class PrinterDriver():
             if device.name in models:
                 result.append(device)
         return result
+
     async def search_printer(self, timeout: int):
         'Search for a printer, returns `None` if not found'
         timeout = timeout or 3
@@ -275,19 +292,39 @@ class PrinterDriver():
             return devices[0]
         return None
 
-    async def print_file(self, path: str, address: str=None):
+    async def print_file(self, path: str, address: str = None):
         'Method to print the specified PBM image at `path` with printer at specified MAC `address`'
         address = address or self.address
         pbm_data = self._read_pbm(path)
         buffer = self._pbm_data_to_raw(pbm_data)
         await self.send_buffer(buffer, address)
 
-    async def print_data(self, data: bytes, address: str=None):
+    async def print_data(self, data: bytes, address: str = None):
         'Method to print the specified PBM image `data` with printer at specified MAC `address`'
         address = address or self.address
         pbm_data = self._read_pbm(None, data)
         buffer = self._pbm_data_to_raw(pbm_data)
         await self.send_buffer(buffer, address)
+
+    async def filter_device(self, info: str, timeout: float = 5.0) -> bool:
+        'Find a suitable device with `info`: Bluetooth name or MAC address, or empty string'
+        devices = await self.search_all_printers(timeout)
+        if len(devices) == 0:
+            return False
+        if info in models:
+            for device in devices:
+                if device.name == info:
+                    self.name, self.address = device.name, device.address
+                    break
+        elif info[2::3] == ':::::':
+            for device in devices:
+                if device.address.lower() == info.lower():
+                    self.name, self.address = device.name, device.address
+                    break
+        else:
+            device = devices[0]
+            self.name, self.address = device.name, device.address
+        return True
 
 
 async def _main():
@@ -335,6 +372,7 @@ async def _main():
     await printer.print_file(cmdargs.file)
     print(i18n['finished'])
 
+
 async def main():
     'Run the `_main` routine while catching exceptions'
     try:
@@ -344,7 +382,7 @@ async def main():
         if (
             'not turned on' in error_message or
             (isinstance(e, BleakDBusError) and
-            getattr(e, 'dbus_error') == 'org.bluez.Error.NotReady')
+             getattr(e, 'dbus_error') == 'org.bluez.Error.NotReady')
         ):
             print(i18n['please-enable-bluetooth'])
             sys.exit(1)
