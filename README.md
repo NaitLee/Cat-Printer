@@ -1,16 +1,20 @@
-English | [Deutsch](./README.de_DE.md)
+English | [Deutsch](./README.de_DE.md) | [简体中文](./README.zh_CN.md)
 
 # Cat-Printer
 
-A project that provides support to some Bluetooth "Cat Printer" models, on *many* platforms!
+🐱🖨 A project that provides support to some Bluetooth "Cat Printer" models, on *many* platforms!
 
 ![CatPrinter](photo/Pic1.jpg?raw=true "CatPrinter")
 
 ## Models
 
-Currently:  
-  GB01, GB02, and GT01  
-  maybe GB03 in the current repo state
+Currently:
+
+|             |                   |
+|-------------|-------------------|
+| Supported   | GB01, GB02, GT01  |
+| Maybe       | GB03              |
+| Planned     | N/A               |
 
 ## Features
 
@@ -18,18 +22,17 @@ Currently:
   - Operate via a Web UI just in browser,
   - or get the Android release!
 - ~~Feature-rich~~
-  - Currently it is in Alpha stage. More will be there soon!
-  - You can still use the legacy version (0.0.2), with some more editing features
+  - Currently it's in development. More will be there soon!
 - Friendly!
   - Language support! You can participate in translation!
-  - Good user interface, with PC/mobile/light/dark mode variants! (system config adaptive)
+  - Good user interface, adaptive to PC/mobile and light/dark theme!
 - Cross platform!
   - Newer Windows 10 and above
   - GNU/Linux
   - MacOS *(Needs testing)*
   - and a lot of extra efforts for Android!
 - Free, as in [freedom](https://www.gnu.org/philosophy/free-sw.html)!
-  - Unlike the "official" proprietary app,  
+  - Unlike the "original" proprietary app,  
     this project is for everyone that concerns *open-mind and freedom*!
 - and Fun!
   - Do whatever you like!
@@ -40,10 +43,10 @@ Currently:
 
 Get the newest apk release and install, then well done!
 
-It may ask for background location permission, which is mysterious to me.  
-You can deny it safely.
+It may ask for background location permission, you can deny it safely.  
+(Foreground) Location permission is required for scanning Bluetooth devices in newer Android system.
 
-### Windows:
+### Windows
 
 Get the newest release archive with "windows" in the file name,  
 extract to somewhere and run `start.bat`
@@ -69,14 +72,16 @@ Fetch a "pure" release and do the same in a shell:
 python3 server.py
 ```
 
-Currently in Mac the browser will not pop up automatically. Please run manually and go to `http://127.0.0.1:8095`
+Currently in Mac the browser will not pop up automatically. Please run manually and go to `http://127.0.0.1:8095`, or just click [here](http://127.0.0.1:8095).
 
 
-### Note
+### Worth to Note
 
 For all supported platforms,  
 You can also use "pure" edition once you have [Python 3](https://www.python.org/) installed,  
 or "bare" edition if you also managed to install `bleak` via `pip`.
+
+Command line hackers? Just use `printer.py`!
 
 See the [releases](https://github.com/NaitLee/Cat-Printer/releases) now!
 
@@ -97,6 +102,7 @@ See file `COPYING`, `LICENSE`, and detail of used JavaScript in file `www/jslice
 ## Development
 
 You may interested in language support, anyway. See the translation files in directory `www/lang`!
+Note: you can correct some mistakes in them, if there are any. Also feel free to make it (truly) better!
 
 Also interested in code development? See [development.md](development.md)!
 
