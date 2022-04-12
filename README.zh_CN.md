@@ -3,6 +3,8 @@
 
 🐱🖨 猫咪打印机：此应用*跨平台地*对一些蓝牙“喵喵机”提供支持！
 
+![CatPrinter](photo/Pic1.jpg?raw=true "CatPrinter")
+
 ## 型号
 
 目前有：
