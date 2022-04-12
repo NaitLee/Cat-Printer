@@ -3,6 +3,8 @@
 
 Ein Projekt, das Unterstützung für einige Bluetooth-"Cat Printer"-Modelle auf *vielen* Plattformen bietet!
 
+![CatPrinter](photo/Pic1.jpg?raw=true "CatPrinter")
+
 ## unterstützte Geräte
 
 Gegenwärtig:
