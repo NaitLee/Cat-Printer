@@ -4,6 +4,8 @@ English | [Deutsch](./README.de_DE.md)
 
 A project that provides support to some Bluetooth "Cat Printer" models, on *many* platforms!
 
+![CatPrinter](photo/Pic1.jpg?raw=true "CatPrinter")
+
 ## Models
 
 Currently:  
