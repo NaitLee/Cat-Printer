@@ -15,21 +15,36 @@ Gegenwärtig:
 
 ## Funktionen
 
+*Derzeit befindet sich die Software im Alpha-Stadium. Mehr wird es bald geben!*
+
+| Available       | Partial   | Planned       |
+|-----------------|-----------|---------------|
+| Web Interface   | CUPS/IPP* | Visual Editor |
+| Print a Picture |           | Help/Manual   |
+| Command-line    |           | Text Printing |
+
+<!-- May comment the line below if there are none -->
+\* In development code. Will be released in a short period.
+
+*Along with…*
+
 - Simple!
   - Bedienung über eine Web-UI direkt im Browser,
   - oder besorgen Sie sich die Android-Version!
-- ~~Umfangreiche Funktionen~~
-  - Derzeit befindet sich die Software im Alpha-Stadium. Mehr wird es bald geben!
+
 - Friendly!
   - Sprachunterstützung! Sie können sich an der Übersetzung beteiligen!
   - Gute Benutzeroberfläche, mit PC-/Mobil-/Licht-/Dunkelmodus-Varianten! (Systemkonfiguration adaptiv)
+
 - Plattformübergreifend!
   - Neuere Windows 10 und darüber
   - GNU/Linux
   - MacOS *(muss getestet werden*
   - und eine Menge zusätzlicher Anstrengungen für Android!
+
 - Frei, wie in [freedom](https://www.gnu.org/philosophy/free-sw.html)!
   - Anders als die "offizielle" proprietäre App, ist dieses Projekt für alle, denen *offener Geist und Freiheit* wichtig sind!
+
 - und Fun!
   - Mach, was du willst!
 
@@ -92,7 +107,7 @@ Siehe Datei `COPYING`, `LICENSE` und Details zum verwendeten JavaScript in der D
 
 ## Development
 
-Vielleicht sind Sie ohnehin an der Sprachunterstützung interessiert. Siehe die Übersetzungsdateien im Verzeichnis `www/lang`!
+Vielleicht sind Sie ohnehin an der Sprachunterstützung interessiert. Siehe die Übersetzungsdateien im Verzeichnis `www/lang` und `readme.i18n`!
 
 Interessieren Sie sich auch für Code-Entwicklung? Siehe [development.md](development.md)!
 
