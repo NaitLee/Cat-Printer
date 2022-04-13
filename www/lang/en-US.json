@@ -59,6 +59,9 @@
         "path-to-pbm-file-dash-for-stdin": "Path to PBM file. '-' for stdin.",
         "scan-for-specified-seconds": "Scan for specified seconds",
         "specify-printer-mac-address": "Specify printer MAC address",
-        "communication-frequency-0.8-or-1-recommended": "Communication frequency. 0.8 or 1 recommended."
+        "communication-frequency-0.8-or-1-recommended": "Communication frequency. 0.8 or 1 recommended.",
+
+        "dump-the-traffic-to-printer-and-pbm-image-when-text-printing": "Dump the traffic to printer, and PBM image when text printing.",
+        "text-printing-mode-input-text-from-stdin": "Text printing mode, input from stdin."
     }
 }

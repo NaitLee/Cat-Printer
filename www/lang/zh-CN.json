@@ -58,6 +58,9 @@
         "path-to-pbm-file-dash-for-stdin": "PBM 文件的位置。“-” 作为标准输入。",
         "scan-for-specified-seconds": "扫描指定的时长。",
         "specify-printer-mac-address": "指定打印机的 MAC 地址",
-        "communication-frequency-0.8-or-1-recommended": "通讯频率。推荐 0.8 或 1。"
+        "communication-frequency-0.8-or-1-recommended": "通讯频率。推荐 0.8 或 1。",
+
+        "dump-the-traffic-to-printer-and-pbm-image-when-text-printing": "转储到打印机的数据，和文字打印模式的 PBM 图像。",
+        "text-printing-mode-input-text-from-stdin": "文字打印模式，将从标准输入读取文字。"
     }
 }

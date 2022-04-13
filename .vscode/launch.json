@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Text Print",
+            "type": "python",
+            "request": "launch",
+            "program": "printer.py",
+            "args": [
+                "-m", "-t", "-d", "-s", "1", "-"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",

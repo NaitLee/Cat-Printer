@@ -22,8 +22,10 @@ build-common/bleak
 build-common/python-win32*
 # dev config
 config.json
-# traffic dump
+# test files
 *.dump
+*.pf2
+*.pbm
 # some other junk
 .directory
 thumbs.db

@@ -38,7 +38,9 @@ additional_ignore = (
     '.pylintrc',
     '.gitignore',
     'dev-diary.txt',
-    'TODO'
+    'TODO',
+    # cache
+    '*.pyc',
     # other
     '.directory',
     'thumbs.db',

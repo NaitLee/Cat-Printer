@@ -17,14 +17,5 @@ disable=broad-except,
         import-outside-toplevel
 
 [BASIC]
-good-names=i,
-           j,
-           k,
-           ex,
-           Run,
-           _,
-           e,
-           do_GET,
-           do_POST,
-           do_HEAD,
-           do_PUT
+good-names=i, j, k, ex, x, y, _, e,
+           Run, do_GET, do_POST, do_HEAD, do_PUT

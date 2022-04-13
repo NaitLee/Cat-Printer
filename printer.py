@@ -119,6 +119,7 @@ class PBMData():
     height: int
     data: bytes
     args: dict
+    'Note: going to put this in `PrinterDriver` in the future'
 
     def __init__(self, width: int, height: int, data: bytes, args: dict = None):
         self.width = width
@@ -134,6 +135,57 @@ class PBMData():
             for arg in args:
                 self.args[arg] = args[arg]
 
+class TextCanvas():
+    'Canvas for text printing, requires PF2 lib'
+    width: int
+    height: int
+    canvas: bytearray = None
+    pf2 = None
+    def __init__(self, width):
+        if self.pf2 is None:
+            from additional.pf2 import PF2
+            self.pf2 = PF2()
+        self.width = width
+        self.height = self.pf2.max_height + self.pf2.descent
+        self.flush_canvas()
+    def flush_canvas(self):
+        'Flush the canvas, returning the canvas data'
+        if self.canvas is None:
+            pbm_data = None
+        else:
+            pbm_data = bytearray(self.canvas)
+        self.canvas = bytearray(self.width * self.height // 8)
+        return pbm_data
+    def puttext(self, text):
+        'Put the specified text to canvas'
+        current_width = 0
+        canvas_length = len(self.canvas)
+        pf2 = self.pf2
+        for i in text:
+            char = pf2[i]
+            if (
+                current_width + char.width + char.x_offset > self.width or
+                i == '\n'
+            ):
+                yield self.flush_canvas()
+                current_width = 0
+            if i in '\n':   # glyphs that should not be printed out
+                continue
+            for x in range(char.width):
+                for y in range(char.height):
+                    target_x = x + char.x_offset
+                    target_y = pf2.ascent + (y - char.height) - char.y_offset
+                    canvas_byte = (self.width * target_y + current_width + target_x) // 8
+                    canvas_bit = 7 - (self.width * target_y + current_width + target_x) % 8
+                    if canvas_byte < 0 or canvas_byte >= canvas_length:
+                        continue
+                    char_byte = (char.width * y + x) // 8
+                    char_bit = 7 - (char.width * y + x) % 8
+                    self.canvas[canvas_byte] |= (
+                        char.bitmap_data[char_byte] & (0b1 << char_bit)
+                    ) >> char_bit << canvas_bit
+            current_width += char.device_width
+        return
 
 class PrinterDriver():
     'Manipulator of the printer'
@@ -152,19 +204,25 @@ class PrinterDriver():
     feed_after = 128
     'Extra paper to feed at the end of printing, by pixel'
 
-    dry_run = False
+    dry_run = None
     'Is dry run (emulate print process but print nothing)'
 
-    standard_width = 384
+    dump = None
+    'Dump the traffic (and PBM image when text printing)?'
+
+    paper_width = 384
     'It\'s a constant for the printer'
 
-    pbm_data_per_line = int(standard_width / 8)  # 48
-    'Constant, determined by standard width & PBM data format'
+    pbm_data_per_line = int(paper_width / 8)  # 48
+    'Determined by paper width & PBM data format'
 
     characteristic = '0000ae01-0000-1000-8000-00805f9b34fb'
     'The BLE characteristic, a constant of the printer'
 
     mtu = 200
+
+    text_canvas: TextCanvas = None
+    'A `TextCanvas` instance'
 
     def __init__(self):
         pass
@@ -192,7 +250,7 @@ class PrinterDriver():
                 if line[0:1] != b'#':
                     break
             width, height = [int(x) for x in line.split(b' ')[0:2]]
-            if width != self.standard_width:
+            if width != self.paper_width:
                 raise Exception('PBM image width is not 384px')
             total_height += height
             expected_data_size = self.pbm_data_per_line * height
@@ -205,7 +263,7 @@ class PrinterDriver():
                 result += b'\x00' * expected_data_size
             else:
                 result += raw_data
-        return PBMData(self.standard_width, total_height, result)
+        return PBMData(self.paper_width, total_height, result)
 
     def _pbm_data_to_raw(self, data: PBMData):
         buffer = bytearray()
@@ -254,6 +312,9 @@ class PrinterDriver():
 
     async def send_buffer(self, buffer: bytearray, address: str = None):
         'Send manipulation data (buffer) to the printer via bluetooth'
+        if self.dump:
+            with open('traffic.dump', 'wb') as file:
+                file.write(buffer)
         address = address or self.address
         client = BleakClient(address, timeout=5.0)
         await client.connect()
@@ -316,7 +377,7 @@ class PrinterDriver():
                 if device.name == info:
                     self.name, self.address = device.name, device.address
                     break
-        elif info[2::3] == ':::::':
+        elif info[2::3] == ':::::' or len(info.replace('-', '')) == 32:
             for device in devices:
                 if device.address.lower() == info.lower():
                     self.name, self.address = device.name, device.address
@@ -325,6 +386,27 @@ class PrinterDriver():
             device = devices[0]
             self.name, self.address = device.name, device.address
         return True
+
+    async def print_text(self, file_io: io.IOBase):
+        'Print some text from `file_io`'
+        if self.text_canvas is None:
+            self.text_canvas = TextCanvas(self.paper_width)
+        canvas = self.text_canvas
+        header = b'P4\n%i %i\n'
+        dump = bytearray()
+        current_height = 0
+        while True:
+            text = file_io.readline()
+            if not text:
+                break
+            for data in canvas.puttext(text):
+                if self.dump:
+                    dump += data
+                    current_height += canvas.height
+                    with open('dump.pbm', 'wb') as file:
+                        file.write(header % (canvas.width, current_height))
+                        file.write(dump)
+                await self.print_data(bytearray(header % (canvas.width, canvas.height)) + data)
 
 
 async def _main():
@@ -347,6 +429,10 @@ async def _main():
                         help=i18n['communication-frequency-0.8-or-1-recommended'])
     parser.add_argument('-d', '--dry', required=False, action='store_true',
                         help=i18n['dry-run-test-print-process-only'])
+    parser.add_argument('-m', '--dump', required=False, action='store_true',
+                        help=i18n['dump-the-traffic-to-printer-and-pbm-image-when-text-printing'])
+    parser.add_argument('-t', '--text', required=False, action='store_true',
+                        help=i18n['text-printing-mode-input-text-from-stdin'])
     cmdargs = parser.parse_args()
     addr = cmdargs.address
     printer = PrinterDriver()
@@ -367,9 +453,19 @@ async def _main():
         'name': device.name,
         'address': device.address,
         'frequency': cmdargs.freq,
-        'dry_run': cmdargs.dry
+        'dry_run': cmdargs.dry,
+        'dump': cmdargs.dump
     })
-    await printer.print_file(cmdargs.file)
+    if cmdargs.text:
+        if cmdargs.file == '-':
+            file = sys.stdin
+        else:
+            file = open(cmdargs.file, 'r', encoding='utf-8')
+        await printer.print_text(file)
+        if cmdargs.file != '-':
+            file.close()
+    else:
+        await printer.print_file(cmdargs.file)
     print(i18n['finished'])
 
 
