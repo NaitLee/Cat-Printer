@@ -25,6 +25,8 @@ package() {
     rm -rf "$pkgdir/usr/share/cat-printer/build-"*
     rm -rf "$pkgdir/usr/share/cat-printer/dev-diary.txt"
     rm -rf "$pkgdir/usr/share/cat-printer/TODO"
+    rm -rf "$pkgdir/usr/share/cat-printer/systemd"
+    install -m644 "$srcdir/cat-printer-git/systemd/cat-printer.service" "$pkgdir/usr/lib/systemd/system/"
     cat <<EOF > "$pkgdir/usr/bin/cat-printer"
 #!/bin/sh
 cd /usr/share/cat-printer
