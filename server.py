@@ -34,9 +34,6 @@ class PrinterServerError(Exception):
         if len_args > 1:
             self.details = args[1]
 
-Printer = PrinterDriver()
-server = None
-
 def log(message):
     'For logging a message'
     print(message)
@@ -66,6 +63,8 @@ class PrinterServer(BaseHTTPRequestHandler):
         'frequency': 0.8,
         'dry_run': False
     })
+    printer = PrinterDriver()
+    ipp = None
     def log_request(self, _code=200, _size=0):
         pass
     def log_error(self, *_args):
@@ -126,22 +125,23 @@ class PrinterServer(BaseHTTPRequestHandler):
         'Save config file'
         with open(self.settings.config_path, 'w', encoding='utf-8') as file:
             json.dump(self.settings, file, indent=4)
+    def update_printer(self):
+        'Update `PrinterDriver` state/config'
+        self.printer.dry_run = self.settings.dry_run
+        self.printer.frequency = float(self.settings.frequency)
+        if self.settings.printer is not None:
+            self.printer.name, self.printer.address = self.settings.printer.split(',')
     def handle_api(self):
         'Handle API request from POST'
         content_length = int(self.headers.get('Content-Length'))
         body = self.rfile.read(content_length)
         api = self.path[1:]
         if api == 'print':
-            if self.settings.printer is None:
-                # usually can't encounter, though
-                raise PrinterServerError('No printer address specified')
-            Printer.dry_run = self.settings.dry_run
-            Printer.frequency = float(self.settings.frequency)
-            Printer.name, Printer.address = self.settings.printer.split(',')
+            self.update_printer()
             loop = asyncio.new_event_loop()
             try:
                 devices = loop.run_until_complete(
-                    Printer.print_data(body)
+                    self.printer.print_data(body)
                 )
                 self.api_success()
             finally:
@@ -152,7 +152,7 @@ class PrinterServer(BaseHTTPRequestHandler):
             loop = asyncio.new_event_loop()
             try:
                 devices = loop.run_until_complete(
-                    Printer.search_all_printers(float(self.settings.scan_time))
+                    self.printer.search_all_printers(float(self.settings.scan_time))
                 )
             finally:
                 loop.close()
@@ -196,6 +196,23 @@ class PrinterServer(BaseHTTPRequestHandler):
             self.send_header('Content-Type', mime('txt'))
             self.end_headers()
             return
+        if self.headers.get('Content-Type') == 'application/ipp':
+            if self.ipp is None:
+                try:
+                    from additional.ipp import IPP
+                    self.load_config()
+                except ImportError:
+                    # TODO: Better response?
+                    return
+                self.ipp = IPP(self, self.printer)
+            self.update_printer()
+            body = self.rfile.read(content_length)
+            loop = asyncio.new_event_loop()
+            try:
+                loop.run_until_complete(self.ipp.handle_ipp(body))
+            finally:
+                loop.close()
+            return
         try:
             self.handle_api()
             return
@@ -231,7 +248,6 @@ def serve():
     if '-a' in sys.argv:
         print('Will listen on ALL addresses')
         listen_all = True
-    global server
     # Again, Don't use ThreadingHTTPServer if you're going to use pyjnius!
     server = HTTPServer(('' if listen_all else address, port), PrinterServer)
     service_url = f'http://{address}:{port}/'

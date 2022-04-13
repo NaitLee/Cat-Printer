@@ -1,8 +1,10 @@
-English | [Deutsch](./README.de_DE.md) | [简体中文](./README.zh_CN.md)
+English | [Deutsch](./readme.i18n/README.de_DE.md) | [简体中文](./readme.i18n/README.zh_CN.md)
 
 # Cat-Printer
 
 🐱🖨 A project that provides support to some Bluetooth "Cat Printer" models, on *many* platforms!
+
+[![cat-printer-poster](https://repository-images.githubusercontent.com/403563361/ad018f6e-3a6e-4028-84b2-205f7d35c22b)](https://repository-images.githubusercontent.com/403563361/ad018f6e-3a6e-4028-84b2-205f7d35c22b)
 
 ## Models
 
@@ -16,22 +18,37 @@ Currently:
 
 ## Features
 
+*Currently it's in development. More will be here soon!*
+
+| Available       | Partial   | Planned       |
+|-----------------|-----------|---------------|
+| Web Interface   | CUPS/IPP* | Visual Editor |
+| Print a Picture |           | Help/Manual   |
+| Command-line    |           | Text Printing |
+
+<!-- May comment the line below if there are no * -->
+\* In development code. Will be released in a short period.
+
+*Along with...*
+
 - Simple!
   - Operate via a Web UI just in browser,
   - or get the Android release!
-- ~~Feature-rich~~
-  - Currently it's in development. More will be there soon!
+
 - Friendly!
   - Language support! You can participate in translation!
   - Good user interface, adaptive to PC/mobile and light/dark theme!
+
 - Cross platform!
   - Newer Windows 10 and above
   - GNU/Linux
   - MacOS *(Needs testing)*
   - and a lot of extra efforts for Android!
+
 - Free, as in [freedom](https://www.gnu.org/philosophy/free-sw.html)!
   - Unlike the "original" proprietary app,  
     this project is for everyone that concerns *open-mind and freedom*!
+
 - and Fun!
   - Do whatever you like!
 
@@ -99,7 +116,7 @@ See file `COPYING`, `LICENSE`, and detail of used JavaScript in file `www/jslice
 
 ## Development
 
-You may interested in language support, anyway. See the translation files in directory `www/lang`!
+You may interested in language support, anyway. See the translation files in directory `www/lang` and `readme.i18n`!
 Note: you can correct some mistakes in them, if there are any. Also feel free to make it (truly) better!
 
 Also interested in code development? See [development.md](development.md)!
@@ -111,5 +128,5 @@ Also interested in code development? See [development.md](development.md)!
 - [roddeh-i18n](https://github.com/roddeh/i18njs), good work!
 - [python-for-android](https://python-for-android.readthedocs.io/en/latest/), though there are some painful troubles
 - [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) for saving my life from Java
-- Stack Overflow & the whole Internet, you let me know Android `Activity` all from empty
+- Stack Overflow & the whole Internet, you let me know Android `Activity` all from beginning
 - ... Everyone is Awesome!

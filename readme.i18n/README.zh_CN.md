@@ -3,6 +3,8 @@
 
 🐱🖨 猫咪打印机：此应用*跨平台地*对一些蓝牙“喵喵机”提供支持！
 
+[![cat-printer-poster](https://repository-images.githubusercontent.com/403563361/ad018f6e-3a6e-4028-84b2-205f7d35c22b)](https://repository-images.githubusercontent.com/403563361/ad018f6e-3a6e-4028-84b2-205f7d35c22b)
+
 ## 型号
 
 目前有：
@@ -15,21 +17,36 @@
 
 ## 特性
 
+*当前仍在继续开发。以后会有更多！*
+
+| 可用      | 部分      | 计划          |
+|-----------|-----------|---------------|
+| 网页界面  | CUPS/IPP* | 可视化编辑器  |
+| 打印图片  |           | 帮助/文档     |
+| 命令行    |           | 文本打印      |
+
+<!-- 若没有 *，可注释下一句 -->
+\* 存在于开发代码中。将在短时间内发布。
+
+*当然还有……*
+
 - 简易！
   - 在网页界面进行操作，
   - 或者获取安卓应用！
-- ~~功能丰富~~
-  - 当前仍在继续开发。以后会有更多！
+
 - 友好！
   - 语言支持！您可参与翻译！
   - 良好的用户界面，可适应桌面/移动端/明暗主题！
+
 - 跨平台！
   - 较新的 Windows 10 及以上
   - GNU/Linux
   - MacOS *（需要测试）*
   - 在安卓上也花了些功夫呢！
+
 - 是[自由软件](https://www.gnu.org/philosophy/free-sw.html)！
   - 不像“原版”专有应用，此作品为在乎*开放思想与计算自由*的人而生！
+
 - 有意思！
   - 做什么都可以！
 
@@ -97,19 +114,20 @@ Copyright © 2022 NaitLee Soft. 保留一些权利。
 
 ## 开发
 
-您可能对翻译工作感兴趣。可于目录 `www/lang` 中查看翻译文件！  
+您可能对翻译工作感兴趣。可于目录 `www/lang` 和 `readme.i18n` 中查看翻译文件！
+
 注：
 1. 通常英语与简体中文同时更新。请考虑其他，如繁体中文（需注意在繁体中与简体的用字、技术术语差别）。  
-2. 如果您有（真的）能力，您也可以纠正/改善某些翻译！
+2. 如果（真的）有能力，您也可以纠正/改善某些翻译！
 
 还想写代码？看看 [development.md](development.md)！（英文）
 
 ### 鸣谢
 
 - 当然不能没有 Python 和 Web 技术！
-- [Bleak](https://bleak.readthedocs.io/en/latest/) 蓝牙低功耗库，牛！
-- [roddeh-i18n](https://github.com/roddeh/i18njs)，好活！
+- [Bleak](https://bleak.readthedocs.io/en/latest/) 跨平台蓝牙低功耗库，牛！
+- [roddeh-i18n](https://github.com/roddeh/i18njs)，很好！
 - [python-for-android](https://python-for-android.readthedocs.io/en/latest/)，虽然有些麻烦的地方
 - [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) 从 Java 拯救了我的生命
-- Stack Overflow 和互联网，你们让我无中生有地了解了安卓“活动” `Activity`
+- Stack Overflow 和整个互联网，你们让我从零开始了解了安卓“活动” `Activity`
 - ……每个人都是好样的！
