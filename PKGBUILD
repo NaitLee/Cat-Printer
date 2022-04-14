@@ -10,9 +10,9 @@ license=('GPL3')
 depends=('python' 'bluez' 'bluez-utils' 'python-bleak')
 makedepends=('git')
 provides=("cat-printer=${pkgver}")
-source=("$pkgname::git+https://github.com/NaitLee/Cat-Printer.git")
-md5sums=('SKIP')
-sha256sums=('SKIP')
+source=("$pkgname::git+https://github.com/NaitLee/Cat-Printer.git" "i18njs4$pkgname::git+https://github.com/roddeh/i18njs.git")
+md5sums=('SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP')
 options=(!strip emptydirs)
 pkgver() {
   cd "$pkgname"
@@ -22,10 +22,12 @@ package() {
     mkdir -p "$pkgdir/usr/bin"
     mkdir -p "$pkgdir/usr/share/cat-printer"
     cp -r "$srcdir/cat-printer-git"/* "$pkgdir/usr/share/cat-printer/"
+    cp -r "$srcdir/i18njs4cat-printer-git/dist/i18n.js" "$pkgdir/usr/share/cat-printer/www/i18n.js"
     rm -rf "$pkgdir/usr/share/cat-printer/build-"*
     rm -rf "$pkgdir/usr/share/cat-printer/dev-diary.txt"
     rm -rf "$pkgdir/usr/share/cat-printer/TODO"
     rm -rf "$pkgdir/usr/share/cat-printer/systemd"
+    mkdir -p "$pkgdir/usr/lib/systemd/system/"
     install -m644 "$srcdir/cat-printer-git/systemd/cat-printer.service" "$pkgdir/usr/lib/systemd/system/"
     cat <<EOF > "$pkgdir/usr/bin/cat-printer"
 #!/bin/sh
