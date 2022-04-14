@@ -23,6 +23,7 @@ package() {
     mkdir -p "$pkgdir/usr/share/cat-printer"
     cp -r "$srcdir/cat-printer-git"/* "$pkgdir/usr/share/cat-printer/"
     cp -r "$srcdir/i18njs4cat-printer-git/dist/i18n.js" "$pkgdir/usr/share/cat-printer/www/i18n.js"
+    ln -s /usr/share/grub/unicode.pf2 "$pkgdir/usr/share/cat-printer/font.pf2"
     rm -rf "$pkgdir/usr/share/cat-printer/build-"*
     rm -rf "$pkgdir/usr/share/cat-printer/dev-diary.txt"
     rm -rf "$pkgdir/usr/share/cat-printer/TODO"
