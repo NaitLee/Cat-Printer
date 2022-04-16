@@ -5,12 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Bitmap Print",
+            "type": "python",
+            "request": "launch",
+            "program": "printer.py",
+            "args": [
+                "-m", "-s", "1", "dump.pbm"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "Python: Text Print",
             "type": "python",
             "request": "launch",
             "program": "printer.py",
             "args": [
-                "-m", "-t", "-d", "-s", "1", "-"
+                "-mt", "-f", "GB02", "COPYING"
             ],
             "console": "integratedTerminal",
             "justMyCode": true

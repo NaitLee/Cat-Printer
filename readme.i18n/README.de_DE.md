@@ -9,26 +9,15 @@
 
 Gegenwärtig:
 
-|             |                   |
-|-------------|-------------------|
-| Supported   | GB01, GB02, GT01  |
-| Maybe       | GB03              |
-| Planned     | N/A               |
+|    |    |
+|----|----|
+| Supported | GB01, GB02, GT01, GB03  |
+<!-- | Maybe     | N/A | -->
+<!-- | Planned   | N/A | -->
 
 ## Funktionen
 
 *Derzeit befindet sich die Software im Alpha-Stadium. Mehr wird es bald geben!*
-
-| Available       | Partial   | Planned       |
-|-----------------|-----------|---------------|
-| Web Interface   | CUPS/IPP* | Visual Editor |
-| Print a Picture |           | Help/Manual   |
-| Command-line    |           | Text Printing |
-
-<!-- May comment the line below if there are none -->
-\* In development code. Will be released in a short period.
-
-*Along with…*
 
 - Simple!
   - Bedienung über eine Web-UI direkt im Browser,

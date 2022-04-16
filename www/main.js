@@ -38,13 +38,13 @@ class _Notice {
     constructor() {
         this.element = document.getElementById('notice');
     }
-    _message(message, ...args) {
-        this.element.innerText = i18n(message, ...args) || message;
+    _message(message, things) {
+        this.element.innerText = i18n(message, things) || message;
     }
     makeLogger(class_name) {
-        return (message, ...args) => {
+        return (message, things) => {
             this.element.classList.value = class_name;
-            this._message(message, ...args);
+            this._message(message, things);
         }
     }
     notice = this.makeLogger('notice');
@@ -373,7 +373,7 @@ class Main {
             putEvent('#button-exit', 'click', this.exit, this);
             putEvent('#button-print', 'click', this.print, this);
             putEvent('#device-refresh', 'click', this.searchDevices, this);
-            this.attachSetter('#scan-time', 'change', 'scan_time');
+            this.attachSetter('#scan-time', 'change', 'scan_timeout');
             this.attachSetter('#device-options', 'input', 'printer');
             this.attachSetter('input[name="algo"]', 'change', 'mono_algorithm');
             this.attachSetter('#transparent-as-white', 'change', 'transparent_as_white');
@@ -387,7 +387,9 @@ class Main {
             this.attachSetter('#threshold', 'change', 'threshold',
                 (value) => this.canvasController.threshold = value
             );
-            this.attachSetter('#frequency', 'change', 'frequency');
+            this.attachSetter('#flip-h', 'change', 'flip_h');
+            this.attachSetter('#flip-v', 'change', 'flip_v');
+            this.attachSetter('#dump', 'change', 'dump');
             await this.loadConfig();
             this.searchDevices();
             resolve();
@@ -488,7 +490,7 @@ class Main {
             hint('#device-refresh');
             return;
         }
-        Notice.notice('found-1-available-devices', devices.length);
+        Notice.notice('found-0-available-devices', [devices.length]);
         hint('#insert-picture');
         devices.forEach(device => {
             let option = document.createElement('option');
@@ -519,18 +521,15 @@ class Main {
     }
     async initI18n() {
         if (typeof i18n === 'undefined') return;
-        let language_list = navigator.languages;
-        let loaded_languages = [];
-        let data;
-        for (let i = language_list.length - 1; i >= 0; i--) {
-            data = await fetch(`/lang/${language_list[i]}.json`)
+        i18n.useLanguage(navigator.languages[0]);
+        for (let language of navigator.languages) {
+            let data = await fetch(`/lang/${language}.json`)
                 .then(response => response.ok ? response.json() : null);
             if (data !== null) {
-                i18n.translator.add(data);
-                loaded_languages.unshift(language_list[i]);
+                i18n.add(language, data);
+                console.log('Loaded language:', language);
             }
         }
-        console.log('Language stack:', loaded_languages);
         let elements = document.querySelectorAll('*[data-i18n]');
         let i18n_data, translated_string;
         elements.forEach(element => {

@@ -7,15 +7,15 @@
 jobs=4
 
 [BASIC]
-class-const-naming-style=snake_case
-const-naming-style=snake_case
+class-const-naming-style=PascalCase
+const-naming-style=PascalCase
 
 [MESSAGES CONTROL]
 disable=broad-except,
         global-statement,
-        fixme,
+        fixme, too-few-public-methods,
         import-outside-toplevel
 
 [BASIC]
-good-names=i, j, k, ex, x, y, _, e,
+good-names=i, j, k, ex, x, y, _, e, b, u, s,
            Run, do_GET, do_POST, do_HEAD, do_PUT

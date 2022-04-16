@@ -1,4 +1,7 @@
-'Python lib to read PF2 font file: http://grub.gibibit.com/New_font_format'
+''' Python lib for reading PF2 font files: http://grub.gibibit.com/New_font_format
+    I'd like to put it in Public Domain.
+    Don't forget to see how it's used in `text_print.py`
+'''
 
 import io
 from typing import Dict, Tuple
@@ -57,12 +60,16 @@ class PF2():
     descent: int
     character_index: Dict[int, Tuple[int, int]]
     data_offset: int
-    data_io: io.IOBase
+    data_io: io.BufferedIOBase
 
-    def __init__(self, path='font.pf2', *, read_to_mem=False, missing_character: str='?'):
+    def __init__(self, path='font.pf2', *, read_to_mem=True, missing_character: str='?'):
         self.missing_character_code = ord(missing_character)
         self.in_memory = read_to_mem
         file = open(path, 'rb')
+        if read_to_mem:
+            self.data_io = io.BytesIO(file.read())
+            file.close()
+            file = self.data_io
         self.is_pf2 = (file.read(12) == b'FILE\x00\x00\x00\x04PFF2')
         if not self.is_pf2:
             return
@@ -80,13 +87,7 @@ class PF2():
                     )
                 continue
             elif name == b'DATA':
-                if read_to_mem:
-                    self.data_io = io.BytesIO(file.read())
-                    self.data_offset = -file.tell()
-                    file.close()
-                else:
-                    self.data_io = file
-                    self.data_offset = 0
+                file.seek(0)
                 break
             data = file.read(data_length)
             if name == b'NAME':
@@ -116,7 +117,7 @@ class PF2():
             info = self.character_index[self.missing_character_code]
         _compression, offset = info
         data = self.data_io
-        data.seek(offset + self.data_offset)
+        data.seek(offset)
         char = Character()
         char.width = uint16be(data.read(2))
         char.height = uint16be(data.read(2))
@@ -130,7 +131,5 @@ class PF2():
 
     __getitem__ = get_char
 
-    def close(self):
-        'Close the data IO, if it\'s a real file'
-        if not self.in_memory:
-            self.data_io.close()
+    def __del__(self):
+        self.data_io.close()

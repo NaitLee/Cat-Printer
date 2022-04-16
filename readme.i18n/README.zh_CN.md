@@ -9,26 +9,13 @@
 
 目前有：
 
-|           |                   |
-|-----------|-------------------|
-| 支持      | GB01, GB02, GT01  |
-| 可能支持  | GB03              |
-| 计划      | 暂无              |
+|    |    |
+|----|----|
+| 支持 | GB01, GB02, GT01, GB03  |
 
 ## 特性
 
 *当前仍在继续开发。以后会有更多！*
-
-| 可用      | 部分      | 计划          |
-|-----------|-----------|---------------|
-| 网页界面  | CUPS/IPP* | 可视化编辑器  |
-| 打印图片  |           | 帮助/文档     |
-| 命令行    |           | 文本打印      |
-
-<!-- 若没有 *，可注释下一句 -->
-\* 存在于开发代码中。将在短时间内发布。
-
-*当然还有……*
 
 - 简易！
   - 在网页界面进行操作，
@@ -37,6 +24,17 @@
 - 友好！
   - 语言支持！您可参与翻译！
   - 良好的用户界面，可适应桌面/移动端/明暗主题！
+
+- 功能丰富！
+  - 网页界面，所有人都可以用！
+    - 控制打印机配置
+    - 打印照片，或单纯地进行测试
+  - 命令行，技术爱好者必备！
+    - 使用一些参数控制打印机
+    - 简易、简化的文字打印
+    - 让程序的每一部分发挥作用
+  - 其他一些好东西！
+    - 服务器也具有 CUPS/IPP 能力
 
 - 跨平台！
   - 较新的 Windows 10 及以上
@@ -76,11 +74,17 @@ python3 server.py
 sudo pacman -S bluez bluez-utils
 ```
 
+*以后将有软件包！*
+
 ### MacOS
 
-MacOS 用户请首先安装 [Python 3](https://www.python.org/)。
+MacOS 用户请首先安装 [Python 3](https://www.python.org/)，  
+然后在终端使用 `pip` 安装 `pyobjc` 和 `bleak`：
+```bash
+pip3 install pyobjc bleak
+```
 
-然后获取“纯净(pure)”版，并做同样的事情：  
+然后获取“单一(bare)”版，并做同样的事情：  
 ```bash
 python3 server.py
 ```
@@ -94,15 +98,13 @@ python3 server.py
 当已安装 [Python 3](https://www.python.org/) 时，您可以直接获取“纯净(pure)”版，  
 或在已使用 `pip` 安装 `bleak` 时使用“单一(bare)”版。
 
-命令行高手？直接用 `printer.py`！
-
 查看所有[发布版本](https://github.com/NaitLee/Cat-Printer/releases)！
 
 ## 有问题？
 
-有想法？开个 issue！
+有想法？去 Discussion 讨论！
 
-如果能行，PR 也可以！
+如果能行，Pull Request 也可以！
 
 ## 许可证
 
@@ -126,7 +128,7 @@ Copyright © 2022 NaitLee Soft. 保留一些权利。
 
 - 当然不能没有 Python 和 Web 技术！
 - [Bleak](https://bleak.readthedocs.io/en/latest/) 跨平台蓝牙低功耗库，牛！
-- [roddeh-i18n](https://github.com/roddeh/i18njs)，很好！
+- [roddeh-i18n](https://github.com/roddeh/i18njs)，当前内置的国际化脚本受此启发
 - [python-for-android](https://python-for-android.readthedocs.io/en/latest/)，虽然有些麻烦的地方
 - [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) 从 Java 拯救了我的生命
 - Stack Overflow 和整个互联网，你们让我从零开始了解了安卓“活动” `Activity`

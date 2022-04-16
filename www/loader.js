@@ -6,7 +6,7 @@
 
     var fallbacks = [
         // main scripts, which we will directly modify
-        'i18n.js', 'image.js', 'main.js',
+        'i18n-ext.js', 'i18n.js', 'image.js', 'main.js',
         // "compatibility" script, produced with eg. typescript tsc
         'main.comp.js'
     ];

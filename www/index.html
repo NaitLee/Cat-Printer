@@ -87,15 +87,15 @@
                     <input type="number" name="scan-time" id="scan-time" min="1" max="10" value="3" />
                     <span data-i18n="-seconds">seconds</span>
                     <br />
-                    <label for="frequency" data-i18n="transmission-speed-">Data Speed:</label>
-                    <select id="frequency">
-                        <option value="1.0" data-i18n="low">Low</option>
-                        <option value="0.8" data-i18n="moderate" selected>Moderate</option>
-                        <option value="0.6" data-i18n="high">High</option>
-                    </select>
+                    <input type="checkbox" name="flip-h" id="flip-h" />
+                    <label for="flip-h" data-i18n="flip-horizontally">Flip Horizontally</label>
+                    <input type="checkbox" name="flip-v" id="flip-v" />
+                    <label for="flip-v" data-i18n="flip-vertically">Flip Vertically</label>
                     <br />
                     <input type="checkbox" name="dry-run" id="dry-run" />
                     <label for="dry-run" data-i18n="dry-run">Dry Run</label>
+                    <input type="checkbox" name="dump" id="dump" />
+                    <label for="dump" data-i18n="dump-traffic">Dump Traffic</label>
                 </div>
                 <div class="sub panel">
                     <a href="#" data-i18n="system">System</a>

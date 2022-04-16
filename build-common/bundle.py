@@ -22,23 +22,20 @@ if not sys.argv[-1].startswith('-'):
 bundle_name %= (edition, version)
 
 ignore_whitelist = (
-    'www/i18n.js',
     'www/main.comp.js'
 )
 
 additional_ignore = (
     # prevent recurse
     bundle_name,
+    # non-production (yet)
+    'PKGBUILD', 'systemd',
     # build helpers
-    'build-*',
-    '?-*.sh',
+    'build-*', '?-*.sh',
     # no need
-    '.git',
-    '.vscode',
-    '.pylintrc',
-    '.gitignore',
-    'dev-diary.txt',
-    'TODO',
+    '.git', '.gitignore',
+    '.vscode', '.pylintrc',
+    'dev-diary.txt', 'TODO',
     # cache
     '*.pyc',
     # other

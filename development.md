@@ -1,6 +1,8 @@
 
 # Development
 
+**Note: Some maybe outdated at the moment**
+
 ## Overview
 
 This application have a Client/Server module, but it's just locally.
@@ -9,7 +11,6 @@ The backend is in Python 3, aiming to have fewest dependencies, and in fact curr
 This can ensure the simplicity of the core part.
 
 And the frontend is in a "old good" way, that use no "framework".  
-It needs [roddeh-i18n](https://www.npmjs.com/package/roddeh-i18n) lib for localization, and optionally [vConsole](https://www.npmjs.com/package/vconsole) for debugging on mobile.
 
 My workspace stack is Linux/GNU/Artix/KDE/VSCodium, if you're interested.  
 For Android, GNU/Linux is required, though.
@@ -27,12 +28,11 @@ Just clone this repo first!
 
 1. Get Bleak BLE lib:  
   `pip install bleak`
-2. Grab i18n.js [here](https://github.com/roddeh/i18njs/tree/master/dist), put to `www` as `i18n.js`
 
-You are already well done for basic development. See [files](#files) section for what all the files do.  
+Alright, you are already well done for basic development. See [files](#files) section for what all the files do.  
 For more, read on...
 
-### Additional
+### Optional
 
 Sorry, I'm not a dev package manager enthusiast.
 
@@ -48,19 +48,13 @@ If there are something better to organize these, feel free to discuss in issue.
 - Get an Windows 64-bit embeddable Python, extract to `build-common/python-win32-amd64-embed`
   - You may remove the "bloated" parts inside, notably `libssl`, `libcrypto`, `sqlite3` and `pydoc`, of both `dll`/`pyd` files and in `python<version>.zip`, if have any.
   - Now you're able to bundle a "windows" edition, via `python3 bundle.py -w`
-- Grab i18n.js typings `index.d.ts` from [here](https://github.com/roddeh/i18njs/tree/master/typings), put to `www` as `i18n.d.ts`  
-  In the file, replace the last line:  
-  `export = roddeh_i18n;`  
-  with:  
-  `declare var i18n = roddeh_i18n;`  
-  Now you are ready to do more with i18n lib with the typing hint
 - Get a [vConsole](https://www.npmjs.com/package/vconsole) script, put to `www` as `vconsole.js`  
   Now you're ready to debug in browsers without a dev panel, by double-tapping "Cat Printer" title in the UI
 
 ## Files
 
 - `server.py` - A Web server that:
-  - Is single threaded, to work with Android/pyjnius
+  - Is single threaded & with static handler, for some reasons
   - Serves static Web files, that are in folder `www`
   - Opens a Web browser once launched, unless specify the `-s` command-line parameter
   - Only listen to localhost, unless specify the `-a` command-line parameter
@@ -83,6 +77,10 @@ If there are something better to organize these, feel free to discuss in issue.
   - Transpiled with TypeScript, for fallback on old browsers
   - Bundled all required scripts, see file `0-transpile.sh`
   - Is not there by default. Transpile it yourself
+- `www/i18n*` - Scripts about I18n:
+  - TODO. In fact it worth a dedicated document to describe it
+  - (Mostly) Depends on "extensions" to work in the correct way,
+    feel free to extend, as it's *your* turn
 - `www/*.js` - Other scripts:
   - Small but useful, just look at them directly
 - `www/jslicense.html` - Dedicated JavaScript License information
@@ -93,6 +91,7 @@ If there are something better to organize these, feel free to discuss in issue.
   - Quickly invoke with `./N<tab><enter>`
 - `build-common/bundle.py` - Bundler for "windows", "pure" and "bare" editions
   - You can define what to include or not in this script, just modify directly, while trying to not alter other
+  - Adviced to transpile scripts before bundling
   - To do the builds you should be in the build dir: `cd build-common`
   - With `bleak` there you're able to bundle a "pure" edition via just `python3 bundle.py`
   - In any case you're able to bundle a "bare" edition, via `python3 bundle.py -b`

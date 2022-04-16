@@ -10,34 +10,35 @@ English | [Deutsch](./readme.i18n/README.de_DE.md) | [简体中文](./readme.i18
 
 Currently:
 
-|             |                   |
-|-------------|-------------------|
-| Supported   | GB01, GB02, GT01  |
-| Maybe       | GB03              |
-| Planned     | N/A               |
+|    |    |
+|----|----|
+| Supported | GB01, GB02, GT01, GB03  |
+<!-- | Maybe     | N/A | -->
+<!-- | Planned   | N/A | -->
 
 ## Features
 
 *Currently it's in development. More will be here soon!*
 
-| Available       | Partial   | Planned       |
-|-----------------|-----------|---------------|
-| Web Interface   | CUPS/IPP* | Visual Editor |
-| Print a Picture |           | Help/Manual   |
-| Command-line    |           | Text Printing |
-
-<!-- May comment the line below if there are no * -->
-\* In development code. Will be released in a short period.
-
-*Along with...*
-
 - Simple!
-  - Operate via a Web UI just in browser,
+  - Operate via Web UI just in browser,
   - or get the Android release!
+  - Even no problem with command line hackers!
 
 - Friendly!
   - Language support! You can participate in translation!
   - Good user interface, adaptive to PC/mobile and light/dark theme!
+
+- Feature-rich!
+  - Web UI, for most people!
+    - Take full control of printer config
+    - Print picture, or just test if it works
+  - Command line, for geeks & hackers!
+    - Control printer with a few parameters
+    - Simplified text printing
+    - Make use of every part of the program
+  - Some other goodies!
+    - Server program is also CUPS/IPP capable
 
 - Cross platform!
   - Newer Windows 10 and above
@@ -78,17 +79,22 @@ On Arch Linux based distros you may first install `bluez`, as it's often missing
 sudo pacman -S bluez bluez-utils
 ```
 
+*Packaging is also on the way!*
+
 ### MacOS
 
-For MacOS please install [Python 3](https://www.python.org/).
+For MacOS please install [Python 3](https://www.python.org/),  
+then install `pyobjc` and `bleak` via `pip` in terminal:  
+```bash
+pip3 install pyobjc bleak
+```
 
-Fetch a "pure" release and do the same in a shell:  
+After that, fetch a "bare" release and do the same in a shell:  
 ```bash
 python3 server.py
 ```
 
 Currently in Mac the browser will not pop up automatically. Please run manually and go to `http://127.0.0.1:8095`, or just click [here](http://127.0.0.1:8095).
-
 
 ### Worth to Note
 
@@ -96,15 +102,13 @@ For all supported platforms,
 You can also use "pure" edition once you have [Python 3](https://www.python.org/) installed,  
 or "bare" edition if you also managed to install `bleak` via `pip`.
 
-Command line hackers? Just use `printer.py`!
-
 See the [releases](https://github.com/NaitLee/Cat-Printer/releases) now!
 
 ## Problems?
 
-Please open an issue if there's something in your mind!
+Please talk in Discussion if there's something in your mind!
 
-Of course PRs are welcome if you can handle them!
+Of course Pull Requests are welcome if you can handle them!
 
 ## License
 
@@ -125,7 +129,7 @@ Also interested in code development? See [development.md](development.md)!
 
 - Of course, Python & the Web!
 - [Bleak](https://bleak.readthedocs.io/en/latest/) BLE lib! The overall Hero!
-- [roddeh-i18n](https://github.com/roddeh/i18njs), good work!
+- [roddeh-i18n](https://github.com/roddeh/i18njs), the current built-in i18n is inspired by this
 - [python-for-android](https://python-for-android.readthedocs.io/en/latest/), though there are some painful troubles
 - [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) for saving my life from Java
 - Stack Overflow & the whole Internet, you let me know Android `Activity` all from beginning

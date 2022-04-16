@@ -1,56 +1,45 @@
 ''' Provide *very* basic CUPS/IPP support
-    Extracted from version 0.0.2, do more cleaning later...
 '''
 
+import io
 import platform
 import subprocess
+
+from .pf2 import int16be, int32be
+
+def int8(b: bytes):
+    'Translate 1 byte as signed 8-bit int'
+    u = b[0]
+    return u - ((u >> 7 & 0b1) << 8)
 
 class IPP():
     'https://datatracker.ietf.org/doc/html/rfc8010'
     server = None
-    printer = None
-    def __init__(self, server, printer):
+    def __init__(self, server):
         self.server = server
-        self.printer = printer
-    async def handle_ipp(self, data):
+    def handle_ipp(self):
         'Handle an IPP protocol request'
         server = self.server
-        # len_data = len(data)
-        # ipp_version_number = data[0:2]
-        # ipp_operation_id = data[2:4]
-        # ipp_request_id = data[4:8]
-        ipp_operation_attributes_tag = data[8]
+        content_length = int(server.headers.get('Content-Length'))
+        buffer = io.BytesIO(server.rfile.read(content_length))
+        _ipp_version = (int8(buffer.read(1)), int8(buffer.read(1)))
+        _ipp_operation_id = int16be(buffer.read(2))
+        _ipp_request_id = int32be(buffer.read(4))
+        ipp_operation_attributes_tag = int8(buffer.read(1))
         attributes = {}
-        data_to_print = b''
-        # this is silly. i want to use io.BytesIO
+        data = b''
         if ipp_operation_attributes_tag == 0x01:
-            pointer = 9
-            next_name_length_at = 10
-            next_value_length_at = 10
-            name = b''
-            value = b''
-            while data[pointer] != 0x03:
-                tag = data[pointer:pointer + 1]
-                pointer += 1
-                if tag[0] < 0x10:   # delimiter-tag
+            while int8(buffer.read(1)) != 0x03:
+                buffer.seek(-1, 1)
+                tag = int8(buffer.read(1))
+                if tag < 0x10:   # delimiter-tag
                     continue
-                next_name_length_at = pointer + data[pointer] * 0x0100 + data[pointer + 1] + 2
-                pointer += 2
-                while pointer < next_name_length_at:
-                    name = name + data[pointer:pointer + 1]
-                    pointer += 1
-                next_value_length_at = pointer + data[pointer] * 0x0100 + data[pointer + 1] + 2
-                pointer += 2
-                while pointer < next_value_length_at:
-                    value = value + data[pointer:pointer + 1]
-                    pointer += 1
+                name = buffer.read(int16be(buffer.read(2)))
+                value = buffer.read(int16be(buffer.read(2)))
                 attributes[name] = (tag, value)
-                name = b''
-                value = b''
-            pointer += 1
-            data_to_print = data[pointer:]
+            data = buffer.read()
         # there are hard coded minimal response. this "just works" on cups
-        if data_to_print == b'':
+        if data == b'':
             try:
                 server.send_response(200)
                 server.send_header('Content-Type', 'application/ipp')
@@ -61,6 +50,14 @@ class IPP():
             except BrokenPipeError:
                 pass
             return
+        if data.startswith(b'%!PS-Adobe'):
+            self.handle_postscript(data)
+        else:
+            identifier = server.path[1:]
+            server.printer.print(io.BytesIO(data), mode='text', identifier=identifier)
+    def handle_postscript(self, data):
+        'Print PostScript data to printer, converting to PBM first with GhostScript `gs`'
+        server = self.server
         platform_system = platform.system()
         # https://ghostscript.com/doc/9.54.0/Use.htm#Output_device
         if platform_system == 'Windows':
@@ -76,15 +73,12 @@ class IPP():
             '-dFitPage', '-dFitPage',
             '-sOutputFile=-', '-'
         ], executable=gsexe, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        pbm_data, _ = gsproc.communicate(data_to_print)
+        pbm_data, _ = gsproc.communicate(data)
         try:
             if gsproc.wait() == 0:
-                info = server.path[1:]
-                is_found = await server.printer.filter_device(info, server.settings.scan_time)
-                if not is_found:
-                    ... # TODO: Make IPP can report some errors
-                    raise Exception(f'No printer found with info: {info}')
-                await server.printer.print_data(pbm_data)
+                identifier = server.path[1:]
+                # TODO: Make IPP can report some errors
+                server.printer.print(io.BytesIO(pbm_data), mode='pbm', identifier=identifier)
             else:
                 raise Exception('Error on invoking Ghostscript')
             server.send_response(200)
@@ -97,4 +91,3 @@ class IPP():
             server.send_response(500)
             server.send_header('Content-Type', 'application/ipp')
             server.end_headers()
-            server.wfile.write(b'')
