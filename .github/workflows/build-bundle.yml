@@ -19,6 +19,14 @@ jobs:
           cd build-common
           python3 bundle.py -b $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
           cd ..
+          mv cat-printer-bare-*.zip cat-printer-bare-bundle.zip
+          b2sum cat-printer-bare-bundle.zip > cat-printer-bare-bundle.zip.b2sum
+      - name: upload bundle to tags
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            cat-printer-bare-bundle.zip
+            cat-printer-bare-bundle.zip.b2sum
       
       
 
