@@ -21,12 +21,7 @@ pkgver() {
 package() {
     mkdir -p "$pkgdir/usr/bin"
     mkdir -p "$pkgdir/usr/share/cat-printer"
-    cp -r "$srcdir/cat-printer-git"/* "$pkgdir/usr/share/cat-printer/"
     ln -s /usr/share/grub/unicode.pf2 "$pkgdir/usr/share/cat-printer/font.pf2"
-    rm -rf "$pkgdir/usr/share/cat-printer/build-"*
-    rm -rf "$pkgdir/usr/share/cat-printer/dev-diary.txt"
-    rm -rf "$pkgdir/usr/share/cat-printer/TODO"
-    rm -rf "$pkgdir/usr/share/cat-printer/systemd"
     mkdir -p "$pkgdir/usr/lib/systemd/system/"
     install -m644 "$srcdir/cat-printer-git/systemd/cat-printer.service" "$pkgdir/usr/lib/systemd/system/"
     cat <<EOF > "$pkgdir/usr/bin/cat-printer"
@@ -41,4 +36,5 @@ cd /usr/share/cat-printer
 python3 server.py "\$@"
 EOF
     chmod +x "$pkgdir/usr/bin/cat-printer-server"
+    chmod +x "$pkgdir/usr/bin/cat-printer"
 }
