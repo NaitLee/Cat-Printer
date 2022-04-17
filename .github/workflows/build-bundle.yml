@@ -19,11 +19,7 @@ jobs:
           cd build-common
           python3 bundle.py -b $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
           cd ..
-      - name: upload bundle
-        uses: actions/upload-artifact@v3
-        with:
-          name: cat-printer-bare-bundle.zip
-          path: cat-printer-bare-*.zip
+      
       
 
 
