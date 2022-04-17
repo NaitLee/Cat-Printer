@@ -6,13 +6,13 @@ pkgrel=1
 pkgdesc="A project that provides support to some Bluetooth Cat Printer models, on many platforms!"
 arch=('any')
 url="https://github.com/NaitLee/Cat-Printer"
-license=('GPL3' 'MIT')
+license=('GPL3')
 depends=('python' 'bluez' 'bluez-utils' 'python-bleak')
 makedepends=('git')
 provides=("cat-printer=${pkgver}")
-source=("$pkgname::git+https://github.com/NaitLee/Cat-Printer.git" "i18njs4$pkgname::git+https://github.com/roddeh/i18njs.git")
-md5sums=('SKIP' 'SKIP')
-sha256sums=('SKIP' 'SKIP')
+source=("$pkgname::git+https://github.com/NaitLee/Cat-Printer.git")
+md5sums=('SKIP')
+sha256sums=('SKIP')
 options=(!strip emptydirs)
 pkgver() {
   cd "$pkgname"
@@ -22,7 +22,6 @@ package() {
     mkdir -p "$pkgdir/usr/bin"
     mkdir -p "$pkgdir/usr/share/cat-printer"
     cp -r "$srcdir/cat-printer-git"/* "$pkgdir/usr/share/cat-printer/"
-    cp -r "$srcdir/i18njs4cat-printer-git/dist/i18n.js" "$pkgdir/usr/share/cat-printer/www/i18n.js"
     ln -s /usr/share/grub/unicode.pf2 "$pkgdir/usr/share/cat-printer/font.pf2"
     rm -rf "$pkgdir/usr/share/cat-printer/build-"*
     rm -rf "$pkgdir/usr/share/cat-printer/dev-diary.txt"
