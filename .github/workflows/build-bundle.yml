@@ -10,6 +10,10 @@ jobs:
     steps:
       - name: get content from git
         uses: actions/checkout@v2
+      - name: update ubuntu-latest
+        run: |
+          apt update
+          apt upgrade -y 
       - name: setup python 3.10
         uses: actions/setup-python@v2
         with:
