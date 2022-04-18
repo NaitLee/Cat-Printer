@@ -25,6 +25,7 @@ jobs:
         run: |
           cd build-common
           python3 bundle.py -b $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+          svn checkout https://github.com/hbldh/bleak/trunk/bleak
           python3 bundle.py $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
           cd ..
           mv cat-printer-bare-*.zip cat-printer-bare-bundle.zip
