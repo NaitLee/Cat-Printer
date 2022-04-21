@@ -21,24 +21,27 @@ class I18n {
      * @param {Languages} language
      */
     useLanguage(language) {
-        this.language = language;
+        if (this.language)
+            this.database[language] = this.database[this.language];
         if (!this.database[language])
             this.database[language] = {};
+        this.language = language;
     }
     /**
-     * Add data as corresponding language, also to
-     * other (added) languages as fallback
+     * Add data as corresponding language,
+     * also to other (added) languages as fallback,
+     * or override
      * @param {Languages} language
      * @param {LanguageData} data
      */
-    add(language, data) {
+    add(language, data, override = false) {
         if (!this.database[language])
             this.database[language] = {};
         for (let key in data) {
             let value = data[key];
             this.database[language][key] = value;
             for (let lang in this.database)
-                if (!this.database[lang][key])
+                if (override || !this.database[lang][key])
                     this.database[lang][key] = value;
         }
     }

@@ -69,8 +69,8 @@ function monoSteinberg(data, w, h, t) {
         for (let i = 0; i < w; i++) {
             p = j * w + i;
             m = data[p];
-            n = m > t ? 255 : 0;
-            o = m - n;
+            n = m > 128 ? 255 : 0;
+            o = m - n + t;
             data[p] = n;
             adjust(i + 1, j    , o * 7 / 16);
             adjust(i - 1, j + 1, o * 3 / 16);
@@ -84,100 +84,6 @@ function monoSteinberg(data, w, h, t) {
  * (Work in Progress...)
  */
 function monoHalftone(data, w, h, t) {}
-
-/**
- * My own toy algorithm used in old versions. Not so natual.  
- * It have 2 pass, horizonally and vertically.
- * @param {Uint8ClampedArray} data the grayscale data, mentioned in `monoGrayscale`. **will be modified in-place**
- * @param {number} w width of image
- * @param {number} h height of image
- * @param {number} t threshold
- */
-function monoLegacy(data, w, h, t) {
-    let data_h = data.slice();
-    let data_v = data.slice();
-    monoLegacyH(data_h, w, h, t);
-    monoLegacyV(data_v, w, h, t);
-    for (let i = 0; i < data.length; i++) {
-        data[i] = data_h[i] & data_v[i];
-    }
-}
-function monoLegacyH(data, w, h, t) {
-    let v = 0, p;
-    for (let j = 0; j < h; j++) {
-        for (let i = 0; i < w; i++) {
-            p = j * w + i;
-            v += data[p];
-            if (v >= t) {
-                data[p] = 255;
-                v = 0;
-            } else data[p] = 0;
-        }
-        v = 0;
-    }
-}
-function monoLegacyV(data, w, h, t) {
-    let v = 0, p;
-    for (let i = 0; i < w; i++) {
-        for (let j = 0; j < h; j++) {
-            p = j * w + i;
-            v += data[p];
-            if (v >= t) {
-                data[p] = 255;
-                v = 0;
-            } else data[p] = 0;
-        }
-        v = 0;
-    }
-}
-
-/**
- * Slightly modified from `monoLegacy`, but still messy.  
- * But, try the horizonal and vertical sub algorithm!
- * @param {Uint8ClampedArray} data the grayscale data, mentioned in `monoGrayscale`. **will be modified in-place**
- * @param {number} w width of image
- * @param {number} h height of image
- * @param {number} t threshold
- */
-function monoNew(data, w, h, t) {
-    let data_h = data.slice();
-    let data_v = data.slice();
-    monoNewH(data_h, w, h, t);
-    monoNewV(data_v, w, h, t);
-    for (let i = 0; i < data.length; i++) {
-        data[i] = data_h[i] & data_v[i];
-    }
-}
-function monoNewH(data, w, h, t) {
-    t = (t - 127) / 4 + 1;
-    let v = 0, p;
-    for (let j = 0; j < w; j++) {
-        for (let i = 0; i < h; i++) {
-            p = j * h + i;
-            v += data[p] + t;
-            if (v >= 255) {
-                data[p] = 255;
-                v -= 255;
-            } else data[p] = 0;
-        }
-        v = 0;
-    }
-}
-function monoNewV(data, w, h, t) {
-    t = (t - 127) / 4 + 1;
-    let v = -1, p;
-    for (let i = 0; i < h; i++) {
-        for (let j = 0; j < w; j++) {
-            p = j * h + i;
-            v += data[p] + t;
-            if (v >= 255) {
-                data[p] = 255;
-                v -= 255;
-            } else data[p] = 0;
-        }
-        v = 0;
-    }
-}
 
 /**
  * Convert a monochrome image data to PBM mono image file data.  

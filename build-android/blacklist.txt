@@ -6,6 +6,10 @@
 .pylintrc
 ?-*.sh
 
+# symlinks
+*.pf2
+*.pbm
+
 # junk
 __pycache__
 .directory

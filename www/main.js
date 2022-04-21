@@ -7,7 +7,7 @@
  * Double-tap the "Cat Printer" title to activate
  */
 function debug() {
-    let script = document.createElement('script');
+    const script = document.createElement('script');
     script.src = 'vconsole.js';
     document.body.appendChild(script);
     script.addEventListener('load', () => new window.VConsole());
@@ -17,15 +17,16 @@ document.getElementById('title').addEventListener('dblclick', debug);
 var hidden_area = document.getElementById('hidden');
 
 const hint = (function() {
-    let hints = [];
-    let callback = (event) => {
+    let hints;
+    const callback = (event) => {
         event.stopPropagation();
         event.currentTarget.classList.remove('hint');
         event.currentTarget.removeEventListener('click', callback);
     }
     return function(selector) {
-        hints.forEach(element => element.classList.remove('hint'));
-        hints = document.querySelectorAll(selector);
+        if (hints)
+            hints.forEach(element => element.classList.remove('hint'));
+        hints = typeof selector === 'string' ? document.querySelectorAll(selector) : selector;
         hints.forEach(element => {
             element.classList.add('hint');
             element.addEventListener('click', callback);
@@ -33,28 +34,95 @@ const hint = (function() {
     }
 })();
 
-class _Notice {
-    element;
-    constructor() {
-        this.element = document.getElementById('notice');
+const Notice = (function() {
+    const notice = document.getElementById('notice');
+    let last_span;
+    function put(message, things, class_name) {
+        let text = i18n(message, things) || message;
+        if (last_span) last_span.remove();
+        let span = document.createElement('span');
+        span.innerText = text;
+        span.classList.add(class_name);
+        notice.appendChild(span);
+        last_span = span;
     }
-    _message(message, things) {
-        this.element.innerText = i18n(message, things) || message;
+    return {
+        note: (message, things) => put(message, things, 'note'),
+        wait: (message, things) => put(message, things, 'wait'),
+        warn: (message, things) => put(message, things, 'warn'),
+        error: (message, things) => put(message, things, 'error')
     }
-    makeLogger(class_name) {
-        return (message, things) => {
-            this.element.classList.value = class_name;
-            this._message(message, things);
+})();
+
+const Dialog = (function() {
+    const dialog = document.getElementById('dialog');
+    const dialog_content = document.getElementById('dialog-content');
+    const dialog_choices = document.getElementById('dialog-choices');
+    const dialog_input = document.getElementById('dialog-input');
+    let last_choices;
+    function clean_up() {
+        if (last_choices)
+            for (let choice of last_choices)
+                choice.remove();
+        // elements
+        for (let element of dialog_content.children)
+            hidden_area.appendChild(element);
+        // text nodes
+        for (let node of dialog_content.childNodes)
+            node.remove();
+    }
+    function show(argument, as_string = false) {
+        dialog.classList.remove('hidden');
+        if (as_string)
+            dialog_content.innerText = argument;
+        else
+            dialog_content.appendChild(document.querySelector(argument));
+    }
+    function apply_callback(callback, have_input = false, ... choices) {
+        last_choices = [];
+        dialog_input.value = '';
+        dialog_input.style.display = have_input ? 'unset' : 'none';
+        for (let choice of choices) {
+            let button = document.createElement('button');
+            button.setAttribute('data-i18n', choice);
+            button.innerText = i18n(choice);
+            if (!have_input)
+                button.addEventListener('click', () => dialog_input.value = choice);
+            dialog_choices.appendChild(button);
+            last_choices.push(button);
+        }
+        last_choices[0].addEventListener('click', () => {
+            if (callback) callback(dialog_input.value);
+            dialog.classList.add('hidden');
+        });
+        if (last_choices.length > 1)
+            last_choices[1].addEventListener('click', () => {
+                if (callback) callback(null);
+                dialog.classList.add('hidden');
+            });
+        hint([last_choices[0]]);
+    }
+    return {
+        alert: function(selector, callback, as_string = false) {
+            clean_up();
+            apply_callback(callback, false, 'ok');
+            show(selector, as_string);
+        },
+        confirm: function(selector, callback, as_string = false) {
+            clean_up();
+            apply_callback(callback, false, 'yes', 'no');
+            show(selector, as_string);
+        },
+        prompt: function(selector, callback, as_string = false) {
+            clean_up();
+            apply_callback(callback, true, 'ok', 'cancel');
+            show(selector, as_string);
         }
     }
-    notice = this.makeLogger('notice');
-    warn = this.makeLogger('warning');
-    error = this.makeLogger('error');
-}
-
-const Notice = new _Notice();
+})();
 
 class _ErrorHandler {
+    // TODO make better
     recordElement;
     constructor() {
         this.recordElement = document.getElementById('error-record');
@@ -65,8 +133,11 @@ class _ErrorHandler {
      */
     report(error, output) {
         Notice.error('error-happened-please-check-error-message');
-        let hidden_panel = this.recordElement.parentElement;
-        if (hidden_panel) hidden_panel.classList.remove('hidden');
+        let button = document.querySelector('button[data-panel="panel-error"]');
+        if (button) {
+            button.classList.remove('hidden');
+            button.click();
+        }
         let div = document.createElement('div');
         div.innerText = (error.stack || (error.name + ': ' + error.message)) + '\n' + output;
         this.recordElement.appendChild(div);
@@ -150,57 +221,21 @@ function putEvent(selector, type, callback, thisArg) {
     return new EventPutter(selector, type, callback, thisArg);
 }
 
-class PanelController {
-    last;
-    panels;
-    outerPanels;
-    subPanels;
-    constructor(selector = '.panel') {
-        const class_expanded = 'expanded';
-        const class_sub = 'sub';
-        let panels = this.panels = [... document.querySelectorAll(selector)];
-        let outer_panels = this.outerPanels = panels.filter(e => !e.classList.contains(class_sub));
-        let sub_panels = this.subPanels = panels.filter(e => e.classList.contains(class_sub));
-        const expand = (panel) => panel.classList.add(class_expanded);
-        const fold = (panel) => {
-            panel.classList.remove(class_expanded);
-        }
-        const fold_all_outer = () => outer_panels.forEach(e => fold(e));
-        const fold_all_sub = () => sub_panels.forEach(e => fold(e));
-        // const fold_all = () => panels.forEach(e => e.classList.remove(class_expanded));
-        fold_all_outer();
-        putEvent(selector + '>:nth-child(1)', 'click', event => {
+(function() {
+    let panels = document.querySelectorAll('.panel');
+    let buttons = document.querySelectorAll('*[data-panel]');
+    panels.forEach(panel => {
+        let button = document.querySelector(`*[data-panel="${panel.id}"]`);
+        if (button) button.addEventListener('click', event => {
             event.stopPropagation();
-            event.cancelBubble = true;
-            let current = event.currentTarget.parentElement,
-                last = this.last;
-            this.last = current;
-            if (!last) {
-                expand(current);
-                this.last = current;
-                return;
-            }
-            let is_sub = current.classList.contains(class_sub),
-                last_is_sub = last.classList.contains(class_sub);
-            if (current.classList.contains(class_expanded)) {
-                fold(current);
-                return;
-            }
-            fold_all_outer();
-            if (is_sub && last_is_sub) {
-                fold(last);
-                expand(current.parentElement);
-                last.scrollTo(0, 0);
-            } else if (is_sub && !last_is_sub) {
-                fold_all_sub();
-                expand(last);
-            } else if (!is_sub && last_is_sub) {
-                last.parentElement.scrollTo(0, 0);
-            }
-            expand(current);
-        }, this);
-    }
-}
+            panels.forEach(p => p.classList.remove('active'));
+            buttons.forEach(b => b.classList.remove('active'));
+            panel.classList.add('active');
+            button.classList.add('active');
+        });
+        if (panel.hasAttribute('data-default')) button.click();
+    });
+})();
 
 class CanvasController {
     /** @type {HTMLCanvasElement} */
@@ -211,6 +246,7 @@ class CanvasController {
     isCanvas;
     algorithm;
     threshold;
+    thresholdRange;
     transparentAsWhite;
     previewData;
     static defaultHeight = 384;
@@ -226,6 +262,7 @@ class CanvasController {
         this.canvas = document.getElementById('control-canvas');
         this.div = document.getElementById('control-document');
         this.height = CanvasController.defaultHeight;
+        this.thresholdRange = document.getElementById('threshold');
 
         putEvent('input[name="mode"]', 'change', (event) => this.enableMode(event.currentTarget.value), this);
         putEvent('input[name="algo"]', 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
@@ -259,6 +296,7 @@ class CanvasController {
     }
     useAlgorithm(name) {
         this.algorithm = name;
+        this.thresholdRange.value = 128;
         this.activatePreview();
     }
     expand(length = CanvasController.defaultHeight) {
@@ -267,7 +305,7 @@ class CanvasController {
     crop() {}
     activatePreview() {
         let preview = this.preview;
-        let t = this.threshold;
+        let t = Math.min(this.threshold, 255);
         if (this.isCanvas) {
             let canvas = this.canvas;
             let w = canvas.width, h = canvas.height;
@@ -281,7 +319,7 @@ class CanvasController {
                     monoDirect(mono_data, w, h, t);
                     break;
                 case 'algo-steinberg':
-                    monoSteinberg(mono_data, w, h, t);
+                    monoSteinberg(mono_data, w, h, Math.floor(t / 2 - 64));
                     break;
                 case 'algo-halftone':
                     // monoHalftone(mono_data, w, h, t);
@@ -291,7 +329,7 @@ class CanvasController {
                     monoNew(mono_data, w, h, t);
                     break;
                 case 'algo-new-h':
-                    monoNewH(mono_data, w, h, t);
+                    monoNewH(mono_data, w, h, Math.floor(t / 2 - 64));
                     break;
                 case 'algo-new-v':
                     monoNewV(mono_data, w, h, t);
@@ -325,7 +363,7 @@ class CanvasController {
                     context.drawImage(img, 0, 0, canvas.width, canvas.height);
                     this.crop();
                     this.activatePreview();
-                    hint('#button-print, #panel-settings');
+                    hint('#button-print');
                 });
             }
         }
@@ -344,10 +382,68 @@ class CanvasController {
     }
 }
 
+/** @param {Document} doc */
+function applyI18nToDom(doc) {
+    doc = doc || document;
+    let elements = doc.querySelectorAll('*[data-i18n]');
+    let i18n_data, translated_string;
+    elements.forEach(element => {
+        i18n_data = element.getAttribute('data-i18n');
+        translated_string = i18n(i18n_data);
+        if (translated_string === i18n_data) return;
+        // element.innerText = translated_string;
+        if (element.firstChild.textContent !== translated_string)
+            element.firstChild.textContent = translated_string;
+    });
+}
+async function initI18n() {
+    if (typeof i18n === 'undefined') return;
+    /** @type {HTMLOptionElement} */
+    let language_options = document.getElementById('select-language');
+    /** @type {{ [code: string]: string }} */
+    let list = await fetch('/lang/list.json').then(r => r.json());
+    let use_language = async (value) => {
+        i18n.useLanguage(value);
+        i18n.add(value, await fetch(`/lang/${value}.json`).then(r => r.json()), true);
+        applyI18nToDom();
+    }
+    for (let code in list) {
+        let option = document.createElement('option');
+        option.value = code;
+        option.innerText = list[code];
+        option.addEventListener('click', (event) => {
+            let option = event.currentTarget;
+            let value = option.value;
+            use_language(value);
+        });
+        language_options.appendChild(option);
+    }
+    apply_default:
+    for (let code of navigator.languages) {
+        if (list[code]) {
+            for (let option of language_options.children) {
+                if (option.value === code) {
+                    // option.setAttribute('data-default', '');
+                    option.setAttribute('data-default', '');
+                    option.click();
+                    i18n.useLanguage(navigator.languages[0]);
+                    for (let language of navigator.languages) {
+                        if (!list[language]) return;
+                        let data = await fetch(`/lang/${language}.json`)
+                            .then(response => response.ok ? response.json() : null);
+                        if (data !== null) {
+                            i18n.add(language, data);
+                        }
+                    }
+                    break apply_default;
+                }
+            }
+        }
+    }
+}
+
 class Main {
     promise;
-    /** @type {PanelController} */
-    panelController;
     /** @type {CanvasController} */
     canvasController;
     deviceOptions;
@@ -367,22 +463,37 @@ class Main {
         this.setters = {};
         // window.addEventListener('unload', () => this.exit());
         this.promise = new Promise(async (resolve, reject) => {
-            await this.initI18n();
-            this.panelController = new PanelController();
+            await initI18n();
+            /** @type {HTMLIFrameElement} */
+            let iframe = document.getElementById('frame');
+            iframe.addEventListener('load', () => {
+                applyI18nToDom(iframe.contentDocument);
+            });
             this.canvasController = new CanvasController();
             putEvent('#button-exit', 'click', this.exit, this);
             putEvent('#button-print', 'click', this.print, this);
             putEvent('#device-refresh', 'click', this.searchDevices, this);
+            putEvent('#set-accessibility', 'click', () => Dialog.alert('#accessibility'));
+            putEvent('#link-about', 'click', () => Dialog.alert('#frame'));
             this.attachSetter('#scan-time', 'change', 'scan_timeout');
             this.attachSetter('#device-options', 'input', 'printer');
             this.attachSetter('input[name="algo"]', 'change', 'mono_algorithm');
             this.attachSetter('#transparent-as-white', 'change', 'transparent_as_white');
+            this.attachSetter('#select-language option', 'click', 'language');
             this.attachSetter('#dry-run', 'change', 'dry_run',
-                (checked) => checked && Notice.notice('dry-run-test-print-process-only')
+                (checked) => checked && Notice.note('dry-run-test-print-process-only')
             );
             this.attachSetter('#no-animation', 'change', 'no_animation',
                 (checked) => checked ? document.body.classList.add('no-animation')
                     : document.body.classList.remove('no-animation')
+            );
+            this.attachSetter('#large-font', 'change', 'large_font',
+                (checked) => checked ? document.body.classList.add('large-font')
+                    : document.body.classList.remove('large-font')
+            );
+            this.attachSetter('#force-rtl', 'change', 'force_rtl',
+                (checked) => checked ? document.body.classList.add('force-rtl')
+                    : document.body.classList.remove('force-rtl')
             );
             this.attachSetter('#threshold', 'change', 'threshold',
                 (value) => this.canvasController.threshold = value
@@ -392,6 +503,8 @@ class Main {
             this.attachSetter('#dump', 'change', 'dump');
             await this.loadConfig();
             this.searchDevices();
+            document.querySelector('main').classList.remove('hard-hidden');
+            document.getElementById('loading-screen').classList.add('hidden');
             resolve();
         });
     }
@@ -409,6 +522,8 @@ class Main {
      */
     async loadConfig() {
         this.settings = await callApi('/query');
+        if (this.settings['first_run'])
+            Dialog.alert('#accessibility', () => this.set({ first_run: false }));
         for (let key in this.settings) {
             let value = this.settings[key];
             if (this.setters[key] === undefined) continue;
@@ -423,8 +538,14 @@ class Main {
                         if (element.value !== value) return;
                         element.checked = value;
                         break;
-                    default:
+                    case 'text':
+                    case 'number':
+                    case 'range':
                         element.value = value;
+                        break;
+                    default:
+                        if (element.value === value)
+                            element.click();
                 }
                 element.dispatchEvent(new Event('change'));
             });
@@ -461,11 +582,12 @@ class Main {
         }).bind(this), this);
     }
     async exit() {
+        Notice.wait('exiting');
         await this.set(this.settings);
         await callApi('/exit');
         window.close();
         // Browser may block the exit
-        Notice.notice('you-can-close-this-page-manually');
+        Notice.note('you-can-close-this-page-manually');
     }
     /** @param {Response} response */
     async bluetoothProblemHandler(response) {
@@ -473,24 +595,25 @@ class Main {
         let error_details = await response.json();
         if (
             error_details.name === 'org.bluez.Error.NotReady' ||
-            error_details.details.indexOf('not turned on') !== -1 ||
-            error_details.details.indexOf('WinError -2147020577') !== -1
+            error_details.name === 'org.freedesktop.DBus.Error.UnknownObject' ||
+            error_details.details.includes('not turned on') ||
+            error_details.details.includes('WinError -2147020577')
         ) Notice.warn('please-enable-bluetooth');
         else throw new Error('Unknown Bluetooth Problem');
         return null;
     }
     async searchDevices() {
-        Notice.notice('scanning-for-devices');
+        Notice.wait('scanning-for-devices');
         let search_result = await callApi('/devices', null, this.bluetoothProblemHandler);
         if (search_result === null) return;
         let devices = search_result.devices;
         [... this.deviceOptions.children].forEach(e => e.remove());
         if (devices.length === 0) {
-            Notice.notice('no-available-devices-found');
+            Notice.note('no-available-devices-found');
             hint('#device-refresh');
             return;
         }
-        Notice.notice('found-0-available-devices', [devices.length]);
+        Notice.note('found-0-available-devices', [devices.length]);
         hint('#insert-picture');
         devices.forEach(device => {
             let option = document.createElement('option');
@@ -501,12 +624,12 @@ class Main {
         this.deviceOptions.dispatchEvent(new Event('input'));
     }
     async print() {
-        Notice.notice('printing');
+        Notice.wait('printing');
         await fetch('/print', {
             method: 'POST',
             body: this.canvasController.makePbm()
         }).then(async (response) => {
-            if (response.ok) Notice.notice('finished')
+            if (response.ok) Notice.note('finished')
             else {
                 let error_data = await response.json();
                 if (/address.+not found/.test(error_data.details))
@@ -517,28 +640,6 @@ class Main {
                         JSON.stringify(await response.json(), undefined, 4)
                     )
             }
-        });
-    }
-    async initI18n() {
-        if (typeof i18n === 'undefined') return;
-        i18n.useLanguage(navigator.languages[0]);
-        for (let language of navigator.languages) {
-            let data = await fetch(`/lang/${language}.json`)
-                .then(response => response.ok ? response.json() : null);
-            if (data !== null) {
-                i18n.add(language, data);
-                console.log('Loaded language:', language);
-            }
-        }
-        let elements = document.querySelectorAll('*[data-i18n]');
-        let i18n_data, translated_string;
-        elements.forEach(element => {
-            i18n_data = element.getAttribute('data-i18n');
-            translated_string = i18n(i18n_data);
-            if (translated_string === i18n_data) return;
-            // element.innerText = translated_string;
-            if (element.firstChild.textContent !== translated_string)
-                element.firstChild.textContent = translated_string;
         });
     }
 }

@@ -39,6 +39,7 @@ mime_type = {
     'txt': 'text/plain;charset=utf-8',
     'json': 'application/json;charset=utf-8',
     'png': 'image/png',
+    'svg': 'image/svg+xml;charset=utf-8',
     'octet-stream': 'application/octet-stream'
 }
 def mime(url: str):
@@ -55,6 +56,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
     settings = DictAsObject({
         'config_path': 'config.json',
         'version': 1,
+        'first_run': True,
         'is_android': False,
         'scan_timeout': 5.0,
         'dry_run': False
@@ -72,6 +74,14 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
 
     def log_error(self, *_args):
         pass
+
+    def handle_one_request(self):
+        try:
+            # this handler would have only one instance
+            # broken pipe could make it die. ignore
+            super().handle_one_request()
+        except BrokenPipeError:
+            pass
 
     def do_GET(self):
         'Called when server get a GET http request'
@@ -154,6 +164,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         self.printer.dump = self.settings.dump
         self.printer.flip_h = self.settings.flip_h
         self.printer.flip_v = self.settings.flip_v
+        self.printer.rtl = self.settings.force_rtl
         if self.settings.printer is not None:
             name, address = self.settings.printer.split(',')
             self.printer.connect(name, address)
