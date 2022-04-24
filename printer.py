@@ -304,17 +304,19 @@ class PrinterDriver(Commander):
     def connect(self, name=None, address=None):
         ''' Connect to this device, and operate on it
         '''
+        self._pending_data = io.BytesIO()
         if self.fake:
             return
         if (self.device is not None and address is not None and
             (self.device.address.lower() == address.lower())):
             return
-        if self.device is not None and self.device.is_connected:
-            self.loop(
-                self.device.stop_notify(self.rx_characteristic),
-                self.device.disconnect()
-            )
-        else:
+        try:
+            if self.device is not None and self.device.is_connected:
+                self.loop(self.device.stop_notify(self.rx_characteristic))
+                self.loop(self.device.disconnect())
+        except:     # pylint: disable=bare-except
+            pass
+        finally:
             self.device = None
         if name is None and address is None:
             return
@@ -356,6 +358,7 @@ class PrinterDriver(Commander):
         devices = self.loop(
             scanner.discover(self.scan_timeout)
         )
+        devices = [dev for dev in devices if dev.name in Models]
         if identifier is not None:
             if identifier in Models:
                 devices = [dev for dev in devices if dev.name == identifier]
@@ -371,11 +374,11 @@ class PrinterDriver(Commander):
             Currently, available modes are `pbm` and `text`.
             If no devices were connected, scan & connect to one first.
         '''
+        self._pending_data = io.BytesIO()
         if self.device is None:
             self.scan(identifier, use_result=True)
         if self.device is None and not self.fake:
             error('no-available-devices-found', exception=PrinterError)
-        self._pending_data = io.BytesIO()
         if mode == 'pbm' or mode == 'default':
             printer_data = PrinterData(self.model.paper_width, file)
             self._print_bitmap(printer_data)
@@ -509,6 +512,8 @@ class PrinterDriver(Commander):
 
 # CLI procedure
 
+Printer = None
+
 def _main():
     'Main routine for direct command line execution'
     parser = argparse.ArgumentParser(
@@ -542,6 +547,8 @@ def _main():
                         help=I18n['virtual-run-on-specified-model'])
     parser.add_argument('-m', '--dump', required=False, action='store_true',
                         help=I18n['dump-the-traffic'])
+    parser.add_argument('-n', '--nothing', required=False, action='store_true',
+                        help=I18n['do-nothing'])
     args = parser.parse_args()
     info(I18n['cat-printer'])
     printer = PrinterDriver()
@@ -556,17 +563,22 @@ def _main():
     if args.fake:
         printer.fake = args.fake
         printer.model = Models[args.fake]
+    else:
+        info(I18n['connecting'])
+        printer.scan(args.identifier, use_result=True)
     printer.dump = args.dump
     if args.file == '-':
         file = sys.stdin.buffer
     else:
         file = open(args.file, 'rb')
+    if args.nothing:
+        global Printer
+        Printer = printer
+        return
     try:
-        info(I18n['connecting'])
         printer.print(
             file,
-            mode = 'text' if args.text else 'pbm',
-            identifier = args.identifier
+            mode = 'text' if args.text else 'pbm'
         )
         info(I18n['finished'])
     except KeyboardInterrupt:

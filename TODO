@@ -7,12 +7,9 @@ Note: not ordered. do whatever I/you want
 + Even Better CLI, e.g. invoke imagemagick if input is not PBM
 + Even better CUPS/IPP support
 + Even better frontend usability, more functions
-+ A better layout for mobile?
 + Make a build guide for android:
   Summary the hacks to p4a, bleak p4a recipe, p4a webview bootstrap, and AdvancedWebView
 + Try to implement enough without more dependencies
-+ Better Canvas mode, (re-)consider fabric.js
-+ Implement Document mode, (re-)consider html2canvas.js
 + ...
 
 ? Consider more control to something like 'energy'
