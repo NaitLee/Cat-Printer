@@ -112,7 +112,7 @@ Of course Pull Requests are welcome if you can handle them!
 
 ## License
 
-Copyright © 2022 NaitLee Soft. Some rights reserved.
+Copyright © 2021-2022 NaitLee Soft. Some rights reserved.
 
 See file `COPYING`, `LICENSE`, and detail of used JavaScript in file `www/jslicense.html`
 

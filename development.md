@@ -16,7 +16,7 @@ My workspace stack is Linux/GNU/Artix/KDE/VSCodium, if you're interested.
 For Android, GNU/Linux is required, though.
 
 The Android version is built with [python-for-android](https://python-for-android.readthedocs.io/en/latest/).  
-In our case it's **NOT** something easy, don't go blindly if you don't want to waste your time.  
+In our case it's complicated, don't go blindly if you don't want to waste your time.  
 There are too many hacks to be done, before and after. Let me summarize them later...  
 By the way, feel free to look at file `dev-diary.txt`
 
@@ -60,6 +60,7 @@ If there are something better to organize these, feel free to discuss in issue.
   - Only listen to localhost, unless specify the `-a` command-line parameter
   - Handles API requests via `POST`
   - Handles frontend configuration
+  - Few CUPS/IPP features included
   - Interacts with `printer.py`, for the printer driver
 - `printer.py` - The core printer driver:
   - Have the `PrinterDriver` class, to be reused
@@ -84,7 +85,7 @@ If there are something better to organize these, feel free to discuss in issue.
 - `www/*.js` - Other scripts:
   - Small but useful, just look at them directly
 - `www/jslicense.html` - Dedicated JavaScript License information
-- `www/lang/*.json` - Languages
+- `www/lang/*.json` - Language files for both front- & back-end
 
 - `N-*.sh` - Shell files:
   - Helpers for development convenience
@@ -108,7 +109,12 @@ If there are something better to organize these, feel free to discuss in issue.
 - `build-android/3-formal-build.sh` - The "formal" build script:
   - Unlike the dev version, this needs a pre-built "bare" edition zip, and should be passed a version id (like `0.1.0`)
   - Also unlike dev, this doesn't enforce the custom blacklist, since "bare" is already minimal
+  - Now it builds a "release" version. In order to be installed on Android, you need to sign it. Know more on Internet
 
 ### Be aware that...
 
-If there are intermediate development files that are not meant to be in this public repo, please add to `.gitignore`
+If there are development files that are not meant to be in this public repo, please add to `.gitignore`.
+
+And don't put too-big files, especially binary. Not everyone have good connection to GitHub.
+
+Same applies to most feature-bloated 3rd party libraries. In our case you should try your best to avoid introducing more dependencies.

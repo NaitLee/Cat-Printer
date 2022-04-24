@@ -3,13 +3,19 @@ type DictOf<T> = { [key: string]: T };
 type Conditions = DictOf<string>;
 type ConditionsOf<K extends Languages> = AllConditions[K];
 type LanguageData = DictOf<Conditions | string>;
-type Things = { [index: number | string]: number | string } | Array<number | string>;
-type Extension = (things: Things, conditions: Conditions) => string;
-type ExtensionOf<K extends Languages> = (things: Things, conditions: ConditionsOf<K>) => string;
+type Things = { [index: number | string]: number | string | boolean | null } | Array<number | string>;
+interface Extension {
+    (things: Things, conditions: Conditions): string;
+}
+interface ExtensionOf<K extends Languages> {
+    (things: Things, conditions: ConditionsOf<K>): string;
+}
 type Languages = keyof AllConditions;
 
 /**
  * All known possible condition keys, per language
+ × These are what will be used in langauge files
+ * Please add more as you do in extensions
  */
 type AllConditions = {
     'en-US': {

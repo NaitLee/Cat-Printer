@@ -255,11 +255,16 @@ class PrinterServer(HTTPServer):
         avoiding confliction, and stop cleanly
     '''
 
+    handler_class = None
     handler: PrinterServerHandler = None
+
+    def __init__(self, server_address, RequestHandlerClass):
+        self.handler_class = RequestHandlerClass
+        super().__init__(server_address, RequestHandlerClass)
 
     def finish_request(self, request, client_address):
         if self.handler is None:
-            self.handler = PrinterServerHandler(request, client_address, self)
+            self.handler = self.handler_class(request, client_address, self)
             return
         self.handler.__init__(request, client_address, self)
 
@@ -276,7 +281,7 @@ def serve():
     if '-a' in sys.argv:
         info(I18n['will-listen-on-all-addresses'])
         listen_all = True
-    server = PrinterServer(('' if listen_all else address, port), PrinterServer)
+    server = PrinterServer(('' if listen_all else address, port), PrinterServerHandler)
     service_url = f'http://{address}:{port}/'
     if '-s' in sys.argv:
         info(I18n['serving-at-0', service_url])

@@ -1,6 +1,7 @@
 
 :root {
     --font-size: 1.2rem;
+    --deco-size: calc(var(--font-size) / 2);
     --line-height: 1.8em;
     --span: 8px;
     --span-half: calc(var(--span) / 2);
@@ -19,24 +20,6 @@
     --notice-note: rgba(0, 255, 0, 0.2);
     --notice-warn: rgba(255, 128, 0, 0.2);
     --notice-error: rgba(255, 0, 0, 0.2);
-}
-
-body.no-animation *,
-body.no-animation *::before,
-body.no-animation *::after {
-    transition-duration: 0ms !important;
-    transition: none;
-    animation-timing-function: steps(1);
-    animation-duration: 0ms !important;
-}
-body.large-font,
-#large-font+label {
-    font-size: calc(var(--font-size) * 1.2);
-    line-height: calc(var(--line-height) * 1.2);
-}
-body.force-rtl,
-#force-rtl+label {
-    direction: rtl;
 }
 
 body {
@@ -65,6 +48,7 @@ a:hover, a:active {
 a+a {
     margin-left: var(--font-size);
 }
+
 .center {
     text-align: center;
 }
@@ -102,10 +86,10 @@ button:active {
     box-shadow: 0 0 var(--span) inset var(--fore-color);
 }
 @keyframes notice-fade {
-    to { background-color: transparent; }
+    to { background-color: transparent; border-color: transparent; }
 }
 @keyframes notice-wait {
-    50% { background-color: transparent; }
+    50% { background-color: transparent; border-color: transparent; }
 }
 #notice {
     min-height: var(--font-size);
@@ -312,7 +296,7 @@ hr {
 #dialog {
     position: fixed;
     width: 100%;
-    top: calc(50% - 10em);
+    top: calc(50% - 12em);
     text-align: center;
     z-index: 2;
     opacity: 2;
@@ -320,9 +304,9 @@ hr {
 }
 #dialog>.content {
     max-width: 100%;
-    box-sizing: border-box;
     width: 40em;
     margin: auto;
+    box-sizing: border-box;
     border: var(--border) solid var(--fore-color);
     transition: transform var(--anim-time) var(--curve);
 }
@@ -334,7 +318,8 @@ hr {
     transform: scaleY(0);
 }
 #dialog-content {
-    height: 10em;
+    height: 12em;
+    max-height: 640px;
     margin: auto;
     padding: var(--span);
 }
@@ -498,33 +483,73 @@ a {
         box-sizing: border-box;
     }
 }
+
 @media (prefers-color-scheme: dark) {
-    :root {
-        --fore-color: #eee;
-        --back-color: #333;
-        /* --canvas-back: #666; */
-    }
-    a:link, a:visited {
-        color: #66f;
-    }
-    a:hover, a:active {
-        color: #77f;
-    }
-    canvas#preview, canvas#control-canvas, #control-document {
-        filter: brightness(0.6);
-    }
-    .logo {
-        filter: brightness(0.6);
+    :root { --fore-color: #eee; --back-color: #333; }
+    body, .shade { transition: background-color calc(var(--anim-time) * 2) ease-in; }
+    a:link, a:visited { color: #66f; }
+    a:hover, a:active { color: #77f; }
+    canvas#preview, canvas#control-canvas,
+    #control-document, .logo { filter: brightness(0.6); }
+    body.high-contrast.dark {
+        --fore-color: #fff;
+        --back-color: #000;
     }
 }
+/* so silly... */
+body.dark { --fore-color: #eee; --back-color: #333; }
+body.dark, .shade { transition: background-color calc(var(--anim-time) * 2) ease-in; }
+body.dark a:link, body.dark a:visited { color: #66f; }
+body.dark a:hover, body.dark a:active { color: #77f; }
+body.dark canvas#preview, body.dark canvas#control-canvas,
+body.dark #control-document, body.dark .logo { filter: brightness(0.6); }
 @media (prefers-reduced-motion) {
-    body {
+    body *,
+    body *::before,
+    body *::after {
         transition-duration: 0ms !important;
         transition: none;
         animation-timing-function: steps(1);
         animation-duration: 0ms !important;
     }
 }
+/* but i have no way... */
+body.no-animation *,
+body.no-animation *::before,
+body.no-animation *::after {
+    transition-duration: 0ms !important;
+    transition: none;
+    animation-timing-function: steps(1);
+    animation-duration: 0ms !important;
+}
+
+body.large-font,
+#large-font+label {
+    font-size: calc(var(--font-size) * 1.2);
+    line-height: calc(var(--line-height) * 1.2);
+}
+
+body.force-rtl,
+#force-rtl+label {
+    direction: rtl;
+}
+body.high-contrast {
+    --border: 2px;
+    --fore-color: #fff;
+    --back-color: #000;
+    --target-color: transparent;
+    --notice-wait: transparent;
+    --notice-note: transparent;
+    --notice-warn: transparent;
+    --notice-error: transparent;
+    transition-duration: 0s;
+}
+body.high-contrast .shade { transition-duration: 0s; opacity: 1; }
+body.high-contrast * { background-color: var(--back-color); }
+body.high-contrast .logo, canvas { filter: unset !important; }
+body.high-contrast #notice * { border: var(--border) dashed var(--fore-color); }
+body.high-contrast a:any-link { color: #00f; }
+
 @font-face {
     font-family: 'Unifont';
     src: local('Unifont') url('unifont.ttf') url('unifont.otf');

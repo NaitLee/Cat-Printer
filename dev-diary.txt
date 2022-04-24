@@ -56,12 +56,14 @@ Documentation.
 
 What else? First Release!
 
+
 ... ...
 
 (some day)
 
 Determined to make backend better,
 but resulting in full rewrite.
+
 
 ... ... (worked hard)
 
@@ -92,3 +94,14 @@ Phone says a release apk should be signed to be installed.
 Satisfy it. https://stackoverflow.com/questions/4853011/how-to-sign-an-android-apk-file
 
 Okay, it's 17th 3 a.m.  publish it and sleep.
+
+
+... ... (doing something else)
+
+24th
+
+Took some misc things.
+
+Made a minor change in `server.py`,
+but resulting in MUCH faster server response...
+I don't know what's the point. But it's great. Period.

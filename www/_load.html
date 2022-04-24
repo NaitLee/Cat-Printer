@@ -10,9 +10,11 @@
             --fore-color: #111;
             --back-color: #eee;
             --notice-error: rgba(255, 0, 0, 0.2);
-            --font-size: 1.2rem;
+            --font-size: 1rem;
             --line-height: 1.8em;
             --anim-time: 0.5s;
+            --span: 8px;
+            --span-double: calc(var(--span) * 2);
         }
         body {
             background-color: var(--back-color);
@@ -92,6 +94,12 @@
         #loading-screen>.dots>span:nth-child(2) { animation-delay: 0.3s; }
         #loading-screen>.dots>span:nth-child(3) { animation-delay: 0.6s; }
 
+        .noscript {
+            margin: var(--span-double);
+            text-align: center;
+            background-color: var(--notice-error);
+            display: block;
+        }
         a {
             transition: all var(--anim-time) ease-out;
         }

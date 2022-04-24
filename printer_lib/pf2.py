@@ -9,7 +9,7 @@ from typing import Dict, Tuple
 def uint32be(b: bytes):
     'Translate 4 bytes as unsigned big-endian 32-bit int'
     return (
-        (b[0] << 32) +
+        (b[0] << 24) +
         (b[1] << 16) +
         (b[2] << 8) +
         b[3]

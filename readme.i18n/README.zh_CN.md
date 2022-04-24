@@ -108,7 +108,7 @@ python3 server.py
 
 ## 许可证
 
-Copyright © 2022 NaitLee Soft. 保留一些权利。
+Copyright © 2021-2022 NaitLee Soft. 保留一些权利。
 
 敬请查看文件 `COPYING`，`LICENSE`，以及在 `www/jslicense.html` 中有关 JavaScript 许可的详细内容。
 

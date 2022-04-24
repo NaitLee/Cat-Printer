@@ -41,16 +41,13 @@
     "please-enable-bluetooth": "请启用蓝牙",
     "error-happened-please-check-error-message": "发生错误，请检查错误消息",
     "you-can-seek-for-help-with-detailed-info-below": "您可以使用以下详细信息寻求帮助",
-
     "or-try-to-scan-longer": "或者尝试延长扫描时间",
     "print-to-cat-printer": "打印到猫咪打印机。",
     "supported-models-": "支持的型号：",
     "path-to-input-file-dash-for-stdin": "输入文件的位置。使用 '-' 作为标准输入",
     "scan-for-specified-seconds": "扫描指定的时长",
-
     "dump-the-traffic": "转储数据",
     "text-printing-mode": "文字打印模式",
-
     "please-install-pyobjc-via-pip": "请从 pip 安装 `pyobjc`",
     "please-install-bleak-via-pip": "请从 pip 安装 `bleak`",
     "folder-printer_lib-is-incomplete-or-missing-please-check": "文件夹 `printer_lib` 不完整或丢失，请检查",
@@ -93,5 +90,11 @@
     "all-testers-and-users": "所有测试及正式用户",
     "everyone-is-awesome": "每个人都是好样的！",
     "license": "许可证",
-    "exiting": "退出中……"
+    "exiting": "退出中……",
+
+    "dark-theme": "深色主题",
+    "high-contrast": "高对比度",
+    "welcome": "欢迎！",
+    "copyright-and-license": "版权与许可",
+    "some-rights-reserved": "保留一些权利。"
 }

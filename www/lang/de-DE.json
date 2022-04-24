@@ -52,7 +52,6 @@
     "scan-for-specified-seconds": "Suchlauf für die angegebenen Sekunden",
     "dump-the-traffic": "Den Datenverkehr auf dem Drucker ausgeben und PBM-Bild beim Textdruck",
     "text-printing-mode": "Textdruckmodus",
-
     "please-install-pyobjc-via-pip": "Bitte installieren Sie `pyobjc` über pip",
     "please-install-bleak-via-pip": "Bitte installieren Sie `bleak` über pip",
     "folder-printer_lib-is-incomplete-or-missing-please-check": "Der Ordner `printer_lib` ist unvollständig oder fehlt, bitte überprüfen Sie",
@@ -96,6 +95,11 @@
     "all-testers-and-users": "All Tester & Benutzer",
     "everyone-is-awesome": "Jeder ist super",
     "license": "Lizenz",
-    "exiting": "Exiting…"
+    "exiting": "Exiting…",
 
+    "dark-theme": "Dark Theme",
+    "high-contrast": "High Contrast",
+    "copyright-and-license": "Copyright and License",
+    "welcome": "Welcome!",
+    "some-rights-reserved": "Einige Rechte sind vorbehalten."
 }

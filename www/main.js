@@ -42,6 +42,7 @@ const Notice = (function() {
         if (last_span) last_span.remove();
         let span = document.createElement('span');
         span.innerText = text;
+        span.setAttribute('data-i18n', message);
         span.classList.add(class_name);
         notice.appendChild(span);
         last_span = span;
@@ -243,6 +244,7 @@ class CanvasController {
     /** @type {HTMLCanvasElement} */
     canvas;
     div;
+    imageUrl;
     isCanvas;
     algorithm;
     threshold;
@@ -263,6 +265,7 @@ class CanvasController {
         this.div = document.getElementById('control-document');
         this.height = CanvasController.defaultHeight;
         this.thresholdRange = document.getElementById('threshold');
+        this.imageUrl = null;
 
         putEvent('input[name="mode"]', 'change', (event) => this.enableMode(event.currentTarget.value), this);
         putEvent('input[name="algo"]', 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
@@ -304,6 +307,7 @@ class CanvasController {
     }
     crop() {}
     activatePreview() {
+        if (!this.imageUrl) return;
         let preview = this.preview;
         let t = Math.min(this.threshold, 255);
         if (this.isCanvas) {
@@ -351,6 +355,7 @@ class CanvasController {
     }
     insertPicture() {
         const put_image = (url) => {
+            this.imageUrl = url;
             if (this.isCanvas) {
                 let img = document.createElement('img');
                 img.src = url;
@@ -474,7 +479,7 @@ class Main {
             putEvent('#button-print', 'click', this.print, this);
             putEvent('#device-refresh', 'click', this.searchDevices, this);
             putEvent('#set-accessibility', 'click', () => Dialog.alert('#accessibility'));
-            putEvent('#link-about', 'click', () => Dialog.alert('#frame'));
+            putEvent('a[target="frame"]', 'click', () => Dialog.alert('#frame'));
             this.attachSetter('#scan-time', 'change', 'scan_timeout');
             this.attachSetter('#device-options', 'input', 'printer');
             this.attachSetter('input[name="algo"]', 'change', 'mono_algorithm');
@@ -494,6 +499,14 @@ class Main {
             this.attachSetter('#force-rtl', 'change', 'force_rtl',
                 (checked) => checked ? document.body.classList.add('force-rtl')
                     : document.body.classList.remove('force-rtl')
+            );
+            this.attachSetter('#dark-theme', 'change', 'dark_theme',
+                (checked) => checked ? document.body.classList.add('dark')
+                    : document.body.classList.remove('dark')
+            );
+            this.attachSetter('#high-contrast', 'change', 'high_contrast',
+                (checked) => checked ? document.body.classList.add('high-contrast')
+                    : document.body.classList.remove('high-contrast')
             );
             this.attachSetter('#threshold', 'change', 'threshold',
                 (value) => this.canvasController.threshold = value

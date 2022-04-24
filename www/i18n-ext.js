@@ -1,10 +1,23 @@
 
+///<reference path="i18n.d.ts" />
+
 /**
  * Methods to know which string to use, per language
+ * Regard other as examples, and make your own!
  */
 var I18nExtensions = (function() {
 
-    /** @type {ExtensionOf<'en-US'>} */
+    // Don't forget to register your extension first!
+    var registers = {
+        'en-US': english,
+        'zh-CN': chinese,
+        'de-DE': german
+    };
+
+    /**
+     * Here's especially useful for showing what can be done!
+     * @type {ExtensionOf<'en-US'>}
+     */
     function english(things, conditions) {
         let text = conditions;
         for (let index in things) {
@@ -23,13 +36,18 @@ var I18nExtensions = (function() {
         return text;
     }
 
-    /** @type {ExtensionOf<'zh-CN'>} */
+    /**
+     * 精辟。不解释。
+     * 不过，量词什么的，以后再说……
+     * @type {ExtensionOf<'zh-CN'>}
+     */
     function chinese(things, conditions) {
-        let text = conditions;
-        return text;
+        return conditions;
     }
 
-    /** @type {ExtensionOf<'de-DE'>} */
+    /**
+     * @type {ExtensionOf<'de-DE'>}
+     */
     function german(things, conditions) {
         let text = conditions;
         for (let index in things) {
@@ -40,10 +58,6 @@ var I18nExtensions = (function() {
         return text;
     }
 
-    return {
-        'en-US': english,
-        'zh-CN': chinese,
-        'de-DE': german
-    }
+    return registers;
 
 })();

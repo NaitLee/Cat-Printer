@@ -54,9 +54,9 @@
                     <div>
                         <p data-i18n="coming-soon">Coming Soon...</p>
                         <p>
-                            <a id="link-about" href="about.html" target="frame" data-i18n="about">About</a>
+                            <a href="about.html" target="frame" data-i18n="about">About</a>
                             <!-- LibreJS doesn't work with dynamically inserted script tag. Going to complain -->
-                            <a href="jslicense.html" data-jslicense="1"
+                            <a href="jslicense.html" data-jslicense="1" target="frame"
                             data-i18n="javascript-license-information">JavaScript License Information</a>
                         </p>
                     </div>
@@ -123,6 +123,12 @@
             </div>
             <div>
                 <h2 data-i18n="layout">Layout</h2>
+                <input type="checkbox" name="dark-theme" id="dark-theme" />
+                <label for="dark-theme" data-i18n="dark-theme">Dark Theme</label>
+                <br />
+                <input type="checkbox" name="high-contrast" id="high-contrast" />
+                <label for="high-contrast" data-i18n="high-contrast">High Contrast</label>
+                <br />
                 <input type="checkbox" name="no-animation" id="no-animation" />
                 <label for="no-animation" data-i18n="disable-animation">Disable Animation</label>
                 <br />
@@ -133,7 +139,7 @@
                 <label for="large-font" data-i18n="large-font">Large Font</label>
             </div>
         </div>
-        <iframe id="frame" src="about.html" name="frame" title="frame"></iframe>
+        <iframe id="frame" src="about:blank" name="frame" title="frame"></iframe>
     </div>
     <div id="dialog" class="hidden">
         <div class="shade"></div>

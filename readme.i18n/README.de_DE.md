@@ -90,7 +90,7 @@ Natürlich sind PRs willkommen, wenn Sie sie meistern können!
 
 ## Lizenz
 
-Copyright © 2022 NaitLee Soft. Einige Rechte sind vorbehalten.
+Copyright © 2021-2022 NaitLee Soft. Einige Rechte sind vorbehalten.
 
 Siehe Datei `COPYING`, `LICENSE` und Details zum verwendeten JavaScript in der Datei `www/jslicense.html`.
 
