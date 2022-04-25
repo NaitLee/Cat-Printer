@@ -447,6 +447,14 @@ async function initI18n() {
     }
 }
 
+async function testI18n(lang) {
+    i18n.useLanguage(lang);
+    i18n.add(lang, await fetch(`/lang/${lang}-ex.jsonc`)
+        .then(r => r.text())    // jsonc: JSON with comment
+        .then(t => JSON.parse(t.replace(/\s*\/\/.*/g, '')))
+    , true);
+}
+
 class Main {
     promise;
     /** @type {CanvasController} */
@@ -472,8 +480,15 @@ class Main {
             /** @type {HTMLIFrameElement} */
             let iframe = document.getElementById('frame');
             iframe.addEventListener('load', () => {
+                iframe.contentDocument.body.classList.value = document.body.classList.value;
                 applyI18nToDom(iframe.contentDocument);
             });
+            function apply_class(class_name, value) {
+                [document, iframe.contentDocument].forEach(d => value ?
+                    d.body.classList.add(class_name) :
+                    d.body.classList.remove(class_name)
+                );
+            }
             this.canvasController = new CanvasController();
             putEvent('#button-exit', 'click', this.exit, this);
             putEvent('#button-print', 'click', this.print, this);
@@ -489,24 +504,19 @@ class Main {
                 (checked) => checked && Notice.note('dry-run-test-print-process-only')
             );
             this.attachSetter('#no-animation', 'change', 'no_animation',
-                (checked) => checked ? document.body.classList.add('no-animation')
-                    : document.body.classList.remove('no-animation')
+                (checked) => apply_class('no-animation', checked)
             );
             this.attachSetter('#large-font', 'change', 'large_font',
-                (checked) => checked ? document.body.classList.add('large-font')
-                    : document.body.classList.remove('large-font')
+                (checked) => apply_class('large-font', checked)
             );
             this.attachSetter('#force-rtl', 'change', 'force_rtl',
-                (checked) => checked ? document.body.classList.add('force-rtl')
-                    : document.body.classList.remove('force-rtl')
+                (checked) => apply_class('force-rtl', checked)
             );
             this.attachSetter('#dark-theme', 'change', 'dark_theme',
-                (checked) => checked ? document.body.classList.add('dark')
-                    : document.body.classList.remove('dark')
+                (checked) => apply_class('dark', checked)
             );
             this.attachSetter('#high-contrast', 'change', 'high_contrast',
-                (checked) => checked ? document.body.classList.add('high-contrast')
-                    : document.body.classList.remove('high-contrast')
+                (checked) => apply_class('high-contrast', checked)
             );
             this.attachSetter('#threshold', 'change', 'threshold',
                 (value) => this.canvasController.threshold = value

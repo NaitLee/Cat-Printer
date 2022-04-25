@@ -1,0 +1,16 @@
+{
+    "$language": "English (US) i18n example",
+    // plural
+    "0-apples": {
+        "single": "{0} apple",
+        "multiple": "{0} apples"
+    },
+    // order
+    "0th-apple": {
+        "nth": "{0} apple"
+    },
+    // a or an
+    "there-is-a-0": {
+        "an": "There is {0}"
+    }
+}

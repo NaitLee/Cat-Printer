@@ -79,9 +79,7 @@ If there are something better to organize these, feel free to discuss in issue.
   - Bundled all required scripts, see file `0-transpile.sh`
   - Is not there by default. Transpile it yourself
 - `www/i18n*` - Scripts about I18n:
-  - TODO. In fact it worth a dedicated document to describe it
-  - (Mostly) Depends on "extensions" to work in the correct way,
-    feel free to extend, as it's *your* turn
+  - See [i18n.md](i18n.i18n/i18n.md)
 - `www/*.js` - Other scripts:
   - Small but useful, just look at them directly
 - `www/jslicense.html` - Dedicated JavaScript License information

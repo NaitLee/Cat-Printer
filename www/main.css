@@ -52,11 +52,12 @@ a+a {
 .center {
     text-align: center;
 }
-button, input, select, textarea {
+button, input, select, textarea, label {
     font: inherit;
     color: var(--fore-color);
     /* background-color: var(--back-color); */
     background-color: transparent;
+    display: inline-block;
 }
 select[multiple] {
     width: 8em;
@@ -70,7 +71,6 @@ button, input[type="number"], input[type="text"], select {
     transition: all var(--anim-time) var(--curve);
     cursor: pointer;
     min-width: 6em;
-    display: inline-block;
     line-height: calc(var(--font-size) + var(--span));
 }
 input[type="number"], input[type="text"] {
@@ -491,10 +491,6 @@ a {
     a:hover, a:active { color: #77f; }
     canvas#preview, canvas#control-canvas,
     #control-document, .logo { filter: brightness(0.6); }
-    body.high-contrast.dark {
-        --fore-color: #fff;
-        --back-color: #000;
-    }
 }
 /* so silly... */
 body.dark { --fore-color: #eee; --back-color: #333; }
@@ -532,6 +528,9 @@ body.large-font,
 body.force-rtl,
 #force-rtl+label {
     direction: rtl;
+}
+.force-ltr {
+    direction: ltr;
 }
 body.high-contrast {
     --border: 2px;

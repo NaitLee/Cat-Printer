@@ -68,13 +68,11 @@ class I18n {
      * Translate a string ("text"), using "things" such as numbers
      * @param {string} text
      * @param {Things} things
-     * @param {boolean} can_change_things
      */
-    translate(text, things, can_change_things = true) {
+    translate(text, things) {
         let conditions = this.database[this.language][text] || text;
         if (!things) return conditions;
-        if (!can_change_things) things = { ... things };
-        if (this.extensions[this.language] && typeof conditions !== 'string')
+        if (this.extensions[this.language])
             text = this.extensions[this.language](things, conditions);
         else text = conditions;
         for (let key in things) {
@@ -85,7 +83,7 @@ class I18n {
 }
 
 /**
- * A i18n instance that is directly callable
+ * An i18n instance that is directly callable
  * @type {I18nCallable}
  */
 var i18n = (function() {
@@ -95,10 +93,9 @@ var i18n = (function() {
     /**
      * @param {string} text
      * @param {Things} things 
-     * @param {boolean} can_change_things
      */
-    let i18n_callable = function(text, things, can_change_things = true) {
-        return instance.translate.call(i18n_callable, text, things, can_change_things);
+    let i18n_callable = function(text, things) {
+        return instance.translate.call(i18n_callable, text, things);
     }
 
     Object.setPrototypeOf(i18n_callable, instance);

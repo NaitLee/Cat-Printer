@@ -8,7 +8,7 @@ interface Extension {
     (things: Things, conditions: Conditions): string;
 }
 interface ExtensionOf<K extends Languages> {
-    (things: Things, conditions: ConditionsOf<K>): string;
+    (things: Things, conditions: ConditionsOf<K> | string): string;
 }
 type Languages = keyof AllConditions;
 
@@ -21,16 +21,17 @@ type AllConditions = {
     'en-US': {
         'single': string,
         'multiple': string,
-        '1st': string,
-        '2nd': string,
-        '3rd': string,
-        'nth': string
+        'nth': string,
+        'a': string,
+        'an': string
     },
     'de-DE': {
         'single': string,
         'multiple': string
     },
-    'zh-CN': {}
+    'zh-CN': {
+        'measure': string
+    }
 };
 
 interface I18nCallable extends I18n {
