@@ -16,73 +16,73 @@
             <div class="menu">
                 <div class="panel" id="panel-print" data-default>
                     <label for="device-options" data-i18n="device-">Device:</label>
-                    <select id="device-options">
+                    <select id="device-options" data-key>
                     </select>
-                    <button id="device-refresh" data-i18n="refresh">Refresh</button>
+                    <button id="device-refresh" data-i18n="refresh" data-key>Refresh</button>
                     <hr />
                     <label data-i18n="mode-">Mode:</label>
                     <label>
-                        <input type="radio" name="mode" value="mode-canvas" checked />
+                        <input type="radio" name="mode" value="mode-canvas" data-key checked />
                         <span data-i18n="canvas">Canvas</span>
                     </label>
                     <!-- <label>
-                        <input type="radio" name="mode" value="mode-document" />
+                        <input type="radio" name="mode" value="mode-document" data-key />
                         <span data-i18n="document">Document</span>
                     </label><br /> -->
-                    <button id="insert-picture" data-i18n="insert-picture">Insert Picture</button>
+                    <button id="insert-picture" data-i18n="insert-picture" data-key="Enter">Insert Picture</button>
                     <br />
                     <label data-i18n="process-as-">Process as:</label>
                     <label>
-                        <input type="radio" name="algo" value="algo-direct" />
+                        <input type="radio" name="algo" value="algo-direct" data-key />
                         <span data-i18n="text">Text</span>
                     </label>
                     <label>
-                        <input type="radio" name="algo" value="algo-steinberg" checked />
+                        <input type="radio" name="algo" value="algo-steinberg" data-key checked />
                         <span data-i18n="picture">Picture</span>
                     </label>
                     <!-- <label>
-                        <input type="radio" name="algo" value="algo-halftone" />
+                        <input type="radio" name="algo" value="algo-halftone" data-key />
                         <span data-i18n="pattern">Pattern</span>
                     </label> --><br />
                     <label for="threshold" data-i18n="threshold-">Threshold:</label>
-                    <input type="range" min="0" max="256" value="128" step="8" id="threshold" data-default />
+                    <input type="range" min="0" max="256" value="128" step="8" id="threshold" data-key data-default />
                     <br />
-                    <input type="checkbox" name="transparent-as-white" id="transparent-as-white" checked />
+                    <input type="checkbox" name="transparent-as-white" id="transparent-as-white" data-key checked />
                     <label for="transparent-as-white" data-i18n="transparent-as-white">Transparent as White</label>
                 </div>
                 <div class="panel active" id="panel-help">
                     <div>
                         <p data-i18n="coming-soon">Coming Soon...</p>
                         <p>
-                            <a href="about.html" target="frame" data-i18n="about">About</a>
+                            <a href="about.html" target="frame" data-i18n="about" data-key>About</a>
                             <!-- LibreJS doesn't work with dynamically inserted script tag. Going to complain -->
                             <a href="jslicense.html" data-jslicense="1" target="frame"
-                            data-i18n="javascript-license-information">JavaScript License Information</a>
+                            data-i18n="javascript-license-information" data-key>JavaScript License Information</a>
                         </p>
                     </div>
                 </div>
                 <div class="panel" id="panel-settings">
                     <label for="scan-time" data-i18n="scan-time-">Scan Time:</label>
-                    <input type="number" name="scan-time" id="scan-time" min="1" max="10" value="3" />
+                    <input type="number" name="scan-time" id="scan-time" min="1" max="10" value="3" data-key />
                     <span data-i18n="-seconds">seconds</span>
                     <br />
-                    <input type="checkbox" name="flip-h" id="flip-h" />
+                    <input type="checkbox" name="flip-h" id="flip-h" data-key />
                     <label for="flip-h" data-i18n="flip-horizontally">Flip Horizontally</label>
-                    <input type="checkbox" name="flip-v" id="flip-v" />
+                    <input type="checkbox" name="flip-v" id="flip-v" data-key />
                     <label for="flip-v" data-i18n="flip-vertically">Flip Vertically</label>
                     <hr />
-                    <input type="checkbox" name="dry-run" id="dry-run" />
+                    <input type="checkbox" name="dry-run" id="dry-run" data-key />
                     <label for="dry-run" data-i18n="dry-run">Dry Run</label>
-                    <input type="checkbox" name="dump" id="dump" />
+                    <input type="checkbox" name="dump" id="dump" data-key />
                     <label for="dump" data-i18n="dump-traffic">Dump Traffic</label>
                     <br />
-                    <button id="set-accessibility">
+                    <button id="set-accessibility" data-key>
                         <span>🌎</span>
                         <span data-i18n="accessibility">Accessibility</span>
                     </button>
-                    <button class="hidden" data-panel="panel-error" data-i18n="error-message">Error Message</button>
+                    <button class="hidden" data-panel="panel-error" data-i18n="error-message" data-key>Error Message</button>
                     <div class="center">
-                        <button id="button-exit" data-i18n="exit">Exit</button>
+                        <button id="button-exit" data-i18n="exit" data-key>Exit</button>
                     </div>
                 </div>
                 <div class="panel" id="panel-error">
@@ -91,9 +91,9 @@
                 </div>
             </div>
             <div class="compact-menu">
-                <div class="compact-button" data-panel="panel-print" data-i18n="print">Print</div>
-                <div class="compact-button active" data-panel="panel-help" data-i18n="help">Help</div>
-                <div class="compact-button" data-panel="panel-settings" data-i18n="settings">Settings</div>
+                <button class="compact-button" data-panel="panel-print" data-i18n="print" data-key="8">Print</button>
+                <button class="compact-button active" data-panel="panel-help" data-i18n="help" data-key="9">Help</button>
+                <button class="compact-button" data-panel="panel-settings" data-i18n="settings" data-key="0">Settings</button>
             </div>
             <div class="center">
                 <!--  -->
@@ -107,7 +107,7 @@
                 <!-- <button id="canvas-expand" data-i18n="expand">Expand</button>
                 <button id="canvas-crop" data-i18n="crop">Crop</button> -->
                 <!-- <button id="button-preview" data-i18n="preview">Preview</button> -->
-                <button id="button-print" data-i18n="print">Print</button>
+                <button id="button-print" data-i18n="print" data-key=" ">Print</button>
             </div>
             <div class="blank"></div>
         </div>
@@ -117,29 +117,33 @@
         <input type="file" id="file" />
         <div id="accessibility">
             <div>
-                <h2 data-i18n="language">Language</h2>
-                <div id="select-language">
-                </div>
+                <h2>
+                    <span>🌎</span>
+                    <span data-i18n="language">Language</span>
+                </h2>
+                <select multiple id="select-language" data-key="5">
+                </select>
+                <p data-i18n="press-tab-to-control-with-keyboard">Press Tab to control with keyboard</p>
             </div>
             <div>
                 <h2 data-i18n="layout">Layout</h2>
-                <input type="checkbox" name="dark-theme" id="dark-theme" />
+                <input type="checkbox" name="dark-theme" id="dark-theme" data-key />
                 <label for="dark-theme" data-i18n="dark-theme">Dark Theme</label>
                 <br />
-                <input type="checkbox" name="high-contrast" id="high-contrast" />
+                <input type="checkbox" name="high-contrast" id="high-contrast" data-key />
                 <label for="high-contrast" data-i18n="high-contrast">High Contrast</label>
                 <br />
-                <input type="checkbox" name="no-animation" id="no-animation" />
+                <input type="checkbox" name="no-animation" id="no-animation" data-key />
                 <label for="no-animation" data-i18n="disable-animation">Disable Animation</label>
                 <br />
-                <input type="checkbox" name="force-rtl" id="force-rtl" />
+                <input type="checkbox" name="force-rtl" id="force-rtl" data-key />
                 <label for="force-rtl" data-i18n="right-to-left-text-order">Right-to-left text order</label>
                 <br />
-                <input type="checkbox" name="large-font" id="large-font" />
+                <input type="checkbox" name="large-font" id="large-font" data-key />
                 <label for="large-font" data-i18n="large-font">Large Font</label>
             </div>
         </div>
-        <iframe id="frame" src="about:blank" name="frame" title="frame"></iframe>
+        <iframe id="frame" src="about:blank" name="frame" title="frame" data-key="6"></iframe>
     </div>
     <div id="dialog" class="hidden">
         <div class="shade"></div>
@@ -148,7 +152,7 @@
                 <!-- Dialog content -->
             </div>
             <div id="dialog-choices">
-                <input id="dialog-input" type="text" id="dialog-input" placeholder="">
+                <input id="dialog-input" type="text" id="dialog-input" placeholder="" data-key="4">
                 <hr />
             </div>
         </div>
@@ -164,10 +168,11 @@
             <p class="noscript">
                 <span>Please enable JavaScript!</span><br />
                 <a href="jslicense.html" data-i18n="javascript-license-information"
-                data-jslicense="1" >JavaScript License Information</a>
+                data-jslicense="1" tabindex="1" >JavaScript License Information</a>
             </p>
         </noscript>
     </div>
+    <div id="keyboard-shortcuts-layer"></div>
     <script src="loader.js"></script>
 </body>
 </html>

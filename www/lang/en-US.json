@@ -101,5 +101,10 @@
     "high-contrast": "High Contrast",
     "welcome": "Welcome!",
     "copyright-and-license": "Copyright and License",
-    "some-rights-reserved": "Some rights reserved."
+    "some-rights-reserved": "Some rights reserved.",
+    "ENTER": "Enter",
+    "SPACE": "Space",
+    "ESCAPE": "Esc",
+    "TAB": "Tab",
+    "press-tab-to-control-with-keyboard": "Press Tab to control with keyboard"
 }

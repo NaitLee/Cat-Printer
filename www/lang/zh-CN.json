@@ -96,5 +96,10 @@
     "high-contrast": "高对比度",
     "welcome": "欢迎！",
     "copyright-and-license": "版权与许可",
-    "some-rights-reserved": "保留一些权利。"
+    "some-rights-reserved": "保留一些权利。",
+    "ENTER": "回车",
+    "SPACE": "空格",
+    "ESCAPE": "ESC",
+    "TAB": "Tab",
+    "press-tab-to-control-with-keyboard": "按下 Tab 以使用键盘操作"
 }

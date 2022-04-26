@@ -83,9 +83,11 @@ const Dialog = (function() {
         last_choices = [];
         dialog_input.value = '';
         dialog_input.style.display = have_input ? 'unset' : 'none';
+        let index = 1;
         for (let choice of choices) {
             let button = document.createElement('button');
             button.setAttribute('data-i18n', choice);
+            button.setAttribute('data-key', index++);
             button.innerText = i18n(choice);
             if (!have_input)
                 button.addEventListener('click', () => dialog_input.value = choice);
@@ -403,7 +405,7 @@ function applyI18nToDom(doc) {
 }
 async function initI18n() {
     if (typeof i18n === 'undefined') return;
-    /** @type {HTMLOptionElement} */
+    /** @type {HTMLSelectElement} */
     let language_options = document.getElementById('select-language');
     /** @type {{ [code: string]: string }} */
     let list = await fetch('/lang/list.json').then(r => r.json());
@@ -412,14 +414,20 @@ async function initI18n() {
         i18n.add(value, await fetch(`/lang/${value}.json`).then(r => r.json()), true);
         applyI18nToDom();
     }
+    language_options.addEventListener('change', () => {
+        language_options.selectedOptions.item(0).click();
+    });
     for (let code in list) {
         let option = document.createElement('option');
         option.value = code;
         option.innerText = list[code];
         option.addEventListener('click', (event) => {
+            /** @type {HTMLOptionElement} */
             let option = event.currentTarget;
             let value = option.value;
+            language_options.selectedIndex = option.index;
             use_language(value);
+            Notice.note('welcome');
         });
         language_options.appendChild(option);
     }
@@ -453,6 +461,97 @@ async function testI18n(lang) {
         .then(r => r.text())    // jsonc: JSON with comment
         .then(t => JSON.parse(t.replace(/\s*\/\/.*/g, '')))
     , true);
+}
+
+function isHidden(element) {
+    let parents = [element];
+    while (parents[0].parentElement)
+        parents.unshift(parents[0].parentElement);
+    return parents.some(e => {
+        let rect = e.getBoundingClientRect();
+        return (
+            e.classList.contains('hidden') ||
+            e.classList.contains('hard-hidden') ||
+            e.style.display == 'none' ||
+            rect.width == 0 || rect.height == 0 ||
+            rect.x < 0 || rect.y < 0 ||
+            e.style.visibility == 'none' ||
+            e.style.opacity == '0'
+        );
+    });
+}
+
+function initKeyboardShortcuts() {
+    const layer = document.getElementById('keyboard-shortcuts-layer');
+    const dialog = document.getElementById('dialog');
+    let key, keys = 'qwertyuiopasdfghjklzxcvbnm';
+    let focused, onbreak = false, started = false;
+    let inputs, shortcuts = {};
+    const mark_keys = () => {
+        if (dialog.classList.contains('hidden'))
+            inputs = Array.from(document.querySelectorAll('*[data-key]'));
+        else inputs = Array.from(document.querySelectorAll('#dialog *[data-key]'));
+        /** @type {{ [key: string]: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement }} */
+        let key_index = 0;
+        shortcuts = {};
+        for (let input of inputs) {
+            if (isHidden(input)) continue;
+            let key = input.getAttribute('data-key') || keys[key_index++];
+            shortcuts[key] = input;
+        }
+        Array.from(layer.children).forEach(e => e.remove());
+        for (let key in shortcuts) {
+            if (onbreak) {
+                let rect = focused.getBoundingClientRect();
+                let span = document.createElement('span');
+                span.innerText = i18n('ESCAPE');
+                span.style.top = rect.y + 'px';
+                span.style.left = rect.x + 'px';
+                layer.appendChild(span);
+                break;
+            }
+            let input = shortcuts[key];
+            let position = input.getBoundingClientRect();
+            let span = document.createElement('span');
+            span.innerText = i18n(key.toUpperCase().replace(' ', 'SPACE'));
+            span.style.top = position.y + 'px';
+            span.style.right = (window.innerWidth - position.x) + 'px';
+            layer.appendChild(span);
+        }
+    }
+    const start = () => setInterval(mark_keys, 1000);
+    document.body.addEventListener('keyup', (event) => {
+        document.body.addEventListener('keyup', () => requestAnimationFrame(mark_keys), { once: true });
+        key = event.key;
+        if (key === 'Tab') {
+            if (!started) { start(); started = true; }
+            mark_keys();
+            return;
+        }
+        let input = shortcuts[key];
+        if (input) {
+            switch (input.type || input.tagName) {
+                case 'range':
+                case 'text':
+                case 'number':
+                case 'tel':
+                case 'date':
+                case 'select-one':
+                case 'select-multiple':
+                case 'DIV':
+                case 'TEXTAREA':
+                    input.focus();
+                    onbreak = true;
+                    break;
+                default:
+                    input.click();
+            }
+            focused = input;
+        } else if (key === 'Escape' && focused) {
+            focused.blur();
+            onbreak = !onbreak;
+        }
+    });
 }
 
 class Main {
@@ -525,6 +624,9 @@ class Main {
             this.attachSetter('#flip-v', 'change', 'flip_v');
             this.attachSetter('#dump', 'change', 'dump');
             await this.loadConfig();
+            if (this.settings['is_android'])
+                document.getElementById('select-language').multiple = false;
+            initKeyboardShortcuts();
             this.searchDevices();
             document.querySelector('main').classList.remove('hard-hidden');
             document.getElementById('loading-screen').classList.add('hidden');

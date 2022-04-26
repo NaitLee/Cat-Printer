@@ -20,6 +20,7 @@
     --notice-note: rgba(0, 255, 0, 0.2);
     --notice-warn: rgba(255, 128, 0, 0.2);
     --notice-error: rgba(255, 0, 0, 0.2);
+    --shade: rgba(238, 238, 238, 0.5);
 }
 
 body {
@@ -141,7 +142,7 @@ main>.menu-side {
     position: sticky;
     top: 0;
     height: 100%;
-    overflow: auto;
+    /* overflow: auto; */
     margin: var(--span);
     min-width: 12em;
 }
@@ -163,8 +164,15 @@ main>.menu-side>.menu {
     line-height: 2em;
     text-align: center;
     cursor: pointer;
+    border: none;
     border-top: var(--border) solid var(--fore-color);
     border-bottom: var(--border) solid transparent;
+    padding: 0;
+    margin: 0;
+}
+.compact-button:hover {
+    padding: 0;
+    margin: 0;
 }
 .compact-button.active {
     border: var(--border) solid var(--fore-color);
@@ -339,7 +347,7 @@ hr {
 #accessibility>*:nth-child(1) {
     flex-grow: 1;
 }
-#select-language {
+#select-language[multiple] {
     width: calc(100% - var(--span-double));
     height: 8em;
     border: var(--border) solid var(--fore-color);
@@ -407,6 +415,33 @@ hr {
 #loading-screen>.dots>span:nth-child(1) { animation-delay: 0s; }
 #loading-screen>.dots>span:nth-child(2) { animation-delay: 0.3s; }
 #loading-screen>.dots>span:nth-child(3) { animation-delay: 0.6s; }
+
+#keyboard-shortcuts-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: visible;
+    pointer-events: all;
+    z-index: 2;
+}
+#keyboard-shortcuts-layer span {
+    display: inline-block;
+    position: absolute;
+    /* border: var(--border) dotted var(--fore-color); */
+    background-color: var(--shade);
+    padding: var(--span-half) var(--span);
+    white-space: pre;
+    line-height: 1em;
+    font-family: 'DejaVu Sans Mono', 'Consolas', monospace;
+    transform: translateY(calc(var(--font-size) * -1));
+}
+body.force-rtl #keyboard-shortcuts-layer span {
+    transform: translate(
+        calc(var(--font-size) * 2),
+        calc(var(--font-size) * -1)
+    );
+}
 
 a {
     transition: all var(--anim-time) ease-out;
@@ -485,7 +520,7 @@ a {
 }
 
 @media (prefers-color-scheme: dark) {
-    :root { --fore-color: #eee; --back-color: #333; }
+    :root { --fore-color: #eee; --back-color: #333; --shade: rgba(51, 51, 51, 0.5); }
     body, .shade { transition: background-color calc(var(--anim-time) * 2) ease-in; }
     a:link, a:visited { color: #66f; }
     a:hover, a:active { color: #77f; }
@@ -493,7 +528,7 @@ a {
     #control-document, .logo { filter: brightness(0.6); }
 }
 /* so silly... */
-body.dark { --fore-color: #eee; --back-color: #333; }
+body.dark { --fore-color: #eee; --back-color: #333; --shade: rgba(51, 51, 51, 0.5); }
 body.dark, .shade { transition: background-color calc(var(--anim-time) * 2) ease-in; }
 body.dark a:link, body.dark a:visited { color: #66f; }
 body.dark a:hover, body.dark a:active { color: #77f; }
@@ -541,6 +576,7 @@ body.high-contrast {
     --notice-note: transparent;
     --notice-warn: transparent;
     --notice-error: transparent;
+    --shade: rgba(0, 0, 0, 0.8);
     transition-duration: 0s;
 }
 body.high-contrast .shade { transition-duration: 0s; opacity: 1; }
