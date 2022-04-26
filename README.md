@@ -28,6 +28,7 @@ Currently:
 - Friendly!
   - Language support! You can participate in translation!
   - Good user interface, adaptive to PC/mobile and light/dark theme!
+  - Accessibility features, everyone is considered!
 
 - Feature-rich!
   - Web UI, for most people!

@@ -1,5 +1,6 @@
 {
     "$language": "Deutsch",
+    "KeyboardLayout": "1234567890qwertzuiopasdfghjklyxcvbnm",
     "cat-printer": "Cat Printer",
     "printer": "Drucker",
     "device-": "Gerät:",

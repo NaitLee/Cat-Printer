@@ -434,13 +434,7 @@ hr {
     white-space: pre;
     line-height: 1em;
     font-family: 'DejaVu Sans Mono', 'Consolas', monospace;
-    transform: translateY(calc(var(--font-size) * -1));
-}
-body.force-rtl #keyboard-shortcuts-layer span {
-    transform: translate(
-        calc(var(--font-size) * 2),
-        calc(var(--font-size) * -1)
-    );
+    transform: translate(-1em, calc(var(--font-size) * -1));
 }
 
 a {
@@ -580,7 +574,7 @@ body.high-contrast {
     transition-duration: 0s;
 }
 body.high-contrast .shade { transition-duration: 0s; opacity: 1; }
-body.high-contrast * { background-color: var(--back-color); }
+/* body.high-contrast * { background-color: var(--back-color); } */
 body.high-contrast .logo, canvas { filter: unset !important; }
 body.high-contrast #notice * { border: var(--border) dashed var(--fore-color); }
 body.high-contrast a:any-link { color: #00f; }
