@@ -282,9 +282,9 @@ hr {
     border: none;
     border-top: var(--border) solid var(--fore-color);
 }
-#frame {
+iframe#frame {
     width: 100%;
-    height: inherit;
+    height: 12em;
     border: none;
     background-color: transparent;
 }
@@ -304,7 +304,7 @@ hr {
 #dialog {
     position: fixed;
     width: 100%;
-    top: calc(50% - 12em);
+    top: 16%;
     text-align: center;
     z-index: 2;
     opacity: 2;
@@ -317,6 +317,7 @@ hr {
     box-sizing: border-box;
     border: var(--border) solid var(--fore-color);
     transition: transform var(--anim-time) var(--curve);
+    transform-origin: center 33%;
 }
 #dialog.hidden {
     opacity: 0;
@@ -326,14 +327,19 @@ hr {
     transform: scaleY(0);
 }
 #dialog-content {
-    height: 12em;
+    /* height: 12em; */
     max-height: 640px;
     margin: auto;
     padding: var(--span);
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 #dialog-choices {
     margin: auto;
     padding: var(--span);
+    padding-top: 0;
 }
 #choice-input {
     max-width: 100%;
@@ -347,12 +353,12 @@ hr {
 #accessibility>*:nth-child(1) {
     flex-grow: 1;
 }
-#select-language[multiple] {
+#select-language {
     width: calc(100% - var(--span-double));
     height: 8em;
     border: var(--border) solid var(--fore-color);
     padding: var(--span);
-    margin: var(--span);
+    margin: 0 var(--span);
     box-sizing: border-box;
 }
 #select-language option {
@@ -363,6 +369,7 @@ hr {
 }
 #accessibility>*:nth-child(2) {
     flex-grow: 1;
+    white-space: nowrap;
 }
 @keyframes jump {
     0% { transform: translateY(0); }
@@ -417,7 +424,7 @@ hr {
 #loading-screen>.dots>span:nth-child(3) { animation-delay: 0.6s; }
 
 #keyboard-shortcuts-layer {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;

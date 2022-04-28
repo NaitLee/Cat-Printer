@@ -55,7 +55,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
 
     settings = DictAsObject({
         'config_path': 'config.json',
-        'version': 1,
+        'version': 2,
         'first_run': True,
         'is_android': False,
         'scan_timeout': 5.0,
@@ -143,7 +143,8 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
                     # TODO: selective?
                     self.save_config()
                     return
-                self.settings = settings
+                for key in settings:
+                    self.settings[key] = settings[key]
         else:
             self.save_config()
 
@@ -162,6 +163,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         self.printer.scan_timeout = self.settings.scan_timeout
         self.printer.fake = self.settings.fake
         self.printer.dump = self.settings.dump
+        self.printer.use_text_mode = self.settings.text_mode
         self.printer.flip_h = self.settings.flip_h
         self.printer.flip_v = self.settings.flip_v
         self.printer.rtl = self.settings.force_rtl
@@ -241,6 +243,11 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
             self.api_fail({
                 'name': e.message,
                 'details': e.message_localized
+            })
+        except EOFError as e:
+            self.api_fail({
+                'name': 'EOFError',
+                'details': ''
             })
         except Exception as e:
             self.api_fail({

@@ -55,7 +55,6 @@
                         <p data-i18n="coming-soon">Coming Soon...</p>
                         <p>
                             <a href="about.html" target="frame" data-i18n="about" data-key>About</a>
-                            <!-- LibreJS doesn't work with dynamically inserted script tag. Going to complain -->
                             <a href="jslicense.html" data-jslicense="1" target="frame"
                             data-i18n="javascript-license-information" data-key>JavaScript License Information</a>
                         </p>
@@ -123,7 +122,8 @@
                 </h2>
                 <select multiple id="select-language" data-key="a">
                 </select>
-                <p data-i18n="press-tab-to-control-with-keyboard">Press Tab to control with keyboard</p>
+                <br />
+                <span id="hint-tab-control" data-i18n="to-enter-keyboard-mode-press-tab">To enter Keyboard Mode, press Tab</span>
             </div>
             <div>
                 <h2 data-i18n="layout">Layout</h2>

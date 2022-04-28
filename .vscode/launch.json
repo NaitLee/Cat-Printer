@@ -5,23 +5,45 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Bitmap Print",
+            "name": "PBM",
             "type": "python",
             "request": "launch",
             "program": "printer.py",
             "args": [
-                "-m", "-s", "1", "dump.pbm"
+                "-m", "-f", "GB02", "dump.pbm"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
         },
         {
-            "name": "Python: Text Print",
+            "name": "Text (IM)",
             "type": "python",
             "request": "launch",
             "program": "printer.py",
             "args": [
-                "-mt", "-f", "GB02", "COPYING"
+                "-m", "-f", "GB02", "-t", "16,Unifont", "COPYING"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Usual Bitmap",
+            "type": "python",
+            "request": "launch",
+            "program": "printer.py",
+            "args": [
+                "-m", "-f", "GB02", "-c", "image", "test.png"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Text (PF2)",
+            "type": "python",
+            "request": "launch",
+            "program": "printer.py",
+            "args": [
+                "-m", "-f", "GB02", "-t", "1,font,pf2", "COPYING"
             ],
             "console": "integratedTerminal",
             "justMyCode": true

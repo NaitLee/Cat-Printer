@@ -32,7 +32,7 @@
     - 打印照片，或单纯地进行测试
   - 命令行，技术爱好者必备！
     - 使用一些参数控制打印机
-    - 简易、简化的文字打印
+    - 简易、简化的图片或文字打印
     - 让程序的每一部分发挥作用
   - 其他一些好东西！
     - 服务器也具有 CUPS/IPP 能力
@@ -40,8 +40,8 @@
 - 跨平台！
   - 较新的 Windows 10 及以上
   - GNU/Linux
-  - MacOS *（需要测试）*
-  - 在安卓上也花了些功夫呢！
+  - MacOS *（需要更多测试）*
+  - 还有安卓！
 
 - 是[自由软件](https://www.gnu.org/philosophy/free-sw.html)！
   - 不像“原版”专有应用，此作品为在乎*开放思想与计算自由*的人而生！
@@ -98,6 +98,8 @@ python3 server.py
 对于所有支持的平台，  
 当已安装 [Python 3](https://www.python.org/) 时，您可以直接获取“纯净(pure)”版，  
 或在已使用 `pip` 安装 `bleak` 时使用“单一(bare)”版。
+
+如果您喜欢命令行，安装 [ImageMagick](https://imagemagick.org/) 和 [Ghostscript](https://ghostscript.com/) 会很有帮助。
 
 查看所有[发布版本](https://github.com/NaitLee/Cat-Printer/releases)！
 

@@ -1,8 +1,6 @@
 
 # Development
 
-**Note: Some maybe outdated at the moment**
-
 ## Overview
 
 This application have a Client/Server module, but it's just locally.
@@ -11,6 +9,9 @@ The backend is in Python 3, aiming to have fewest dependencies, and in fact curr
 This can ensure the simplicity of the core part.
 
 And the frontend is in a "old good" way, that use no "framework".  
+
+The command-line interface (CLI) could invoke other commands, to help the process.  
+Currently it may invoke `magick` and `gs`, for ImageMagick and Ghostscript respectively.
 
 My workspace stack is Linux/GNU/Artix/KDE/VSCodium, if you're interested.  
 For Android, GNU/Linux is required, though.
@@ -38,6 +39,8 @@ Sorry, I'm not a dev package manager enthusiast.
 
 If there are something better to organize these, feel free to discuss in issue.
 
+- Install [ImageMagick](https://imagemagick.org/) and [Ghostscript](https://ghostscript.com/)
+  - Now you can enjoy more command line features. And could make it better or debug problems
 - Install TypeScript on Node.js `npm`  
   `npm --global install typescript`  
   You may need root privilege on GNU/Linux (i.e. prefix `sudo`)  
@@ -82,9 +85,13 @@ If there are something better to organize these, feel free to discuss in issue.
   - See [i18n.md](i18n.i18n/i18n.md)
 - `www/*.js` - Other scripts:
   - Small but useful, just look at them directly
+  - Most are in Public Domain
 - `www/jslicense.html` - Dedicated JavaScript License information
 - `www/lang/*.json` - Language files for both front- & back-end
 
+- `version` - The version tag, as a file
+  - Modify it to determine the version used in build scripts
+  - Don't leave a trailing new line
 - `N-*.sh` - Shell files:
   - Helpers for development convenience
   - Quickly invoke with `./N<tab><enter>`
@@ -105,7 +112,7 @@ If there are something better to organize these, feel free to discuss in issue.
   - Just builds using the current repo state
   - **Doesn't** work out-of-the-box. Again, please wait for me to summarize the hacks...
 - `build-android/3-formal-build.sh` - The "formal" build script:
-  - Unlike the dev version, this needs a pre-built "bare" edition zip, and should be passed a version id (like `0.1.0`)
+  - Unlike the dev version, this takes files from a "bare" edition zip
   - Also unlike dev, this doesn't enforce the custom blacklist, since "bare" is already minimal
   - Now it builds a "release" version. In order to be installed on Android, you need to sign it. Know more on Internet
 
@@ -115,4 +122,6 @@ If there are development files that are not meant to be in this public repo, ple
 
 And don't put too-big files, especially binary. Not everyone have good connection to GitHub.
 
-Same applies to most feature-bloated 3rd party libraries. In our case you should try your best to avoid introducing more dependencies.
+Same applies to most feature-bloated 3rd party libraries.  
+In our case you should try your best to avoid introducing more dev dependencies.  
+Tip: it's reasonable to use (invoke) a tool that is already on the system, or always accepted by users / very easy to install

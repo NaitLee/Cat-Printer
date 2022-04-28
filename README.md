@@ -36,7 +36,7 @@ Currently:
     - Print picture, or just test if it works
   - Command line, for geeks & hackers!
     - Control printer with a few parameters
-    - Simplified text printing
+    - Simplified image/text printing
     - Make use of every part of the program
   - Some other goodies!
     - Server program is also CUPS/IPP capable
@@ -44,8 +44,8 @@ Currently:
 - Cross platform!
   - Newer Windows 10 and above
   - GNU/Linux
-  - MacOS *(Needs testing)*
-  - and a lot of extra efforts for Android!
+  - MacOS *(Needs more testing)*
+  - and also Android!
 
 - Free, as in [freedom](https://www.gnu.org/philosophy/free-sw.html)!
   - Unlike the "original" proprietary app,  
@@ -102,6 +102,8 @@ Currently in Mac the browser will not pop up automatically. Please run manually 
 For all supported platforms,  
 You can also use "pure" edition once you have [Python 3](https://www.python.org/) installed,  
 or "bare" edition if you also managed to install `bleak` via `pip`.
+
+If you like command-line, install [ImageMagick](https://imagemagick.org/) and [Ghostscript](https://ghostscript.com/) and enjoy the integraton.
 
 See the [releases](https://github.com/NaitLee/Cat-Printer/releases) now!
 

@@ -45,9 +45,7 @@
     "print-to-cat-printer": "打印到猫咪打印机。",
     "supported-models-": "支持的型号：",
     "path-to-input-file-dash-for-stdin": "输入文件的位置。使用 '-' 作为标准输入",
-    "scan-for-specified-seconds": "扫描指定的时长",
     "dump-the-traffic": "转储数据",
-    "text-printing-mode": "文字打印模式",
     "please-install-pyobjc-via-pip": "请从 pip 安装 `pyobjc`",
     "please-install-bleak-via-pip": "请从 pip 安装 `bleak`",
     "folder-printer_lib-is-incomplete-or-missing-please-check": "文件夹 `printer_lib` 不完整或丢失，请检查",
@@ -101,5 +99,17 @@
     "SPACE": "空格",
     "ESCAPE": "ESC",
     "TAB": "Tab",
-    "press-tab-to-control-with-keyboard": "按下 Tab 以使用键盘操作"
+    "COMMA": "逗号",
+    "DOT": "句号",
+    "to-enter-keyboard-mode-press-tab": "要进入键盘模式，请按 Tab",
+    "usage-": "用法：",
+    "positional-arguments-": "参数：",
+    "options-": "选项：",
+    "show-this-help-message": "显示此帮助信息",
+    "do-nothing": "什么也不做",
+    "scan-for-a-printer": "扫描打印机",
+    "text-printing-mode-with-options": "启用文字打印并指定选项",
+    "image-printing-options": "图片打印选项",
+    "convert-input-image-with-imagemagick": "使用 ImageMagick 转换输入图片",
+    "reset-configuration-": "要重置配置吗？"
 }

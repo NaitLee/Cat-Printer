@@ -83,8 +83,8 @@ const Dialog = (function() {
         last_choices = [];
         dialog_input.value = '';
         dialog_input.style.display = have_input ? 'unset' : 'none';
-        const keys = 'bn,.';
-        let index = 1;
+        const keys = 'nm,.';
+        let index = 0;
         for (let choice of choices) {
             let button = document.createElement('button');
             button.setAttribute('data-i18n', choice);
@@ -95,32 +95,37 @@ const Dialog = (function() {
             dialog_choices.appendChild(button);
             last_choices.push(button);
         }
-        last_choices[0].addEventListener('click', () => {
-            if (callback) callback(dialog_input.value);
-            dialog.classList.add('hidden');
-        });
-        if (last_choices.length > 1)
-            last_choices[1].addEventListener('click', () => {
-                if (callback) callback(null);
-                dialog.classList.add('hidden');
-            });
         hint([last_choices[0]]);
+        return new Promise(resolve => {
+            last_choices[0].addEventListener('click', () => {
+                dialog.classList.add('hidden');
+                if (callback) resolve(callback(dialog_input.value));
+            });
+            if (last_choices.length > 1)
+                last_choices[1].addEventListener('click', () => {
+                    dialog.classList.add('hidden');
+                    if (callback) resolve(callback(null));
+                });
+        });
     }
     return {
         alert: function(selector, callback, as_string = false) {
             clean_up();
-            apply_callback(callback, false, 'ok');
+            let promise = apply_callback(callback, false, 'ok');
             show(selector, as_string);
+            return promise;
         },
         confirm: function(selector, callback, as_string = false) {
             clean_up();
-            apply_callback(callback, false, 'yes', 'no');
+            let promise = apply_callback(callback, false, 'yes', 'no');
             show(selector, as_string);
+            return promise;
         },
         prompt: function(selector, callback, as_string = false) {
             clean_up();
-            apply_callback(callback, true, 'ok', 'cancel');
+            let promise = apply_callback(callback, true, 'ok', 'cancel');
             show(selector, as_string);
+            return promise;
         }
     }
 })();
@@ -137,15 +142,12 @@ class _ErrorHandler {
      */
     report(error, output) {
         Notice.error('error-happened-please-check-error-message');
-        let button = document.querySelector('button[data-panel="panel-error"]');
-        if (button) {
-            button.classList.remove('hidden');
-            button.click();
-        }
         let div = document.createElement('div');
         div.innerText = (error.stack || (error.name + ': ' + error.message)) + '\n' + output;
         this.recordElement.appendChild(div);
-        hint('#panel-error');
+        document.querySelector('button[data-panel="panel-error"]').classList.remove('hidden');
+        document.querySelector('button[data-panel="panel-settings"]').click();
+        hint('button[data-panel="panel-error"]');
     }
 }
 
@@ -426,6 +428,7 @@ async function initI18n() {
             /** @type {HTMLOptionElement} */
             let option = event.currentTarget;
             let value = option.value;
+            // option.selected = true;
             language_options.selectedIndex = option.index;
             use_language(value);
             Notice.note('welcome');
@@ -503,14 +506,18 @@ class Main {
                 );
             }
             this.canvasController = new CanvasController();
-            putEvent('#button-exit', 'click', this.exit, this);
+            putEvent('#button-exit', 'click', () => this.exit(false), this);
+            putEvent('#button-exit', 'contextmenu', 
+                (event) => (event.preventDefault(), this.exit(true)), this);
             putEvent('#button-print', 'click', this.print, this);
             putEvent('#device-refresh', 'click', this.searchDevices, this);
             putEvent('#set-accessibility', 'click', () => Dialog.alert('#accessibility'));
             putEvent('a[target="frame"]', 'click', () => Dialog.alert('#frame'));
             this.attachSetter('#scan-time', 'change', 'scan_timeout');
             this.attachSetter('#device-options', 'input', 'printer');
-            this.attachSetter('input[name="algo"]', 'change', 'mono_algorithm');
+            this.attachSetter('input[name="algo"]', 'change', 'mono_algorithm',
+                (value) => this.settings['text_mode'] = (value === 'algo-direct')
+            );
             this.attachSetter('#transparent-as-white', 'change', 'transparent_as_white');
             this.attachSetter('#select-language option', 'click', 'language');
             this.attachSetter('#dry-run', 'change', 'dry_run',
@@ -538,8 +545,18 @@ class Main {
             this.attachSetter('#flip-v', 'change', 'flip_v');
             this.attachSetter('#dump', 'change', 'dump');
             await this.loadConfig();
-            if (this.settings['is_android'])
-                document.getElementById('select-language').multiple = false;
+            if (this.settings['is_android']) {
+                // Android doesn't work well with select[multiple]
+                let div = document.createElement('div');
+                let select = document.getElementById('select-language');
+                Array.from(select.children).forEach(e => {
+                    e.selected = false;
+                    div.appendChild(e);
+                });
+                div.id = 'select-language';
+                select.replaceWith(div);
+                document.getElementById('hint-tab-control').classList.add('hard-hidden');
+            }
             if (typeof initKeyboardShortcuts === 'function') initKeyboardShortcuts();
             this.searchDevices();
             document.querySelector('main').classList.remove('hard-hidden');
@@ -620,8 +637,15 @@ class Main {
             return callback ? callback(value) : undefined;
         }).bind(this), this);
     }
-    async exit() {
+    async exit(reset) {
         Notice.wait('exiting');
+        if (reset &&
+            (await Dialog.confirm(
+                i18n('reset-configuration-'),
+                value => !!value, true)
+            )
+        )
+            this.settings['version'] = -1;
         await this.set(this.settings);
         await callApi('/exit');
         window.close();
@@ -646,7 +670,7 @@ class Main {
         let search_result = await callApi('/devices', null, this.bluetoothProblemHandler);
         if (search_result === null) return;
         let devices = search_result.devices;
-        [... this.deviceOptions.children].forEach(e => e.remove());
+        Array.from(this.deviceOptions.children).forEach(e => e.remove());
         if (devices.length === 0) {
             Notice.note('no-available-devices-found');
             hint('#device-refresh');
@@ -663,6 +687,8 @@ class Main {
         this.deviceOptions.dispatchEvent(new Event('input'));
     }
     async print() {
+        if (this.canvasController.imageUrl === null) return;
+        await this.set(this.settings);
         Notice.wait('printing');
         await fetch('/print', {
             method: 'POST',
@@ -670,9 +696,14 @@ class Main {
         }).then(async (response) => {
             if (response.ok) Notice.note('finished')
             else {
+                let json = response.json();
+                response.json = () => json;
                 let error_data = await response.json();
-                if (/address.+not found/.test(error_data.details))
+                if (/address.+not found|Not connected/.test(error_data.details) ||
+                    error_data.name === 'EOFError')
                     Notice.error('please-check-if-the-printer-is-down');
+                else if (error_data.name === 'no-available-devices-found')
+                    Notice.warn('no-available-devices-found');
                 else
                     ErrorHandler.report(
                         new Error('API Failure'),

@@ -26,6 +26,7 @@ config.json
 *.dump
 *.pf2
 *.pbm
+test.png
 # some other junk
 .directory
 thumbs.db

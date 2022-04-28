@@ -7,8 +7,9 @@
 ?-*.sh
 
 # symlinks
-*.pf2
-*.pbm
+font.pf2
+dump.pbm
+test.png
 
 # junk
 __pycache__

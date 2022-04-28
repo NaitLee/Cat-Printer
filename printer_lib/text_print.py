@@ -10,8 +10,8 @@ class TextCanvas():
     rtl: bool
     wrap: bool
     pf2 = None
-    def __init__(self, width, *, wrap=False, rtl=False):
-        self.pf2 = PF2()
+    def __init__(self, width, *, wrap=False, rtl=False, font_path='font.pf2'):
+        self.pf2 = PF2(font_path)
         self.width = width
         self.wrap = wrap
         self.rtl = rtl
@@ -55,7 +55,7 @@ class TextCanvas():
         current_width = 0
         for i, s in enumerate(text):
             char = characters[s]
-            if (i in break_points or s == '\n' or
+            if ((self.wrap and i in break_points) or s == '\n' or
                 current_width + char.width > self.width):
                 # print(current_width, end=' ')
                 yield self.flush_canvas()

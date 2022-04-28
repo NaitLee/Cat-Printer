@@ -1,4 +1,6 @@
 
+'use strict';
+
 function isHidden(element) {
     let parents = [element];
     while (parents[0].parentElement)
@@ -10,7 +12,7 @@ function isHidden(element) {
             e.classList.contains('hard-hidden') ||
             e.style.display == 'none' ||
             rect.width == 0 || rect.height == 0 ||
-            rect.x < 0 || rect.y < 0 ||
+            // rect.x < 0 || rect.y < 0 ||
             e.style.visibility == 'none' ||
             e.style.opacity == '0'
         );
@@ -18,35 +20,47 @@ function isHidden(element) {
 }
 
 function toLocaleKey(key) {
+    if (typeof i18n === 'undefined') return key;
     const qwerty = '1234567890qwertyuiopasdfghjklzxcvbnm';
     let keys, index;
-    if (
-        typeof i18n === 'undefined' ||
-        key.length !== 1 ||
+    if (key.length !== 1 ||
         (keys = i18n('KeyboardLayout')) === 'KeyboardLayout' ||
         (index = qwerty.indexOf(key)) === -1
     ) return key;
     return keys[index];
 }
 
+function keyToLetter(key) {
+    const map = {
+        ' ': 'SPACE',
+        ',': 'COMMA',
+        '.': "DOT"
+    };
+    return map[key] || key;
+}
+
 function initKeyboardShortcuts() {
     const layer = document.getElementById('keyboard-shortcuts-layer');
     const dialog = document.getElementById('dialog');
-    let key, keys = 'qwertyuiopasdfghjklzxcvbnm';
-    let focus, focusing = false, started = false;
-    let inputs, shortcuts = {};
+    const keys = 'qwertyuiopasdfghjklzxcvbnm';
+    let focusing = false, started = false;
+    let shortcuts = {};
+    let key, focus, inputs;
     const mark_keys = () => {
+        let index;
         if (dialog.classList.contains('hidden'))
             inputs = Array.from(document.querySelectorAll('*[data-key]'));
         else inputs = Array.from(document.querySelectorAll('#dialog *[data-key]'));
         /** @type {{ [key: string]: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement }} */
-        let key_index = 0;
+        let keys2 = keys.split('');
         shortcuts = {};
         if (focusing) shortcuts = { ESC: focus };
         else
             for (let input of inputs) {
                 if (isHidden(input)) continue;
-                let key = toLocaleKey(input.getAttribute('data-key') || keys[key_index++]);
+                key = input.getAttribute('data-key');
+                if ((index = keys2.indexOf(key)) !== -1) keys2.splice(index, 1);
+                key = toLocaleKey(key || keys2.shift());
                 shortcuts[key] = input;
             }
         // Array.from(layer.children).forEach(e => e.remove());
@@ -54,12 +68,12 @@ function initKeyboardShortcuts() {
             let span = document.createElement('span');
             layer.appendChild(span);
         }
-        let index = 0;
+        index = 0;
         for (let key in shortcuts) {
             let span = layer.children[index++];
             let input = shortcuts[key];
             let position = input.getBoundingClientRect();
-            let text = key.toUpperCase().replace(' ', 'SPACE');
+            let text = i18n(keyToLetter(key.toUpperCase()));
             if (span.innerText !== text) span.innerText = text;
             span.style.top = position.y + 'px';
             span.style.left = position.x + 'px';
@@ -82,10 +96,10 @@ function initKeyboardShortcuts() {
         document.body.addEventListener('keyup', () =>
             requestAnimationFrame(mark_keys)
         , { once: true });
-        let input = shortcuts[key];
+        let input = shortcuts[key.toLocaleLowerCase()];
         if (input) {
             if (types_to_click.includes(input.type || input.tagName))
-                input.click();
+                input.dispatchEvent(new MouseEvent(event.shiftKey ? 'contextmenu' : 'click'));
             else {
                 input.focus();
                 focusing = true;

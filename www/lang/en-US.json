@@ -49,9 +49,7 @@
     "print-to-cat-printer": "Print to Cat Printer",
     "supported-models-": "Supported models:",
     "path-to-input-file-dash-for-stdin": "Path to input file. '-' for stdin",
-    "scan-for-specified-seconds": "Scan for specified seconds",
     "dump-the-traffic": "Dump the traffic",
-    "text-printing-mode": "Text printing mode",
     "please-install-pyobjc-via-pip": "Please install `pyobjc` via pip",
     "please-install-bleak-via-pip": "Please install `bleak` via pip",
     "folder-printer_lib-is-incomplete-or-missing-please-check": "Folder `printer_lib` is incomplete or missing, please check",
@@ -106,5 +104,17 @@
     "SPACE": "Space",
     "ESCAPE": "Esc",
     "TAB": "Tab",
-    "press-tab-to-control-with-keyboard": "Press Tab to control with keyboard"
+    "COMMA": "Comma",
+    "DOT": "Dot",
+    "to-enter-keyboard-mode-press-tab": "To enter Keyboard Mode, press Tab",
+    "usage-": "Usage:",
+    "positional-arguments-": "Positional arguments:",
+    "options-": "Options:",
+    "show-this-help-message": "Show this help message",
+    "do-nothing": "Do nothing",
+    "scan-for-a-printer": "Scan for a printer",
+    "text-printing-mode-with-options": "Text printing mode with options",
+    "image-printing-options": "Image printing options",
+    "convert-input-image-with-imagemagick": "Convert input image with ImageMagick",
+    "reset-configuration-": "Reset configuration?"
 }

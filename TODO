@@ -4,7 +4,6 @@ Note: not ordered. do whatever I/you want
 + Cookbook of basic things
 + Write good help/manual
 + Make error notice short while let users see detailed help/manual for what-to-do
-+ Even Better CLI, e.g. invoke imagemagick if input is not PBM
 + Even better CUPS/IPP support
 + Even better frontend usability, more functions
 + Make a build guide for android:
