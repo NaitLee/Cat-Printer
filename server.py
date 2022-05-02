@@ -58,7 +58,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         'version': 2,
         'first_run': True,
         'is_android': False,
-        'scan_timeout': 5.0,
+        'scan_timeout': 4.0,
         'dry_run': False
     })
     _settings_blacklist = (

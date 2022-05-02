@@ -103,13 +103,13 @@ For all supported platforms,
 You can also use "pure" edition once you have [Python 3](https://www.python.org/) installed,  
 or "bare" edition if you also managed to install `bleak` via `pip`.
 
-If you like command-line, install [ImageMagick](https://imagemagick.org/) and [Ghostscript](https://ghostscript.com/) and enjoy the integraton.
+If you like command-line, installing [ImageMagick](https://imagemagick.org/) and [Ghostscript](https://ghostscript.com/) could be very helpful.
 
 See the [releases](https://github.com/NaitLee/Cat-Printer/releases) now!
 
 ## Problems?
 
-Please talk in Discussion if there's something in your mind!
+Please use Issue or Discussion if there's something in your mind!
 
 Of course Pull Requests are welcome if you can handle them!
 

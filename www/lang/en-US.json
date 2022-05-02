@@ -116,5 +116,8 @@
     "text-printing-mode-with-options": "Text printing mode with options",
     "image-printing-options": "Image printing options",
     "convert-input-image-with-imagemagick": "Convert input image with ImageMagick",
-    "reset-configuration-": "Reset configuration?"
+    "reset-configuration-": "Reset configuration?",
+    "brightness-": "Brightness:",
+    "text-printing-mode": "Text Printing Mode",
+    "please-enable-bluetooth-or-try-to-reboot": "Please enable bluetooth or try to reboot"
 }

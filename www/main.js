@@ -4,7 +4,7 @@
 /**
  * In order to debug on a phone, we load vConsole  
  * https://www.npmjs.com/package/vconsole  
- * Double-tap the "Cat Printer" title to activate
+ * Double-tap notice bar to activate
  */
 function debug() {
     const script = document.createElement('script');
@@ -12,7 +12,7 @@ function debug() {
     document.body.appendChild(script);
     script.addEventListener('load', () => new window.VConsole());
 }
-document.getElementById('title').addEventListener('dblclick', debug);
+document.getElementById('notice').addEventListener('dblclick', debug);
 
 var hidden_area = document.getElementById('hidden');
 
@@ -243,6 +243,10 @@ function putEvent(selector, type, callback, thisArg) {
     });
 })();
 
+/**
+ * Class to control Printing Canvas (manipulate, preview etc.)  
+ * "Brightness" is historically "Threshold", while the later is kept in code
+ */
 class CanvasController {
     /** @type {HTMLCanvasElement} */
     preview;
@@ -252,11 +256,18 @@ class CanvasController {
     imageUrl;
     isCanvas;
     algorithm;
-    threshold;
-    thresholdRange;
+    _threshold;
+    get threshold() {
+        return this._threshold;
+    }
+    set threshold(value) {
+        this._threshold = this._thresholdRange.value = value;
+    }
+    _thresholdRange;
     transparentAsWhite;
     previewData;
     static defaultHeight = 384;
+    static defaultThreshold = 256 / 3;
     _height;
     get height() {
         return this._height;
@@ -269,7 +280,7 @@ class CanvasController {
         this.canvas = document.getElementById('control-canvas');
         this.div = document.getElementById('control-document');
         this.height = CanvasController.defaultHeight;
-        this.thresholdRange = document.getElementById('threshold');
+        this._thresholdRange = document.getElementById('threshold');
         this.imageUrl = null;
 
         putEvent('input[name="mode"]', 'change', (event) => this.enableMode(event.currentTarget.value), this);
@@ -304,7 +315,8 @@ class CanvasController {
     }
     useAlgorithm(name) {
         this.algorithm = name;
-        this.thresholdRange.value = 128;
+        this.threshold = CanvasController.defaultThreshold;
+        this._thresholdRange.dispatchEvent(new Event('change'));
         this.activatePreview();
     }
     expand(length = CanvasController.defaultHeight) {
@@ -322,7 +334,7 @@ class CanvasController {
             let context_p = preview.getContext('2d');
             let data = context_c.getImageData(0, 0, w, h);
             let mono_data = new Uint8ClampedArray(w * h);
-            monoGrayscale(data.data, mono_data, w, h, this.transparentAsWhite);
+            monoGrayscale(data.data, mono_data, w, h, t, this.transparentAsWhite);
             switch (this.algorithm) {
                 case 'algo-direct':
                     monoDirect(mono_data, w, h, t);

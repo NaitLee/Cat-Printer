@@ -1,8 +1,10 @@
 
 :root {
     --font-size: 1.2rem;
+    /* --dpi-zoom: 0.96; */
     --deco-size: calc(var(--font-size) / 2);
-    --line-height: 1.8em;
+    --line-height: calc(var(--font-size) / 2 * 3);
+    --compact-menu-height: 2em;
     --span: 8px;
     --span-half: calc(var(--span) / 2);
     --span-double: calc(var(--span) * 2);
@@ -94,6 +96,7 @@ button:active {
 }
 #notice {
     min-height: var(--font-size);
+    margin: var(--span-half) 0;
 }
 #notice span {
     display: block;
@@ -159,9 +162,9 @@ main>.menu-side>.menu {
 }
 .compact-button {
     width: max-content;
-    height: 2em;
+    height: var(--compact-menu-height);
     flex-grow: 1;
-    line-height: 2em;
+    line-height: var(--compact-menu-height);
     text-align: center;
     cursor: pointer;
     border: none;
@@ -171,8 +174,9 @@ main>.menu-side>.menu {
     margin: 0;
 }
 .compact-button:hover {
-    padding: 0;
     margin: 0;
+    padding: 0 var(--span) calc(var(--span-double));
+    min-width: 6em;
 }
 .compact-button.active {
     border: var(--border) solid var(--fore-color);
@@ -221,8 +225,9 @@ p {
     height: 0;
 }
 .panel.active {
-    height: var(--panel-height);
+    height: calc(var(--panel-height) - var(--compact-menu-height));
     padding: var(--span-double) var(--span);
+    box-sizing: border-box;
     /* overflow-y: scroll; */
 }
 .panel.sub.active {
@@ -451,7 +456,13 @@ a {
     from { overflow: hidden; }
     to { overflow: auto; }
 }
-@media (max-width: 800px) {
+
+@media (max-height: 520px) {
+    body, main { margin: 0 auto; }
+}
+
+@media (max-width: 767.5px) {
+    /* My test shows it's Just 768 fit best */
     :root {
         --panel-height: 16em;
         --font-size: 1em;
@@ -466,14 +477,14 @@ a {
         overflow-x: hidden;
         overflow-y: auto;
         position: fixed;
-        top: var(--line-height);
-        height: calc(100% - var(--panel-height) - 2em);
+        top: calc(var(--line-height) + var(--span));
+        height: calc(100% - var(--panel-height) - var(--compact-menu-height));
         z-index: 0;
     }
     main>.canvas-side>.buttons,
     main>.menu-side>.buttons {
         position: sticky;
-        bottom: 2em;
+        bottom: var(--compact-menu-height);
         width: 100%;
         z-index: 1;
     }
@@ -495,7 +506,7 @@ a {
         box-sizing: border-box;
     }
     main>.menu-side>.menu {
-        height: var(--panel-height);
+        height: calc(var(--panel-height) - var(--compact-menu-height));
         margin: 0;
     }
     #notice {
@@ -510,7 +521,7 @@ a {
         z-index: 0;
     }
     .blank {
-        height: 2em;
+        height: var(--compact-menu-height);
     }
 }
 @media (max-width: 384px) {
@@ -519,6 +530,13 @@ a {
         box-sizing: border-box;
     }
 }
+
+/* @media (min-resolution: 120dpi) {
+    :root { --font-size: calc(1.2rem * var(--dpi-zoom)); }
+}
+@media (min-resolution: 144dpi) {
+    :root { --font-size: calc(1.2rem * var(--dpi-zoom) * var(--dpi-zoom)); }
+} */
 
 @media (prefers-color-scheme: dark) {
     :root { --fore-color: #eee; --back-color: #333; --shade: rgba(51, 51, 51, 0.5); }

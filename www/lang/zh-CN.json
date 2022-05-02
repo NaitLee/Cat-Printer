@@ -111,5 +111,8 @@
     "text-printing-mode-with-options": "启用文字打印并指定选项",
     "image-printing-options": "图片打印选项",
     "convert-input-image-with-imagemagick": "使用 ImageMagick 转换输入图片",
-    "reset-configuration-": "要重置配置吗？"
+    "reset-configuration-": "要重置配置吗？",
+    "brightness-": "亮度：",
+    "text-printing-mode": "文字打印模式",
+    "please-enable-bluetooth-or-try-to-reboot": "请启用蓝牙或尝试重启"
 }

@@ -44,8 +44,9 @@
                         <input type="radio" name="algo" value="algo-halftone" data-key />
                         <span data-i18n="pattern">Pattern</span>
                     </label> --><br />
-                    <label for="threshold" data-i18n="threshold-">Threshold:</label>
-                    <input type="range" min="0" max="256" value="128" step="8" id="threshold" data-key data-default />
+                    <!-- "brightness" is historically "threshold" -->
+                    <label for="threshold" data-i18n="brightness-">Brightness:</label>
+                    <input type="range" min="0" max="256" value="86" step="1" id="threshold" data-key data-default />
                     <br />
                     <input type="checkbox" name="transparent-as-white" id="transparent-as-white" data-key checked />
                     <label for="transparent-as-white" data-i18n="transparent-as-white">Transparent as White</label>
@@ -62,7 +63,7 @@
                 </div>
                 <div class="panel" id="panel-settings">
                     <label for="scan-time" data-i18n="scan-time-">Scan Time:</label>
-                    <input type="number" name="scan-time" id="scan-time" min="1" max="10" value="3" data-key />
+                    <input type="number" name="scan-time" id="scan-time" min="1" max="10" value="4" data-key />
                     <span data-i18n="-seconds">seconds</span>
                     <br />
                     <input type="checkbox" name="flip-h" id="flip-h" data-key />

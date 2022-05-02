@@ -264,7 +264,7 @@ class PrinterDriver(Commander):
     model: Model = None
     'The printer model'
 
-    scan_timeout: float = 5.0
+    scan_timeout: float = 4.0
 
     connection_timeout : float = 5.0
 
@@ -523,7 +523,7 @@ class PrinterDriver(Commander):
                     self.device.stop_notify(self.rx_characteristic),
                     self.device.disconnect()
                 )
-            except BleakError:
+            except (BleakError, EOFError):
                 self.device = None
         if self._traffic_dump is not None:
             self._traffic_dump.close()
@@ -694,14 +694,19 @@ def main():
     'Run the `_main` routine while catching exceptions'
     try:
         _main()
-    except BleakError as e:
+    except (BleakError, AttributeError) as e:
         error_message = str(e)
         if (
-            'not turned on' in error_message or
-            (isinstance(e, BleakDBusError) and
+            ('not turned on' in error_message) or   # windows or android
+            (isinstance(e, BleakDBusError) and      # linux/dbus/bluetoothctl
              getattr(e, 'dbus_error') == 'org.bluez.Error.NotReady')
         ):
             fatal(I18n['please-enable-bluetooth'], code=ExitCodes.GeneralError)
+        elif (
+            (isinstance(e, AttributeError) and      # macos, possibly?
+             'CentralManagerDelegate' in error_message)
+        ):
+            fatal(I18n['please-enable-bluetooth-or-try-to-reboot'], code=ExitCodes.GeneralError)
         else:
             raise
     except PrinterError as e:

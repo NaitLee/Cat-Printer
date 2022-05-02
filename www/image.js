@@ -8,9 +8,10 @@
  * The result data will be here, as a 8-bit grayscale image data.
  * @param {number} w width of image
  * @param {number} h height of image
+ * @param {number} t brightness, historically "threshold"
  * @param {boolean} transparencyAsWhite whether render opacity as white rather than black
  */
-function monoGrayscale(image_data, mono_data, w, h, transparencyAsWhite) {
+function monoGrayscale(image_data, mono_data, w, h, t, transparencyAsWhite) {
     let p, q, r, g, b, a, m;
     for (let j = 0; j < h; j++) {
         for (let i = 0; i < w; i++) {
@@ -26,6 +27,7 @@ function monoGrayscale(image_data, mono_data, w, h, transparencyAsWhite) {
             }
             else { r *= a; g *= a; b *= a; }
             m = Math.floor(r * 0.2125 + g * 0.7154 + b * 0.0721);
+            m += (t - 128) * (1 - m / 255) * (m / 255) * 2;
             mono_data[p] = m;
         }
     }
@@ -36,14 +38,13 @@ function monoGrayscale(image_data, mono_data, w, h, transparencyAsWhite) {
  * @param {Uint8ClampedArray} data the grayscale data, mentioned in `monoGrayscale`. **will be modified in-place**
  * @param {number} w width of image
  * @param {number} h height of image
- * @param {number} t threshold
  */
-function monoDirect(data, w, h, t) {
-    let p;
-    for (let j = 0; j < h; j++) {
-        for (let i = 0; i < w; i++) {
+function monoDirect(data, w, h) {
+    let p, i, j;
+    for (j = 0; j < h; j++) {
+        for (i = 0; i < w; i++) {
             p = j * w + i;
-            data[p] = data[p] > t ? 255 : 0;
+            data[p] = data[p] > 128 ? 255 : 0;
         }
     }
 }
@@ -53,10 +54,9 @@ function monoDirect(data, w, h, t) {
  * @param {Uint8ClampedArray} data the grayscale data, mentioned in `monoGrayscale`. **will be modified in-place**
  * @param {number} w width of image
  * @param {number} h height of image
- * @param {number} t threshold
  */
-function monoSteinberg(data, w, h, t) {
-    let p, m, n, o;
+function monoSteinberg(data, w, h) {
+    let p, m, n, o, i, j;
     function adjust(x, y, delta) {
         if (
             x < 0 || x >= w ||
@@ -65,12 +65,12 @@ function monoSteinberg(data, w, h, t) {
         p = y * w + x;
         data[p] += delta;
     }
-    for (let j = 0; j < h; j++) {
-        for (let i = 0; i < w; i++) {
+    for (j = 0; j < h; j++) {
+        for (i = 0; i < w; i++) {
             p = j * w + i;
             m = data[p];
             n = m > 128 ? 255 : 0;
-            o = m - n + t;
+            o = m - n;
             data[p] = n;
             adjust(i + 1, j    , o * 7 / 16);
             adjust(i - 1, j + 1, o * 3 / 16);
@@ -95,12 +95,12 @@ function monoHalftone(data, w, h, t) {}
  */
 function mono2pbm(data, w, h) {
     let result = new Uint8ClampedArray(data.length / 8);
-    let slice, p;
-    for (let i = 0; i < result.length; i++) {
+    let slice, p, i;
+    for (i = 0; i < result.length; i++) {
         p = i * 8;
         slice = data.slice(p, p + 8);
         // Merge 8 bytes to 1 byte, and negate the bits
-        // expecting in the data there's only 255 (0b11111111) or 0 (0b00000000)
+        // assuming there's only 255 (0b11111111) or 0 (0b00000000) in the data
         result[i] = (
             slice[0] & 0b10000000 |
             slice[1] & 0b01000000 |

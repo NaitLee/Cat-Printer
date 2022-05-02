@@ -105,7 +105,7 @@ python3 server.py
 
 ## 有问题？
 
-有想法？去 Discussion 讨论！
+有想法？用 Issue 或去 Discussion 讨论！
 
 如果能行，Pull Request 也可以！
 
