@@ -4,12 +4,11 @@
  */
 (function() {
 
-    var fallbacks = [
-        // main scripts, which we will directly modify
-        'i18n-ext.js', 'i18n.js', 'image.js', 'accessibility.js', 'main.js',
-        // "compatibility" script, produced with eg. typescript tsc
-        'main.comp.js'
-    ];
+    var fallbacks;
+    if (location.href.indexOf('?debug') !== -1)
+        fallbacks = ['i18n-ext.js', 'i18n.js', 'image.js', 'accessibility.js', 'main.js'];
+    else
+        fallbacks = ['~every.js', 'main.comp.js'];
     var trial_count = 0;
     /**
      * Try to load next "fallback" script,  
@@ -21,6 +20,7 @@
         var script = document.createElement('script');
         script.addEventListener('load', function() {
             if (typeof main === 'undefined') {
+                // the script can't be 'unrun', though
                 script.remove();
                 try_load();
             } else {

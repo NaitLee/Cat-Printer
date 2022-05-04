@@ -364,11 +364,10 @@ class PrinterDriver(Commander):
             elif (identifier not in Models and
                 identifier[2::3] != ':::::' and len(identifier.replace('-', '')) != 32):
                 error('model-0-is-not-supported-yet', identifier, exception=PrinterError)
-        scanner = BleakScanner()
+        # scanner = BleakScanner()
         devices = self.loop(
-            scanner.discover(self.scan_timeout)
+            BleakScanner.discover(self.scan_timeout)
         )
-        devices = [dev for dev in devices if dev.name in Models]
         if identifier is not None:
             if identifier in Models:
                 devices = [dev for dev in devices if dev.name == identifier]
@@ -694,7 +693,7 @@ def main():
     'Run the `_main` routine while catching exceptions'
     try:
         _main()
-    except (BleakError, AttributeError) as e:
+    except BleakError as e:
         error_message = str(e)
         if (
             ('not turned on' in error_message) or   # windows or android
@@ -702,15 +701,15 @@ def main():
              getattr(e, 'dbus_error') == 'org.bluez.Error.NotReady')
         ):
             fatal(I18n['please-enable-bluetooth'], code=ExitCodes.GeneralError)
-        elif (
-            (isinstance(e, AttributeError) and      # macos, possibly?
-             'CentralManagerDelegate' in error_message)
-        ):
-            fatal(I18n['please-enable-bluetooth-or-try-to-reboot'], code=ExitCodes.GeneralError)
         else:
             raise
     except PrinterError as e:
         fatal(e.message_localized, code=ExitCodes.PrinterError)
+    except RuntimeError as e:
+        if 'no running event loop' in str(e):
+            pass    # non-sense
+        else:
+            raise
 
 if __name__ == '__main__':
     main()

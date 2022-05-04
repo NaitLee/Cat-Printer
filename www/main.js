@@ -418,7 +418,7 @@ function applyI18nToDom(doc) {
             element.firstChild.textContent = translated_string;
     });
 }
-async function initI18n() {
+async function initI18n(current_language) {
     if (typeof i18n === 'undefined') return;
     /** @type {HTMLSelectElement} */
     let language_options = document.getElementById('select-language');
@@ -429,9 +429,6 @@ async function initI18n() {
         i18n.add(value, await fetch(`/lang/${value}.json`).then(r => r.json()), true);
         applyI18nToDom();
     }
-    language_options.addEventListener('change', () => {
-        language_options.selectedOptions.item(0).click();
-    });
     for (let code in list) {
         let option = document.createElement('option');
         option.value = code;
@@ -440,35 +437,28 @@ async function initI18n() {
             /** @type {HTMLOptionElement} */
             let option = event.currentTarget;
             let value = option.value;
-            // option.selected = true;
+            option.selected = true;
             language_options.selectedIndex = option.index;
             use_language(value);
             Notice.note('welcome');
         });
         language_options.appendChild(option);
     }
-    apply_default:
-    for (let code of navigator.languages) {
-        if (list[code]) {
-            for (let option of language_options.children) {
-                if (option.value === code) {
-                    // option.setAttribute('data-default', '');
-                    option.setAttribute('data-default', '');
-                    option.click();
-                    i18n.useLanguage(navigator.languages[0]);
-                    for (let language of navigator.languages) {
-                        if (!list[language]) return;
-                        let data = await fetch(`/lang/${language}.json`)
-                            .then(response => response.ok ? response.json() : null);
-                        if (data !== null) {
-                            i18n.add(language, data);
-                        }
-                    }
-                    break apply_default;
-                }
-            }
-        }
+    if (!navigator.languages) {
+        if (!navigator.language) return;
+        else navigator.languages = [navigator.language, 'en-US'];
     }
+    if (current_language) {
+        for (let option of language_options.children)
+            if (option.value === current_language)
+                option.click();
+    } else for (let code of navigator.languages)
+        if (list[code]) for (let option of language_options.children)
+            if (option.value === code) {
+                option.setAttribute('data-default', '');
+                if (!current_language) option.click();
+                return;
+            }
 }
 
 async function testI18n(lang) {
@@ -500,14 +490,18 @@ class Main {
         this.setters = {};
         // window.addEventListener('unload', () => this.exit());
         this.promise = new Promise(async (resolve, reject) => {
-            await initI18n();
             /** @type {HTMLIFrameElement} */
             let iframe = document.getElementById('frame');
             iframe.addEventListener('load', () => {
+                if (!iframe.contentWindow.NodeList.prototype.forEach)
+                    iframe.contentWindow.NodeList.prototype.forEach = NodeList.prototype.forEach;
                 iframe.contentDocument.body.classList.value = document.body.classList.value;
                 iframe.contentDocument.body.addEventListener('keyup', (event) => {
-                    if (event.key === 'Escape')
-                        document.body.dispatchEvent(new KeyboardEvent('keyup', { key: 'Escape' }));
+                    if (event.key === 'Escape' || event.keyCode === 27) {
+                        document.body.dispatchEvent(
+                            new KeyboardEvent('keyup', { key: 'Escape', keyCode: 27 })
+                        );
+                    }
                 });
                 applyI18nToDom(iframe.contentDocument);
             });
@@ -517,6 +511,10 @@ class Main {
                     d.body.classList.remove(class_name)
                 );
             }
+
+            await this.loadConfig();
+            await initI18n(this.settings['language']);
+
             this.canvasController = new CanvasController();
             putEvent('#button-exit', 'click', () => this.exit(false), this);
             putEvent('#button-exit', 'contextmenu', 
@@ -531,7 +529,6 @@ class Main {
                 (value) => this.settings['text_mode'] = (value === 'algo-direct')
             );
             this.attachSetter('#transparent-as-white', 'change', 'transparent_as_white');
-            this.attachSetter('#select-language option', 'click', 'language');
             this.attachSetter('#dry-run', 'change', 'dry_run',
                 (checked) => checked && Notice.note('dry-run-test-print-process-only')
             );
@@ -556,7 +553,10 @@ class Main {
             this.attachSetter('#flip-h', 'change', 'flip_h');
             this.attachSetter('#flip-v', 'change', 'flip_v');
             this.attachSetter('#dump', 'change', 'dump');
-            await this.loadConfig();
+            await this.activateConfig();
+            // one exception
+            this.attachSetter('#select-language option', 'click', 'language');
+
             if (this.settings['is_android']) {
                 // Android doesn't work well with select[multiple]
                 let div = document.createElement('div');
@@ -583,13 +583,19 @@ class Main {
         else return null;
     }
     /**
-     * Load saved config from server, and activate all setters with corresponding values in settings.  
-     * Please do `attachSetter` on all desired elements/inputs before calling.  
-     * After the load, will save config to server again in order to sync default values.  
-     * Then, if permitted, every single change will sync to server instantly
+     * Load saved config from server
      */
     async loadConfig() {
         this.settings = await callApi('/query');
+    }
+    /**
+     * Activate all setters with corresponding values in settings.  
+     * Before calling, please first loadConfig & do `attachSetter` on all desired elements/inputs.  
+     * After the load, will save config to server again in order to sync default values.  
+     * Then, if permitted, every single change will sync to server instantly
+     */
+    async activateConfig() {
+        this.allowSet = false;
         if (this.settings['first_run'])
             Dialog.alert('#accessibility', () => this.set({ first_run: false }));
         for (let key in this.settings) {
@@ -627,7 +633,7 @@ class Main {
      * @param {(value: any) => any} callback Optional additinal post-procedure to call, with a *reasonable* value as parameter
      */
     attachSetter(selector, type, attribute, callback) {
-        this.setters[attribute] = putEvent(selector, type, (event => {
+        this.setters[attribute] = putEvent(selector, type, event => {
             event.stopPropagation();
             event.cancelBubble = true;
             let input = event.currentTarget;
@@ -647,7 +653,7 @@ class Main {
             this.settings[attribute] = value;
             this.set({ [attribute]: value });
             return callback ? callback(value) : undefined;
-        }).bind(this), this);
+        }, this);
     }
     async exit(reset) {
         Notice.wait('exiting');
@@ -674,6 +680,9 @@ class Main {
             error_details.details.includes('not turned on') ||
             error_details.details.includes('WinError -2147020577')
         ) Notice.warn('please-enable-bluetooth');
+        else if (
+            error_details.details.includes('no running event loop')
+        ) Notice.error('internal-error-please-see-terminal');
         else throw new Error('Unknown Bluetooth Problem');
         return null;
     }

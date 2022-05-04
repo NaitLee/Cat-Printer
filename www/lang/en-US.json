@@ -119,5 +119,5 @@
     "reset-configuration-": "Reset configuration?",
     "brightness-": "Brightness:",
     "text-printing-mode": "Text Printing Mode",
-    "please-enable-bluetooth-or-try-to-reboot": "Please enable bluetooth or try to reboot"
+    "internal-error-please-see-terminal": "Internal error, please see terminal"
 }

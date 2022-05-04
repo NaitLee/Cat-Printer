@@ -82,7 +82,7 @@ input[type="number"], input[type="text"] {
 }
 button:hover {
     margin: 0;
-    padding: var(--span) calc(var(--span-double));
+    padding: var(--span) var(--span-double);
     min-width: calc(6em + var(--span-double));
 }
 button:active {

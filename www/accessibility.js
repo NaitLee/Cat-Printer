@@ -39,22 +39,30 @@ function keyToLetter(key) {
     return map[key] || key;
 }
 
+function keyFromCode(code) {
+    const map = {
+        9: 'Tab'
+    };
+    return map[code] || String.fromCharCode(code);
+}
+
 function initKeyboardShortcuts() {
     const layer = document.getElementById('keyboard-shortcuts-layer');
     const dialog = document.getElementById('dialog');
     const keys = 'qwertyuiopasdfghjklzxcvbnm';
     let focusing = false, started = false;
     let shortcuts = {};
-    let key, focus, inputs;
+    let focus, inputs;
     const mark_keys = () => {
-        let index;
+        document.querySelectorAll(':focus').forEach(e => e.isSameNode(focus) || e.blur());
+        let index, key;
         if (dialog.classList.contains('hidden'))
             inputs = Array.from(document.querySelectorAll('*[data-key]'));
         else inputs = Array.from(document.querySelectorAll('#dialog *[data-key]'));
         /** @type {{ [key: string]: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement }} */
         let keys2 = keys.split('');
         shortcuts = {};
-        if (focusing) shortcuts = { ESC: focus };
+        if (focusing) shortcuts = { 'ESC': focus };
         else
             for (let input of inputs) {
                 if (isHidden(input)) continue;
@@ -69,14 +77,14 @@ function initKeyboardShortcuts() {
             layer.appendChild(span);
         }
         index = 0;
-        for (let key in shortcuts) {
+        for (key in shortcuts) {
             let span = layer.children[index++];
             let input = shortcuts[key];
             let position = input.getBoundingClientRect();
             let text = i18n(keyToLetter(key.toUpperCase()));
             if (span.innerText !== text) span.innerText = text;
-            span.style.top = position.y + 'px';
-            span.style.left = position.x + 'px';
+            span.style.top = (position.y || position.top) + 'px';
+            span.style.left = (position.x || position.left) + 'px';
             span.style.display = '';
         }
         for (let i = index; i < layer.children.length; i++) {
@@ -86,17 +94,15 @@ function initKeyboardShortcuts() {
     const start = () => setInterval(mark_keys, 1000);
     const types_to_click = ['submit', 'file', 'checkbox', 'radio', 'A'];
     document.body.addEventListener('keyup', (event) => {
-        key = event.key;
+        let key = event.key || keyFromCode(event.keyCode);
         if (!started) {
             if (key !== 'Tab') return;
             mark_keys();
             start();
             started = true;
         }
-        document.body.addEventListener('keyup', () =>
-            requestAnimationFrame(mark_keys)
-        , { once: true });
-        let input = shortcuts[key.toLocaleLowerCase()];
+        requestAnimationFrame(mark_keys)
+        let input = shortcuts[key];
         if (input) {
             if (types_to_click.includes(input.type || input.tagName))
                 input.dispatchEvent(new MouseEvent(event.shiftKey ? 'contextmenu' : 'click'));
@@ -105,7 +111,7 @@ function initKeyboardShortcuts() {
                 focusing = true;
             }
             focus = input;
-        } else if (key === 'Escape' && focus) {
+        } else if ((key === 'Escape' || !event.isTrusted) && focus) {
             focus.blur();
             focusing = !focusing;
         }

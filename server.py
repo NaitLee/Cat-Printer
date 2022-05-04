@@ -46,6 +46,13 @@ def mime(url: str):
     'Get pre-defined MIME type of a certain url by extension name'
     return mime_type.get(url.rsplit('.', 1)[-1], mime_type['octet-stream'])
 
+def concat_files(*paths, prefix_format='', buffer=4 * 1024 * 1024):
+    for path in paths:
+        yield prefix_format.format(path).encode('utf-8')
+        with open(path, 'rb') as file:
+            while data := file.read(buffer):
+                yield data
+
 class PrinterServerHandler(BaseHTTPRequestHandler):
     '(Local) server handler for Cat Printer Web interface'
 
@@ -64,6 +71,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
     _settings_blacklist = (
         'printer', 'is_android'
     )
+    all_js: list = []
 
     printer: PrinterDriver = PrinterDriver()
 
@@ -84,17 +92,31 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
             pass
 
     def do_GET(self):
-        'Called when server get a GET http request'
-        path = 'www' + self.path
-        if self.path == '/':
-            path += 'index.html'
-        if '/..' in path:
+        'Called when server got a GET http request'
+        # prepare
+        path, _, _args = self.path.partition('?')
+        if '/..' in path or '../' in path:
             return
+        if path == '/':
+            path += 'index.html'
+        # special
+        if path.startswith('/~'):
+            action = path[2:]
+            if action == 'every.js':
+                self.send_response(200)
+                self.send_header('Content-Type', mime(path))
+                self.end_headers()
+                for data in concat_files(*(self.all_js), prefix_format='\n// {0}\n'):
+                    self.wfile.write(data)
+                return
+        path = 'www' + path
+        # not found
         if not os.path.isfile(path):
             self.send_response(404)
             self.send_header('Content-Type', mime('txt'))
             self.end_headers()
             return
+        # static
         self.send_response(200)
         self.send_header('Content-Type', mime(path))
         # self.send_header('Content-Size', str(os.stat(path).st_size))
@@ -214,7 +236,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         sys.exit(0)
 
     def do_POST(self):
-        'Called when server get a POST http request'
+        'Called when server got a POST http request'
         content_length = int(self.headers.get('Content-Length', -1))
         if (content_length < -1 or
             content_length > self.max_payload
@@ -239,15 +261,21 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
                 'name': 'BleakError',
                 'details': str(e)
             })
+        except EOFError as e:
+            # mostly, device disconnected but not by this program
+            self.api_fail({
+                'name': 'EOFError',
+                'details': ''
+            })
+        except RuntimeError as e:
+            self.api_fail({
+                'name': 'RuntimeError',
+                'details': str(e)
+            })
         except PrinterError as e:
             self.api_fail({
                 'name': e.message,
                 'details': e.message_localized
-            })
-        except EOFError as e:
-            self.api_fail({
-                'name': 'EOFError',
-                'details': ''
             })
         except Exception as e:
             self.api_fail({
@@ -272,6 +300,10 @@ class PrinterServer(HTTPServer):
     def finish_request(self, request, client_address):
         if self.handler is None:
             self.handler = self.handler_class(request, client_address, self)
+            with open(os.path.join('www', 'all_js.txt'), 'r', encoding='utf-8') as file:
+                for path in file.read().split('\n'):
+                    if path != '':
+                        self.handler.all_js.append(os.path.join('www', path))
             return
         self.handler.__init__(request, client_address, self)
 

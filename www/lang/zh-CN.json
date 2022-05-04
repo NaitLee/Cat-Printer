@@ -114,5 +114,5 @@
     "reset-configuration-": "要重置配置吗？",
     "brightness-": "亮度：",
     "text-printing-mode": "文字打印模式",
-    "please-enable-bluetooth-or-try-to-reboot": "请启用蓝牙或尝试重启"
+    "internal-error-please-see-terminal": "内部错误，请检查终端"
 }
