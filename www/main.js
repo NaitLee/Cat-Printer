@@ -2,8 +2,8 @@
 'use strict';
 
 /**
- * In order to debug on a phone, we load vConsole  
- * https://www.npmjs.com/package/vconsole  
+ * In order to debug on a phone, we load vConsole
+ * https://www.npmjs.com/package/vconsole
  * Double-tap notice bar to activate
  */
 function debug() {
@@ -186,10 +186,10 @@ async function callApi(path, body, errorPreHandler) {
     });
 }
 /**
- * call addEventListener on all selected elements by `seletor`,  
- * with each element itself as `this` unless specifyed `thisArg`,  
- * with type `type` and a function `callback`.  
- * If an element have attribute `data-default` or `checked`, dispatch event immediately on it.  
+ * call addEventListener on all selected elements by `seletor`,
+ * with each element itself as `this` unless specifyed `thisArg`,
+ * with type `type` and a function `callback`.
+ * If an element have attribute `data-default` or `checked`, dispatch event immediately on it.
  * You can of course assign resulting object to a variable for futher use.
  */
 class EventPutter {
@@ -244,7 +244,7 @@ function putEvent(selector, type, callback, thisArg) {
 })();
 
 /**
- * Class to control Printing Canvas (manipulate, preview etc.)  
+ * Class to control Printing Canvas (manipulate, preview etc.)
  * "Brightness" is historically "Threshold", while the later is kept in code
  */
 class CanvasController {
@@ -289,7 +289,7 @@ class CanvasController {
         putEvent('#canvas-expand'    , 'click', this.expand          , this);
         putEvent('#canvas-crop'      , 'click', this.crop            , this);
         putEvent('#insert-picture'   , 'click', this.insertPicture   , this);
-        
+
         putEvent('#threshold', 'change', (event) => {
             this.threshold = parseInt(event.currentTarget.value);
             this.activatePreview();
@@ -391,6 +391,7 @@ class CanvasController {
         }
         let input = document.createElement('input');
         input.type = 'file';
+        input.accept = 'image/*';
         input.addEventListener('change', () => {
             let url = URL.createObjectURL(input.files[0]);
             put_image(url);
@@ -517,7 +518,7 @@ class Main {
 
             this.canvasController = new CanvasController();
             putEvent('#button-exit', 'click', () => this.exit(false), this);
-            putEvent('#button-exit', 'contextmenu', 
+            putEvent('#button-exit', 'contextmenu',
                 (event) => (event.preventDefault(), this.exit(true)), this);
             putEvent('#button-print', 'click', this.print, this);
             putEvent('#device-refresh', 'click', this.searchDevices, this);
@@ -589,9 +590,9 @@ class Main {
         this.settings = await callApi('/query');
     }
     /**
-     * Activate all setters with corresponding values in settings.  
-     * Before calling, please first loadConfig & do `attachSetter` on all desired elements/inputs.  
-     * After the load, will save config to server again in order to sync default values.  
+     * Activate all setters with corresponding values in settings.
+     * Before calling, please first loadConfig & do `attachSetter` on all desired elements/inputs.
+     * After the load, will save config to server again in order to sync default values.
      * Then, if permitted, every single change will sync to server instantly
      */
     async activateConfig() {
