@@ -365,9 +365,9 @@ class PrinterDriver(Commander):
                 identifier[2::3] != ':::::' and len(identifier.replace('-', '')) != 32):
                 error('model-0-is-not-supported-yet', identifier, exception=PrinterError)
         # scanner = BleakScanner()
-        devices = self.loop(
+        devices = [x for x in self.loop(
             BleakScanner.discover(self.scan_timeout)
-        )
+        ) if x.name in Models]
         if identifier is not None:
             if identifier in Models:
                 devices = [dev for dev in devices if dev.name == identifier]
