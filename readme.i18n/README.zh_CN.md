@@ -11,7 +11,9 @@
 
 |    |    |
 |----|----|
-| 支持 | GB01, GB02, GT01, GB03  |
+| 支持 | `GB0X, GT01, YT01`  |
+
+\* `X` 表示任意数字
 
 ## 特性
 
@@ -40,7 +42,7 @@
 - 跨平台！
   - 较新的 Windows 10 及以上
   - GNU/Linux
-  - MacOS *（需要更多测试）*
+  - MacOS
   - 还有安卓！
 
 - 是[自由软件](https://www.gnu.org/philosophy/free-sw.html)！
@@ -85,7 +87,7 @@ MacOS 用户请首先安装 [Python 3](https://www.python.org/)，
 pip3 install pyobjc bleak
 ```
 
-然后获取“单一(bare)”版，并做同样的事情：  
+然后获取并使用“单一(bare)”版：  
 ```bash
 python3 server.py
 ```
@@ -114,6 +116,9 @@ python3 server.py
 Copyright © 2021-2022 NaitLee Soft. 保留一些权利。
 
 敬请查看文件 `COPYING`，`LICENSE`，以及在 `www/jslicense.html` 中有关 JavaScript 许可的详细内容。
+
+具体地，`printer.py`，`server.py` 和 `main.js` 以 GNU GPL 3 发布。  
+除去来自其他人的贡献（版权可能归贡献者所有）及可能的第三方依赖，所有其余部分在公有领域（CC0）。
 
 --------
 

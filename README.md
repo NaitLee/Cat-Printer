@@ -12,9 +12,9 @@ Currently:
 
 |    |    |
 |----|----|
-| Supported | GB01, GB02, GT01, GB03  |
-<!-- | Maybe     | N/A | -->
-<!-- | Planned   | N/A | -->
+| Supported | `GB0X, GT01, YT01`  |
+
+\* `X` represents any digit
 
 ## Features
 
@@ -44,7 +44,7 @@ Currently:
 - Cross platform!
   - Newer Windows 10 and above
   - GNU/Linux
-  - MacOS *(Needs more testing)*
+  - MacOS
   - and also Android!
 
 - Free, as in [freedom](https://www.gnu.org/philosophy/free-sw.html)!
@@ -90,7 +90,7 @@ then install `pyobjc` and `bleak` via `pip` in terminal:
 pip3 install pyobjc bleak
 ```
 
-After that, fetch a "bare" release and do the same in a shell:  
+After that, fetch & use a "bare" release:  
 ```bash
 python3 server.py
 ```
@@ -118,6 +118,9 @@ Of course Pull Requests are welcome if you can handle them!
 Copyright © 2021-2022 NaitLee Soft. Some rights reserved.
 
 See file `COPYING`, `LICENSE`, and detail of used JavaScript in file `www/jslicense.html`
+
+Particularly, `printer.py`, `server.py` and `main.js` are released under GNU GPL 3.  
+Excluding contributions of other people (which probably have their own copyright) and possible third-party dependencies, all other parts are in Public Domain (CC0).
 
 --------
 
