@@ -34,7 +34,6 @@ body {
     font-family: 'Noto Sans', 'Segoe UI', sans-serif;
     overflow: auto;
     margin: 1em 0;
-    user-select: none;
 }
 h1, h2 {
     font-weight: normal;
