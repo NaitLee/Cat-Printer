@@ -36,6 +36,9 @@ body {
     margin: 1em 0;
     user-select: none;
 }
+.selectable {
+    user-select: all;
+}
 h1, h2 {
     font-weight: normal;
     margin: var(--span-half) 0;
@@ -54,6 +57,9 @@ a+a {
 
 .center {
     text-align: center;
+}
+.right {
+    text-align: end;
 }
 button, input, select, textarea, label {
     font: inherit;
@@ -260,9 +266,13 @@ input[type="range"] {
     font-family: 'DejaVu Sans Mono', 'Consolas', monospace;
     width: 100%;
     font-size: 1rem;
+    line-height: initial;
     overflow: auto;
     white-space: pre;
     height: calc(var(--panel-height) - var(--border-double) * 4);
+}
+#error-record *::selection {
+    background-color: var(--notice-wait);
 }
 .table-wrap {
     overflow-x: auto;

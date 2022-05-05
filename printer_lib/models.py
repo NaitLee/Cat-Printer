@@ -9,6 +9,7 @@ class Model():
         self.is_new_kind = is_new
 
 Models = {
+    'YT01': Model(384, False),
     'GB01': Model(384, False),
     'GB02': Model(384, False),
     'GB03': Model(384, True),

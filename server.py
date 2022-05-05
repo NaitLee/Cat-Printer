@@ -189,9 +189,6 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         self.printer.flip_h = self.settings.flip_h
         self.printer.flip_v = self.settings.flip_v
         self.printer.rtl = self.settings.force_rtl
-        if self.settings.printer is not None:
-            name, address = self.settings.printer.split(',')
-            self.printer.connect(name, address)
 
     def handle_api(self):
         'Handle API request from POST'
@@ -225,6 +222,10 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
             self.update_printer()
             self.api_success()
             return
+        if api == 'connect':
+            name, address = data['device'].split(',')
+            self.printer.connect(name, address)
+            self.api_success()
         if api == 'exit':
             self.api_success()
             self.exit()

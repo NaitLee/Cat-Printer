@@ -525,7 +525,9 @@ class Main {
             putEvent('#set-accessibility', 'click', () => Dialog.alert('#accessibility'));
             putEvent('a[target="frame"]', 'click', () => Dialog.alert('#frame'));
             this.attachSetter('#scan-time', 'change', 'scan_timeout');
-            this.attachSetter('#device-options', 'input', 'printer');
+            this.attachSetter('#device-options', 'input', 'printer', 
+                (value) => callApi('/connect', { device: value })
+            );
             this.attachSetter('input[name="algo"]', 'change', 'mono_algorithm',
                 (value) => this.settings['text_mode'] = (value === 'algo-direct')
             );
