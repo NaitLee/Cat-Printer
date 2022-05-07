@@ -82,41 +82,61 @@ class Commander(metaclass=ABCMeta):
         'Start printing on newer printers'
         self.send( bytearray([0x12, 0x51, 0x78, 0xa3, 0x00, 0x01, 0x00, 0x00, 0x00, 0xff]) )
 
-    def image_mode(self):
-        'Enable Image Mode on the printer. Lighter, slower.'
-        self.send( self.make_command(0xbe, int_to_bytes(0x00)) )
+    def use_energy_control(self, enable: bool):
+        ''' Whether enable energy control (with set_energy) or not
+            Note: I remember I can't disable it, when I (incorrectly)
+            thought it was "image/text mode"
+        '''
+        self.send( self.make_command(0xbe, int_to_bytes(0x01 if enable else 0x00)) )
 
-    def text_mode(self):
-        'Enable Text Mode on the printer. Darker, faster.'
-        self.send( self.make_command(0xbe, int_to_bytes(0x01)) )
+    def get_device_state(self):
+        '(unknown). seems it could refresh device state & apply config'
+        self.send( self.make_command(0xa3, int_to_bytes(0x00)) )
+
+    def get_device_info(self):
+        '(unknown). seems it could refresh device state & apply config'
+        self.send( self.make_command(0xa8, int_to_bytes(0x00)) )
 
     def update_device(self):
-        '(unknown)'
+        '(unknown). seems it could refresh device state & apply config'
         self.send( self.make_command(0xa9, int_to_bytes(0x00)) )
 
+    def set_dpi_as_200(self):
+        '(unknown)'
+        self.send( self.make_command(0xa4, int_to_bytes(50)) )
+
     def start_lattice(self):
-        'Start rolling paper'
+        'Mark the start of printing'
         self.send( self.make_command(0xa6, bytearray(
             [0xaa, 0x55, 0x17, 0x38, 0x44, 0x5f, 0x5f, 0x5f, 0x44, 0x38, 0x2c]
         )) )
 
     def end_lattice(self):
-        'End rolling paper'
+        'Mark the end of printing'
         self.send( self.make_command(0xa6, bytearray(
             [ 0xaa, 0x55, 0x17, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x17 ]
         )) )
 
-    def retract_paper(self, steps: int):
-        'Retract the paper for `steps`'
-        self.send( self.make_command(0xa0, int_to_bytes(steps)) )
+    def retract_paper(self, pixels: int):
+        'Retract the paper for some pixels'
+        self.send( self.make_command(0xa0, int_to_bytes(pixels)) )
 
-    def feed_paper(self, steps: int):
-        'Feed the paper for `steps`'
-        self.send( self.make_command(0xa1, int_to_bytes(steps)) )
+    def feed_paper(self, pixels: int):
+        'Feed the paper for some pixels'
+        self.send( self.make_command(0xa1, int_to_bytes(pixels)) )
+
+    def set_speed(self, value: int):
+        ''' Set how quick to feed/retract paper. **The lower, the quicker.**
+            My test shows that, a value below 4 would make printer
+            unable to feed/retract, for it's way too quick.
+        '''
+        self.send( self.make_command(0xbd, int_to_bytes(value)) )
 
     def set_energy(self, amount: int):
-        'Set thermal energy, max to `0xffff`'
-        self.send( self.make_command(0xbe, int_to_bytes(amount)) )
+        ''' Set thermal energy, max to `0xffff`
+            By default, it's seems around `0x3000`, aka 1 / 5.
+        '''
+        self.send( self.make_command(0xaf, int_to_bytes(amount)) )
 
     def draw_bitmap(self, bitmap_data: bytearray):
         'Print `bitmap_data`. Also does the bit-reversing job.'

@@ -13,7 +13,7 @@ from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer
 
 # import `printer` first, to diagnostic some common errors
-from printer import PrinterDriver, PrinterError, I18n, info
+from printer import PrinterDriver, PrinterError, i18n, info
 
 from bleak.exc import BleakDBusError, BleakError    # pylint: disable=wrong-import-order
 
@@ -46,7 +46,8 @@ def mime(url: str):
     'Get pre-defined MIME type of a certain url by extension name'
     return mime_type.get(url.rsplit('.', 1)[-1], mime_type['octet-stream'])
 
-def concat_files(*paths, prefix_format='', buffer=4 * 1024 * 1024):
+def concat_files(*paths, prefix_format='', buffer=4 * 1024 * 1024) -> bytes:
+    'Generator, that yields buffered file content, with optional prefix'
     for path in paths:
         yield prefix_format.format(path).encode('utf-8')
         with open(path, 'rb') as file:
@@ -66,7 +67,8 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         'first_run': True,
         'is_android': False,
         'scan_timeout': 4.0,
-        'dry_run': False
+        'dry_run': False,
+        'energy': 0.2
     })
     _settings_blacklist = (
         'printer', 'is_android'
@@ -185,9 +187,9 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         self.printer.scan_timeout = self.settings.scan_timeout
         self.printer.fake = self.settings.fake
         self.printer.dump = self.settings.dump
-        self.printer.use_text_mode = self.settings.text_mode
-        self.printer.flip_h = self.settings.flip_h
-        self.printer.flip_v = self.settings.flip_v
+        self.printer.energy = self.settings.energy
+        self.printer.flip_h = self.settings.flip_h or self.settings.flip
+        self.printer.flip_v = self.settings.flip_v or self.settings.flip
         self.printer.rtl = self.settings.force_rtl
 
     def handle_api(self):
@@ -319,12 +321,12 @@ def serve():
     address, port = '127.0.0.1', 8095
     listen_all = False
     if '-a' in sys.argv:
-        info(I18n['will-listen-on-all-addresses'])
+        info(i18n('will-listen-on-all-addresses'))
         listen_all = True
     server = PrinterServer(('' if listen_all else address, port), PrinterServerHandler)
     service_url = f'http://{address}:{port}/'
     if '-s' in sys.argv:
-        info(I18n['serving-at-0', service_url])
+        info(i18n('serving-at-0', service_url))
     else:
         operating_system = platform.uname().system
         if operating_system == 'Windows':
@@ -334,7 +336,7 @@ def serve():
         # TODO: I don't know about macOS
         # elif operating_system == 'macOS':
         else:
-            info(I18n['serving-at-0', service_url])
+            info(i18n('serving-at-0', service_url))
     try:
         server.serve_forever()
     except KeyboardInterrupt:

@@ -1,7 +1,9 @@
 'Printer model specifications'
 
 class Model():
-    'A printer model'
+    ''' A printer model
+        Note: these currently make no obvious sense
+    '''
     paper_width: int
     is_new_kind: bool
     def __init__(self, width, is_new):

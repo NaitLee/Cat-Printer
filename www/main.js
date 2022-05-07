@@ -252,152 +252,185 @@ class CanvasController {
     preview;
     /** @type {HTMLCanvasElement} */
     canvas;
-    div;
     imageUrl;
-    isCanvas;
     algorithm;
+    _height;
     _threshold;
+    _energy;
+    _thresholdRange;
+    _energyRange;
+    transparentAsWhite;
+    previewData;
+    static defaultHeight = 384;
+    static defaultThreshold = 256 / 3;
     get threshold() {
         return this._threshold;
     }
     set threshold(value) {
         this._threshold = this._thresholdRange.value = value;
     }
-    _thresholdRange;
-    transparentAsWhite;
-    previewData;
-    static defaultHeight = 384;
-    static defaultThreshold = 256 / 3;
-    _height;
+    get energy() {
+        return this._energy;
+    }
+    set energy(value) {
+        this._energy = this._energyRange.value = value;
+    }
     get height() {
         return this._height;
     }
     set height(value) {
-        this.div.style.height = (this.canvas.height = this.preview.height = this._height = value) + 'px';
+        this.canvas.height = this.preview.height = this._height = value;
     }
     constructor() {
         this.preview = document.getElementById('preview');
-        this.canvas = document.getElementById('control-canvas');
-        this.div = document.getElementById('control-document');
+        this.canvas = document.getElementById('canvas');
+        this.controls = document.getElementById('control-overlay');
         this.height = CanvasController.defaultHeight;
         this._thresholdRange = document.getElementById('threshold');
+        this._energyRange = document.getElementById('energy');
         this.imageUrl = null;
 
-        putEvent('input[name="mode"]', 'change', (event) => this.enableMode(event.currentTarget.value), this);
+        const prevent_default = (event) => {
+            event.preventDefault();
+            return false;
+        }
+
+        this.canvas.addEventListener('dragover', prevent_default);
+        this.canvas.addEventListener('dragenter', prevent_default);
+        this.canvas.addEventListener('drop', (event) => {
+            this.insertPicture(event.dataTransfer.files);
+            return prevent_default(event);
+        });
+
         putEvent('input[name="algo"]', 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
+        putEvent('#insert-picture'   , 'click', () => this.insertPicture(), this);
         putEvent('#button-preview'   , 'click', this.activatePreview , this);
+        putEvent('#button-reset'     , 'click', this.reset           , this);
         putEvent('#canvas-expand'    , 'click', this.expand          , this);
         putEvent('#canvas-crop'      , 'click', this.crop            , this);
-        putEvent('#insert-picture'   , 'click', this.insertPicture   , this);
 
         putEvent('#threshold', 'change', (event) => {
             this.threshold = parseInt(event.currentTarget.value);
             this.activatePreview();
+        }, this);
+        putEvent('#energy', 'change', (event) => {
+            this.energy = parseInt(event.currentTarget.value);
+            this.visualEnergy(this.energy);
         }, this);
         putEvent('#transparent-as-white', 'change', (event) => {
             this.transparentAsWhite = event.currentTarget.checked;
             this.activatePreview();
         }, this);
     }
-    enableMode(mode) {
-        switch (mode) {
-            case 'mode-document':
-                this.div.classList.remove('disabled');
-                this.canvas.classList.add('disabled');
-                this.isCanvas = false;
-                break;
-            case 'mode-canvas':
-                this.canvas.classList.remove('disabled');
-                this.div.classList.add('disabled');
-                this.isCanvas = true;
-                break;
-        }
-    }
     useAlgorithm(name) {
         this.algorithm = name;
         this.threshold = CanvasController.defaultThreshold;
         this._thresholdRange.dispatchEvent(new Event('change'));
+        this.energy = name == 'algo-direct' ? 72 : 48;
+        this._energyRange.dispatchEvent(new Event('change'));
         this.activatePreview();
     }
     expand(length = CanvasController.defaultHeight) {
         this.height += length;
     }
     crop() {}
+    visualEnergy(amount) {
+        let rate = amount / 256;
+        let brightness = Math.max(1.6 - rate * 1.5, 0.75),
+            contrast = 1 + rate * 2;
+        this.preview.style.filter = `brightness(${brightness}) contrast(${contrast})`;
+    }
     activatePreview() {
         if (!this.imageUrl) return;
         let preview = this.preview;
         let t = Math.min(this.threshold, 255);
-        if (this.isCanvas) {
-            let canvas = this.canvas;
-            let w = canvas.width, h = canvas.height;
-            let context_c = canvas.getContext('2d');
-            let context_p = preview.getContext('2d');
-            let data = context_c.getImageData(0, 0, w, h);
-            let mono_data = new Uint8ClampedArray(w * h);
-            monoGrayscale(data.data, mono_data, w, h, t, this.transparentAsWhite);
-            switch (this.algorithm) {
-                case 'algo-direct':
-                    monoDirect(mono_data, w, h, t);
-                    break;
-                case 'algo-steinberg':
-                    monoSteinberg(mono_data, w, h, Math.floor(t / 2 - 64));
-                    break;
-                case 'algo-halftone':
-                    // monoHalftone(mono_data, w, h, t);
-                    // Sorry, do it later
-                    break;
-                case 'algo-new':
-                    monoNew(mono_data, w, h, t);
-                    break;
-                case 'algo-new-h':
-                    monoNewH(mono_data, w, h, Math.floor(t / 2 - 64));
-                    break;
-                case 'algo-new-v':
-                    monoNewV(mono_data, w, h, t);
-                    break;
-                case 'algo-legacy':
-                    monoLegacy(mono_data, w, h, t);
-                    break;
-            }
-            let new_data = context_p.createImageData(w, h);
-            let p;
-            for (let i = 0; i < mono_data.length; i++) {
-                p = i * 4;
-                new_data.data.fill(mono_data[i], p, p + 3);
-                new_data.data[p + 3] = 255;
-            }
-            this.previewData = mono_data;
-            context_p.putImageData(new_data, 0, 0);
+        let canvas = this.canvas;
+        let w = canvas.width, h = canvas.height;
+        preview.width = w; preview.height = h;
+        let context_c = canvas.getContext('2d');
+        let context_p = preview.getContext('2d');
+        let data = context_c.getImageData(0, 0, w, h);
+        let mono_data = new Uint8ClampedArray(w * h);
+        monoGrayscale(data.data, mono_data, w, h, t, this.transparentAsWhite);
+        switch (this.algorithm) {
+            case 'algo-direct':
+                monoDirect(mono_data, w, h, t);
+                break;
+            case 'algo-steinberg':
+                monoSteinberg(mono_data, w, h, Math.floor(t / 2 - 64));
+                break;
+            case 'algo-halftone':
+                // monoHalftone(mono_data, w, h, t);
+                // Sorry, do it later
+                break;
+            case 'algo-new':
+                monoNew(mono_data, w, h, t);
+                break;
+            case 'algo-new-h':
+                monoNewH(mono_data, w, h, Math.floor(t / 2 - 64));
+                break;
+            case 'algo-new-v':
+                monoNewV(mono_data, w, h, t);
+                break;
+            case 'algo-legacy':
+                monoLegacy(mono_data, w, h, t);
+                break;
         }
+        let new_data = context_p.createImageData(w, h);
+        let p;
+        for (let i = 0; i < mono_data.length; i++) {
+            p = i * 4;
+            new_data.data.fill(mono_data[i], p, p + 3);
+            new_data.data[p + 3] = 255;
+        }
+        this.previewData = mono_data;
+        context_p.putImageData(new_data, 0, 0);
     }
-    insertPicture() {
+    insertPicture(files) {
         const put_image = (url) => {
             this.imageUrl = url;
-            if (this.isCanvas) {
-                let img = document.createElement('img');
-                img.src = url;
-                hidden_area.appendChild(img);
-                img.addEventListener('load', () => {
-                    let canvas = this.canvas;
-                    let rate = img.height / img.width;
-                    this.height = canvas.width * rate;
-                    let context = canvas.getContext('2d');
-                    context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    this.crop();
-                    this.activatePreview();
-                    hint('#button-print');
-                });
-            }
+            let img = document.createElement('img');
+            img.src = url;
+            hidden_area.appendChild(img);
+            img.addEventListener('load', () => {
+                let canvas = this.canvas;
+                let rate = img.height / img.width;
+                this.height = canvas.width * rate;
+                let context = canvas.getContext('2d');
+                context.drawImage(img, 0, 0, canvas.width, canvas.height);
+                this.crop();
+                this.activatePreview();
+                hint('#button-print');
+            });
         }
-        let input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.addEventListener('change', () => {
-            let url = URL.createObjectURL(input.files[0]);
+        let use_files = (files) => {
+            let file = files[0];
+            if (!file) return;
+            let url = URL.createObjectURL(file);
             put_image(url);
-        });
-        hidden_area.appendChild(input);
-        input.click();
+            this.controls.classList.add('hidden');
+        }
+        if (files) use_files(files);
+        else {
+            document.querySelectorAll('.dummy').forEach(e => e.remove());
+            let input = document.createElement('input');
+            input.classList.add('dummy');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.addEventListener('change', () => {
+                use_files(input.files);
+            });
+            hidden_area.appendChild(input);
+            input.click();
+        }
+    }
+    reset() {
+        let canvas = this.canvas;
+        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+        canvas.height = CanvasController.defaultHeight;
+        this.activatePreview();
+        this.imageUrl = null;
+        this.controls.classList.remove('hidden');
     }
     makePbm() {
         let blob = mono2pbm(this.previewData, this.preview.width, this.preview.height);
@@ -468,6 +501,11 @@ async function testI18n(lang) {
         .then(r => r.text())    // jsonc: JSON with comment
         .then(t => JSON.parse(t.replace(/\s*\/\/.*/g, '')))
     , true);
+}
+
+async function fakeAndroid(enable) {
+    await callApi('/set', { 'is_android': enable });
+    window.location.reload();
 }
 
 class Main {
@@ -550,11 +588,11 @@ class Main {
             this.attachSetter('#high-contrast', 'change', 'high_contrast',
                 (checked) => apply_class('high-contrast', checked)
             );
-            this.attachSetter('#threshold', 'change', 'threshold',
-                (value) => this.canvasController.threshold = value
-            );
-            this.attachSetter('#flip-h', 'change', 'flip_h');
-            this.attachSetter('#flip-v', 'change', 'flip_v');
+            this.attachSetter('#threshold', 'change', 'threshold');
+            this.attachSetter('#energy', 'change', 'energy');
+            this.attachSetter('#flip', 'change', 'flip');
+            // this.attachSetter('#flip-h', 'change', 'flip_h');
+            // this.attachSetter('#flip-v', 'change', 'flip_v');
             this.attachSetter('#dump', 'change', 'dump');
             await this.activateConfig();
             // one exception
@@ -570,7 +608,7 @@ class Main {
                 });
                 div.id = 'select-language';
                 select.replaceWith(div);
-                document.getElementById('hint-tab-control').classList.add('hard-hidden');
+                document.querySelectorAll('.hide-on-android').forEach(e => e.classList.add('hard-hidden'));
             }
             if (typeof initKeyboardShortcuts === 'function') initKeyboardShortcuts();
             this.searchDevices();

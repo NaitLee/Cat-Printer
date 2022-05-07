@@ -119,5 +119,10 @@
     "reset-configuration-": "Reset configuration?",
     "brightness-": "Brightness:",
     "text-printing-mode": "Text Printing Mode",
-    "internal-error-please-see-terminal": "Internal error, please see terminal"
+    "internal-error-please-see-terminal": "Internal error, please see terminal",
+    "control-printer-thermal-strength": "Control printer thermal strength",
+    "strength-": "Strength:",
+    "or-drag-file-to-below": "Or drag file to below",
+    "reset": "Reset",
+    "cat-face-toward": "Cat Face Toward"
 }

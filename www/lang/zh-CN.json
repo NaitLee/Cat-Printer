@@ -114,5 +114,10 @@
     "reset-configuration-": "要重置配置吗？",
     "brightness-": "亮度：",
     "text-printing-mode": "文字打印模式",
-    "internal-error-please-see-terminal": "内部错误，请检查终端"
+    "internal-error-please-see-terminal": "内部错误，请检查终端",
+    "control-printer-thermal-strength": "控制打印力度",
+    "strength-": "力度：",
+    "or-drag-file-to-below": "或拖拽文件至下方",
+    "reset": "重置",
+    "cat-face-toward": "猫脸朝上"
 }

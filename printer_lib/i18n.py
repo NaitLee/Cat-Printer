@@ -26,9 +26,8 @@ class I18nLib():
                 for key in data:
                     self.data[key] = data[key]
 
-    def __getitem__(self, keys):
-        if not isinstance(keys, tuple):
-            keys = (keys, )
+    def translate(self, *keys):
+        'Translate something'
         string = self.data.get(keys[0], keys[0])
         if len(keys) > 1:
             if isinstance(keys[-1], dict):
@@ -36,3 +35,9 @@ class I18nLib():
             else:
                 string = string.format(*keys[1:])
         return string
+
+    def __getitem__(self, keys):
+        if isinstance(keys, tuple):
+            return self.translate(*keys)
+        else:
+            return self.translate(keys)

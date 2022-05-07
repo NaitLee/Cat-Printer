@@ -11,8 +11,6 @@ Note: not ordered. do whatever I/you want
 + Try to implement enough without more dependencies
 + ...
 
-? Consider more control to something like 'energy'
-  This have no effect on my GB02
 ? Data compression for GB03. Optional
 ? Put Android APP on F-Droid? But it needs automatic build system...
   Android guys can help this!

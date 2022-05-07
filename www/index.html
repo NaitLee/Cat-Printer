@@ -20,17 +20,6 @@
                     </select>
                     <button id="device-refresh" data-i18n="refresh" data-key>Refresh</button>
                     <hr />
-                    <label data-i18n="mode-">Mode:</label>
-                    <label>
-                        <input type="radio" name="mode" value="mode-canvas" data-key checked />
-                        <span data-i18n="canvas">Canvas</span>
-                    </label>
-                    <!-- <label>
-                        <input type="radio" name="mode" value="mode-document" data-key />
-                        <span data-i18n="document">Document</span>
-                    </label><br /> -->
-                    <button id="insert-picture" data-i18n="insert-picture" data-key="Enter">Insert Picture</button>
-                    <br />
                     <label data-i18n="process-as-">Process as:</label>
                     <label>
                         <input type="radio" name="algo" value="algo-direct" data-key />
@@ -47,6 +36,10 @@
                     <!-- "brightness" is historically "threshold" -->
                     <label for="threshold" data-i18n="brightness-">Brightness:</label>
                     <input type="range" min="0" max="256" value="86" step="16" id="threshold" data-key data-default />
+                    <br />
+                    <!-- "Strength", so-called "darkness", or internally "energy" -->
+                    <label for="energy" data-i18n="strength-">Strength:</label>
+                    <input type="range" min="0" max="256" value="64" step="16" id="energy" data-key data-default />
                     <br />
                     <input type="checkbox" name="transparent-as-white" id="transparent-as-white" data-key checked />
                     <label for="transparent-as-white" data-i18n="transparent-as-white">Transparent as White</label>
@@ -66,10 +59,12 @@
                     <input type="number" name="scan-time" id="scan-time" min="1" max="10" value="4" data-key />
                     <span data-i18n="-seconds">seconds</span>
                     <br />
-                    <input type="checkbox" name="flip-h" id="flip-h" data-key />
+                    <!-- <input type="checkbox" name="flip-h" id="flip-h" data-key />
                     <label for="flip-h" data-i18n="flip-horizontally">Flip Horizontally</label>
                     <input type="checkbox" name="flip-v" id="flip-v" data-key />
-                    <label for="flip-v" data-i18n="flip-vertically">Flip Vertically</label>
+                    <label for="flip-v" data-i18n="flip-vertically">Flip Vertically</label> -->
+                    <input type="checkbox" name="flip" id="flip" data-key />
+                    <label for="flip" data-i18n="cat-face-toward">Cat Face Toward</label>
                     <hr />
                     <input type="checkbox" name="dry-run" id="dry-run" data-key />
                     <label for="dry-run" data-i18n="dry-run">Dry Run</label>
@@ -102,13 +97,21 @@
             </div>
         </div>
         <div class="canvas-side">
-            <canvas id="control-canvas" class="disabled" width="384" height="384"></canvas>
-            <div id="control-document" class="disabled" contenteditable="true"></div>
-            <canvas id="preview" width="384" height="384"></canvas>
+            <div id="control-overlay">
+                <div>
+                    <button id="insert-picture" data-i18n="insert-picture" data-key="Enter">Insert Picture</button>
+                    <p data-i18n="or-drag-file-to-below" class="hide-on-android">Or drag file to below</p>
+                </div>
+            </div>
+            <div class="canvas-group">
+                <canvas id="canvas" width="384" height="384"></canvas>
+                <canvas id="preview" width="384" height="384"></canvas>
+            </div>
             <div class="center buttons">
                 <!-- <button id="canvas-expand" data-i18n="expand">Expand</button>
                 <button id="canvas-crop" data-i18n="crop">Crop</button> -->
                 <!-- <button id="button-preview" data-i18n="preview">Preview</button> -->
+                <button id="button-reset" data-i18n="reset" data-key>Reset</button>
                 <button id="button-print" data-i18n="print" data-key=" ">Print</button>
             </div>
             <div class="blank"></div>
@@ -126,7 +129,8 @@
                 <select multiple id="select-language" data-key="a">
                 </select>
                 <br />
-                <span id="hint-tab-control" data-i18n="to-enter-keyboard-mode-press-tab">To enter Keyboard Mode, press Tab</span>
+                <span id="hint-tab-control" class="hide-on-android"
+                 data-i18n="to-enter-keyboard-mode-press-tab">To enter Keyboard Mode, press Tab</span>
             </div>
             <div>
                 <h2 data-i18n="layout">Layout</h2>
