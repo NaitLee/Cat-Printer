@@ -326,7 +326,7 @@ class CanvasController {
         this.algorithm = name;
         this.threshold = CanvasController.defaultThreshold;
         this._thresholdRange.dispatchEvent(new Event('change'));
-        this.energy = name == 'algo-direct' ? 72 : 48;
+        this.energy = name == 'algo-direct' ? 96 : 64;
         this._energyRange.dispatchEvent(new Event('change'));
         this.activatePreview();
     }
@@ -590,6 +590,7 @@ class Main {
             );
             this.attachSetter('#threshold', 'change', 'threshold');
             this.attachSetter('#energy', 'change', 'energy');
+            this.attachSetter('#quality', 'change', 'quality');
             this.attachSetter('#flip', 'change', 'flip');
             // this.attachSetter('#flip-h', 'change', 'flip_h');
             // this.attachSetter('#flip-v', 'change', 'flip_v');

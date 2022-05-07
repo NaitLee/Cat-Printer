@@ -20,27 +20,38 @@
                     </select>
                     <button id="device-refresh" data-i18n="refresh" data-key>Refresh</button>
                     <hr />
-                    <label data-i18n="process-as-">Process as:</label>
-                    <label>
-                        <input type="radio" name="algo" value="algo-direct" data-key />
-                        <span data-i18n="text">Text</span>
-                    </label>
-                    <label>
-                        <input type="radio" name="algo" value="algo-steinberg" data-key checked />
-                        <span data-i18n="picture">Picture</span>
-                    </label>
-                    <!-- <label>
-                        <input type="radio" name="algo" value="algo-halftone" data-key />
-                        <span data-i18n="pattern">Pattern</span>
-                    </label> --><br />
+                    <dl>
+                        <dt><label data-i18n="process-as-">Process as:</label></dt>
+                        <dd>
+                            <label>
+                                <input type="radio" name="algo" value="algo-direct" data-key />
+                                <span data-i18n="text">Text</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="algo" value="algo-steinberg" data-key checked />
+                                <span data-i18n="picture">Picture</span>
+                            </label>
+                        </dd>
+                        <!-- <label>
+                            <input type="radio" name="algo" value="algo-halftone" data-key />
+                            <span data-i18n="pattern">Pattern</span>
+                        </label> -->
+                    </dl>
                     <!-- "brightness" is historically "threshold" -->
-                    <label for="threshold" data-i18n="brightness-">Brightness:</label>
-                    <input type="range" min="0" max="256" value="86" step="16" id="threshold" data-key data-default />
-                    <br />
+                    <dl>
+                        <dt><label for="threshold" data-i18n="brightness-">Brightness:</label></dt>
+                        <dd><input type="range" min="0" max="256" value="86" step="16" id="threshold" data-key data-default /></dd>
+                    </dl>
                     <!-- "Strength", so-called "darkness", or internally "energy" -->
-                    <label for="energy" data-i18n="strength-">Strength:</label>
-                    <input type="range" min="0" max="256" value="64" step="16" id="energy" data-key data-default />
-                    <br />
+                    <dl>
+                        <dt><label for="energy" data-i18n="strength-">Strength:</label></dt>
+                        <dd><input type="range" min="0" max="256" value="64" step="16" id="energy" data-key data-default /></dd>
+                    </dl>
+                    <!-- "Quality", just speed of paper feeding, but slower makes better heating -->
+                    <dl>
+                        <dt><label for="quality" data-i18n="quality-">Quality:</label></dt>
+                        <dd><input type="range" min="24" max="36" value="32" step="4" id="quality" data-key data-default /></dd>
+                    </dl>
                     <input type="checkbox" name="transparent-as-white" id="transparent-as-white" data-key checked />
                     <label for="transparent-as-white" data-i18n="transparent-as-white">Transparent as White</label>
                 </div>

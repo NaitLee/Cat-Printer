@@ -82,12 +82,10 @@ class Commander(metaclass=ABCMeta):
         'Start printing on newer printers'
         self.send( bytearray([0x12, 0x51, 0x78, 0xa3, 0x00, 0x01, 0x00, 0x00, 0x00, 0xff]) )
 
-    def use_energy_control(self, enable: bool):
-        ''' Whether enable energy control (with set_energy) or not
-            Note: I remember I can't disable it, when I (incorrectly)
-            thought it was "image/text mode"
+    def apply_energy(self):
+        ''' Apply previously set energy to printer
         '''
-        self.send( self.make_command(0xbe, int_to_bytes(0x01 if enable else 0x00)) )
+        self.send( self.make_command(0xbe, int_to_bytes(0x01)) )
 
     def get_device_state(self):
         '(unknown). seems it could refresh device state & apply config'

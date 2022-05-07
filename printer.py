@@ -131,7 +131,7 @@ class PrinterError(Exception):
     def __init__(self, *args):
         super().__init__(*args)
         self.message = args[0]
-        self.message_localized = i18n(args)
+        self.message_localized = i18n(*args)
 
 class PrinterData():
     ''' The image data to be used by `PrinterDriver`.
@@ -277,6 +277,7 @@ class PrinterDriver(Commander):
     rtl: bool = False
 
     energy: int = None
+    quality: int = 24
 
     mtu: int = 200
 
@@ -427,20 +428,23 @@ class PrinterDriver(Commander):
 
     def _prepare(self):
         self.get_device_state()
-        self.set_dpi_as_200()
-        self.use_energy_control(True)
-        if self.energy is not None:
-            self.set_energy(self.energy * 0xff)
         if self.model.is_new_kind:
             self.start_printing_new()
         else:
             self.start_printing()
-        self.set_speed(8)   # already fine if above 4. maybe just enough
-        self.get_device_state()
+        self.set_dpi_as_200()
+        if self.quality:    # well, slower makes stable heating
+            self.set_speed(self.quality)
+        if self.energy is not None:
+            self.set_energy(self.energy * 0xff)
+        self.apply_energy()
         self.update_device()
+        self.flush()
+        self.start_lattice()
 
     def _finish(self):
         self.end_lattice()
+        self.set_speed(8)
         self.feed_paper(128)
         self.get_device_state()
         self.flush()
@@ -450,7 +454,6 @@ class PrinterDriver(Commander):
         flip(data.data, data.width, data.height, self.flip_h, self.flip_v, overwrite=True)
         self._prepare()
         # TODO: consider compression on new devices
-        self.start_lattice()
         for chunk in data.read(paper_width // 8):
             if self.dry_run:
                 chunk = b'\x00' * len(chunk)
@@ -615,8 +618,10 @@ def _main():
                         help=i18n('image-printing-options'))
     parser.add_argument('-t', '--text', metavar='Size[,FontFamily][,pf2][,nowrap][,rtl]', type=str,
                         default='', help=i18n('text-printing-mode-with-options'))
-    parser.add_argument('-e', '--energy', metavar='<0.0-1.0>', type=float, default=None,
+    parser.add_argument('-e', '--energy', metavar='0.0-1.0', type=float, default=None,
                         help=i18n('control-printer-thermal-strength'))
+    parser.add_argument('-q', '--quality', metavar='1-4', type=int, default=3,
+                        help=i18n('print-quality'))
     parser.add_argument('-d', '--dry', action='store_true',
                         help=i18n('dry-run-test-print-process-only'))
     parser.add_argument('-f', '--fake', metavar='XY01', type=str, default='',
@@ -638,7 +643,9 @@ def _main():
     printer.scan_timeout = float(scan_param[0])
     identifier = ','.join(scan_param[1:])
     if args.energy is not None:
-        printer.energy = args.energy * 0xff
+        printer.energy = int(args.energy * 0xff)
+    if args.quality is not None:
+        printer.quality = 4 * (args.quality + 5)
 
     image_param = args.image.split(',')
     if 'flip' in image_param:

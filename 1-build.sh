@@ -1,6 +1,6 @@
 #!/bin/sh
 # For ultimate laziness!
-rm -rf cat-printer-*.zip cat-printer-*.apk* cat-printer-*-sha256.txt
+rm -rf cat-printer-*.zip cat-printer-*.apk* cat-printer-sha256-*.txt
 echo -n 'Version tag: '
 read version
 echo -n $version > version
@@ -16,5 +16,5 @@ echo 'Signing apk with keyfile...'
 ./4-sign.sh $signkey
 cd ../
 echo 'SHA256 Hash...'
-sha256sum cat-printer-* > cat-printer-$version-sha256.txt
+sha256sum cat-printer-* > cat-printer-sha256-$version.txt
 echo 'Complete!'

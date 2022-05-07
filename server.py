@@ -188,6 +188,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         self.printer.fake = self.settings.fake
         self.printer.dump = self.settings.dump
         self.printer.energy = self.settings.energy
+        self.printer.quality = self.settings.quality
         self.printer.flip_h = self.settings.flip_h or self.settings.flip
         self.printer.flip_v = self.settings.flip_v or self.settings.flip
         self.printer.rtl = self.settings.force_rtl

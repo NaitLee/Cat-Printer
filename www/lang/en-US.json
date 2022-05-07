@@ -124,5 +124,7 @@
     "strength-": "Strength:",
     "or-drag-file-to-below": "Or drag file to below",
     "reset": "Reset",
-    "cat-face-toward": "Cat Face Toward"
+    "cat-face-toward": "Cat Face Toward",
+    "quality-": "Quality:",
+    "print-quality": "Print quality"
 }

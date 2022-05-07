@@ -14,7 +14,7 @@ build-android/dist
 *.apk
 *.apk.*
 cat-printer*.zip
-*-sha256.txt
+cat-printer-sha256-*.txt
 # bleak, the bare pip package as a folder
 build-common/bleak
 # python embeddable package, with bleak_winrt inside
