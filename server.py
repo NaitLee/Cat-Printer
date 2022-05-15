@@ -7,10 +7,10 @@ import io
 import sys
 import json
 import platform
-from http.server import BaseHTTPRequestHandler
+import warnings
 
 # For now we can't use `ThreadingHTTPServer`
-from http.server import HTTPServer
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # import `printer` first, to diagnostic some common errors
 from printer import PrinterDriver, PrinterError, i18n, info
@@ -18,6 +18,9 @@ from printer import PrinterDriver, PrinterError, i18n, info
 from bleak.exc import BleakDBusError, BleakError    # pylint: disable=wrong-import-order
 
 from printer_lib.ipp import IPP
+
+# Supress non-sense asyncio warnings
+warnings.simplefilter('ignore', RuntimeWarning, 0, True)
 
 IsAndroid = (os.environ.get("P4A_BOOTSTRAP") is not None)
 

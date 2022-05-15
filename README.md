@@ -48,7 +48,7 @@ Currently:
   - and also Android!
 
 - Free, as in [freedom](https://www.gnu.org/philosophy/free-sw.html)!
-  - Unlike the "original" proprietary app,  
+  - Unlike those proprietary "apps" around,  
     this project is for everyone that concerns *open-mind and freedom*!
 
 - and Fun!
@@ -120,7 +120,7 @@ Copyright © 2021-2022 NaitLee Soft. Some rights reserved.
 See file `COPYING`, `LICENSE`, and detail of used JavaScript in file `www/jslicense.html`
 
 Particularly, `printer.py`, `server.py` and `main.js` are released under GNU GPL 3.  
-Excluding contributions of other people (which probably have their own copyright) and possible third-party dependencies, all other parts are in Public Domain (CC0).
+All other parts, except which have special statements, are in Public Domain (CC0).
 
 --------
 
@@ -134,9 +134,12 @@ Also interested in code development? See [development.md](development.md)!
 ### Credits
 
 - Of course, Python & the Web!
-- [Bleak](https://bleak.readthedocs.io/en/latest/) BLE lib! The overall Hero!
+- [Bleak](https://bleak.readthedocs.io/en/latest/) Bluetooth-Low-Energy library! The overall Hero!
 - [roddeh-i18n](https://github.com/roddeh/i18njs), the current built-in i18n is inspired by this
+- [PF2 font](http://grub.gibibit.com/New_font_format), great minimal raster font idea
+- ImageMagick & Ghostscript, never mention other if something useful is already in one's system
 - [python-for-android](https://python-for-android.readthedocs.io/en/latest/), though there are some painful troubles
 - [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) for saving my life from Java
 - Stack Overflow & the whole Internet, you let me know Android `Activity` all from beginning
+  ... and many other helpful ideas as well
 - ... Everyone is Awesome!

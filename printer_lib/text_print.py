@@ -1,6 +1,6 @@
 'Things used by Text Printing feature'
 
-from .pf2 import PF2
+from .pf2 import PF2S
 
 class TextCanvas():
     'Canvas for text printing, requires PF2 lib'
@@ -9,12 +9,15 @@ class TextCanvas():
     canvas: bytearray = None
     rtl: bool
     wrap: bool
+    scale: int
     pf2 = None
-    def __init__(self, width, *, wrap=False, rtl=False, font_path='font.pf2'):
-        self.pf2 = PF2(font_path)
+    def __init__(self, width, *, wrap=False, rtl=False,
+            font_path='font.pf2', scale=1):
+        self.pf2 = PF2S(font_path, scale=scale)
         self.width = width
         self.wrap = wrap
         self.rtl = rtl
+        self.scale = scale
         self.height = self.pf2.max_height + self.pf2.descent
         self.flush_canvas()
     def flush_canvas(self):
@@ -79,9 +82,5 @@ class TextCanvas():
                         canvas_bit = 7 - (self.width * target_y + current_width + target_x) % 8
                     if canvas_byte < 0 or canvas_byte >= canvas_length:
                         continue
-                    char_byte = (char.width * y + x) // 8
-                    char_bit = 7 - (char.width * y + x) % 8
-                    self.canvas[canvas_byte] |= (
-                        char.bitmap_data[char_byte] & (0b1 << char_bit)
-                    ) >> char_bit << canvas_bit
+                    self.canvas[canvas_byte] |= char.get_bit(x, y) << canvas_bit
             current_width += char.device_width

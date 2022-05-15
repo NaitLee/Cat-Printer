@@ -34,6 +34,8 @@ const hint = (function() {
     }
 })();
 
+document.querySelectorAll('*[data-once]').forEach(e => e.addEventListener('click', () => e.remove()));
+
 const Notice = (function() {
     const notice = document.getElementById('notice');
     let last_span;
@@ -53,6 +55,17 @@ const Notice = (function() {
         warn: (message, things) => put(message, things, 'warn'),
         error: (message, things) => put(message, things, 'error')
     }
+})();
+
+const Hider = (function() {
+    const manipulator = {
+        hide: (name) => document.querySelectorAll(`[data-hide-as="${name}"]`).forEach(e => e.classList.add('hard-hidden')),
+        show: (name) => document.querySelectorAll(`[data-hide-as="${name}"]`).forEach(e => e.classList.remove('hard-hidden')),
+    };
+    document.querySelectorAll('[data-hide-as]').forEach(e => e.classList.add('hard-hidden'));
+    document.querySelectorAll('[data-show]').forEach(e => e.addEventListener('click',
+        () => manipulator.show(e.getAttribute('data-show'))));
+    return manipulator;
 })();
 
 const Dialog = (function() {
@@ -286,8 +299,8 @@ class CanvasController {
         this.canvas = document.getElementById('canvas');
         this.controls = document.getElementById('control-overlay');
         this.height = CanvasController.defaultHeight;
-        this._thresholdRange = document.getElementById('threshold');
-        this._energyRange = document.getElementById('energy');
+        this._thresholdRange = document.querySelector('[name="threshold"]');
+        this._energyRange = document.querySelector('[name="energy"]');
         this.imageUrl = null;
 
         const prevent_default = (event) => {
@@ -309,15 +322,15 @@ class CanvasController {
         putEvent('#canvas-expand'    , 'click', this.expand          , this);
         putEvent('#canvas-crop'      , 'click', this.crop            , this);
 
-        putEvent('#threshold', 'change', (event) => {
+        putEvent('[name="threshold"]', 'change', (event) => {
             this.threshold = parseInt(event.currentTarget.value);
             this.activatePreview();
         }, this);
-        putEvent('#energy', 'change', (event) => {
+        putEvent('[name="energy"]', 'change', (event) => {
             this.energy = parseInt(event.currentTarget.value);
             this.visualEnergy(this.energy);
         }, this);
-        putEvent('#transparent-as-white', 'change', (event) => {
+        putEvent('[name="transparent-as-white"]', 'change', (event) => {
             this.transparentAsWhite = event.currentTarget.checked;
             this.activatePreview();
         }, this);
@@ -561,46 +574,47 @@ class Main {
             putEvent('#button-print', 'click', this.print, this);
             putEvent('#device-refresh', 'click', this.searchDevices, this);
             putEvent('#set-accessibility', 'click', () => Dialog.alert('#accessibility'));
-            putEvent('a[target="frame"]', 'click', () => Dialog.alert('#frame'));
-            this.attachSetter('#scan-time', 'change', 'scan_timeout');
             this.attachSetter('#device-options', 'input', 'printer', 
                 (value) => callApi('/connect', { device: value })
             );
+            putEvent('a[target="frame"]', 'click', () => Dialog.alert('#frame'));
+            this.attachSetter('[name="scan-time"]', 'change', 'scan_timeout');
             this.attachSetter('input[name="algo"]', 'change', 'mono_algorithm',
                 (value) => this.settings['text_mode'] = (value === 'algo-direct')
             );
-            this.attachSetter('#transparent-as-white', 'change', 'transparent_as_white');
-            this.attachSetter('#dry-run', 'change', 'dry_run',
+            this.attachSetter('[name="transparent-as-white"]', 'change', 'transparent_as_white');
+            this.attachSetter('[name="dry-run"]', 'change', 'dry_run',
                 (checked) => checked && Notice.note('dry-run-test-print-process-only')
             );
-            this.attachSetter('#no-animation', 'change', 'no_animation',
+            this.attachSetter('[name="no-animation"]', 'change', 'no_animation',
                 (checked) => apply_class('no-animation', checked)
             );
-            this.attachSetter('#large-font', 'change', 'large_font',
+            this.attachSetter('[name="large-font"]', 'change', 'large_font',
                 (checked) => apply_class('large-font', checked)
             );
-            this.attachSetter('#force-rtl', 'change', 'force_rtl',
+            this.attachSetter('[name="force-rtl"]', 'change', 'force_rtl',
                 (checked) => apply_class('force-rtl', checked)
             );
-            this.attachSetter('#dark-theme', 'change', 'dark_theme',
+            this.attachSetter('[name="dark-theme"]', 'change', 'dark_theme',
                 (checked) => apply_class('dark', checked)
             );
-            this.attachSetter('#high-contrast', 'change', 'high_contrast',
+            this.attachSetter('[name="high-contrast"]', 'change', 'high_contrast',
                 (checked) => apply_class('high-contrast', checked)
             );
-            this.attachSetter('#threshold', 'change', 'threshold');
-            this.attachSetter('#energy', 'change', 'energy');
-            this.attachSetter('#quality', 'change', 'quality');
-            this.attachSetter('#flip', 'change', 'flip');
-            // this.attachSetter('#flip-h', 'change', 'flip_h');
-            // this.attachSetter('#flip-v', 'change', 'flip_v');
-            this.attachSetter('#dump', 'change', 'dump');
+            this.attachSetter('[name="threshold"]', 'change', 'threshold');
+            this.attachSetter('[name="energy"]', 'change', 'energy');
+            this.attachSetter('[name="quality"]', 'change', 'quality');
+            this.attachSetter('[name="flip"]', 'change', 'flip');
+            // this.attachSetter('[name="flip-h"]', 'change', 'flip_h');
+            // this.attachSetter('[name="flip-v"]', 'change', 'flip_v');
+            // this.attachSetter('[name="dump"]', 'change', 'dump');
             await this.activateConfig();
             // one exception
             this.attachSetter('#select-language option', 'click', 'language');
 
             if (this.settings['is_android']) {
-                // Android doesn't work well with select[multiple]
+                document.body.classList.add('android');
+                // select[multiple] doesn't work well with Android
                 let div = document.createElement('div');
                 let select = document.getElementById('select-language');
                 Array.from(select.children).forEach(e => {
@@ -609,10 +623,9 @@ class Main {
                 });
                 div.id = 'select-language';
                 select.replaceWith(div);
-                document.querySelectorAll('.hide-on-android').forEach(e => e.classList.add('hard-hidden'));
             }
             if (typeof initKeyboardShortcuts === 'function') initKeyboardShortcuts();
-            this.searchDevices();
+            // this.searchDevices();
             document.querySelector('main').classList.remove('hard-hidden');
             document.getElementById('loading-screen').classList.add('hidden');
             resolve();
@@ -731,13 +744,13 @@ class Main {
     async searchDevices() {
         Notice.wait('scanning-for-devices');
         let search_result = await callApi('/devices', null, this.bluetoothProblemHandler);
-        if (search_result === null) return;
+        if (search_result === null) return false;
         let devices = search_result.devices;
         Array.from(this.deviceOptions.children).forEach(e => e.remove());
         if (devices.length === 0) {
             Notice.note('no-available-devices-found');
             hint('#device-refresh');
-            return;
+            return false;
         }
         Notice.note('found-0-available-devices', [devices.length]);
         hint('#insert-picture');
@@ -748,6 +761,7 @@ class Main {
             this.deviceOptions.appendChild(option);
         });
         this.deviceOptions.dispatchEvent(new Event('input'));
+        return true;
     }
     async print() {
         if (this.canvasController.imageUrl === null) return;
@@ -763,9 +777,10 @@ class Main {
                 response.json = () => json;
                 let error_data = await response.json();
                 if (/address.+not found|Not connected/.test(error_data.details) ||
-                    error_data.name === 'EOFError')
-                    Notice.error('please-check-if-the-printer-is-down');
-                else if (error_data.name === 'no-available-devices-found')
+                        error_data.name === 'EOFError') {
+                    if (await this.searchDevices()) this.print();
+                    else Notice.error('please-check-if-the-printer-is-down');
+                } else if (error_data.name === 'no-available-devices-found')
                     Notice.warn('no-available-devices-found');
                 else
                     ErrorHandler.report(

@@ -15,45 +15,50 @@
             </div>
             <div class="menu">
                 <div class="panel" id="panel-print" data-default>
-                    <label for="device-options" data-i18n="device-">Device:</label>
-                    <select id="device-options" data-key>
-                    </select>
-                    <button id="device-refresh" data-i18n="refresh" data-key>Refresh</button>
-                    <hr />
-                    <dl>
-                        <dt><label data-i18n="process-as-">Process as:</label></dt>
-                        <dd>
-                            <label>
-                                <input type="radio" name="algo" value="algo-direct" data-key />
-                                <span data-i18n="text">Text</span>
-                            </label>
-                            <label>
-                                <input type="radio" name="algo" value="algo-steinberg" data-key checked />
-                                <span data-i18n="picture">Picture</span>
-                            </label>
-                        </dd>
-                        <!-- <label>
-                            <input type="radio" name="algo" value="algo-halftone" data-key />
-                            <span data-i18n="pattern">Pattern</span>
-                        </label> -->
-                    </dl>
-                    <!-- "brightness" is historically "threshold" -->
-                    <dl>
-                        <dt><label for="threshold" data-i18n="brightness-">Brightness:</label></dt>
-                        <dd><input type="range" min="0" max="256" value="86" step="16" id="threshold" data-key data-default /></dd>
-                    </dl>
-                    <!-- "Strength", so-called "darkness", or internally "energy" -->
-                    <dl>
-                        <dt><label for="energy" data-i18n="strength-">Strength:</label></dt>
-                        <dd><input type="range" min="0" max="256" value="64" step="16" id="energy" data-key data-default /></dd>
-                    </dl>
-                    <!-- "Quality", just speed of paper feeding, but slower makes better heating -->
-                    <dl>
-                        <dt><label for="quality" data-i18n="quality-">Quality:</label></dt>
-                        <dd><input type="range" min="24" max="36" value="32" step="4" id="quality" data-key data-default /></dd>
-                    </dl>
-                    <input type="checkbox" name="transparent-as-white" id="transparent-as-white" data-key checked />
-                    <label for="transparent-as-white" data-i18n="transparent-as-white">Transparent as White</label>
+                    <div data-hide-as="print">
+                        <label for="device-options" data-i18n="device-">Device:</label>
+                        <select id="device-options" data-key>
+                        </select>
+                        <button id="device-refresh" data-i18n="refresh" data-key>Refresh</button>
+                        <hr />
+                    </div>
+                    <div class="input-group">
+                        <span class="label-span-input">
+                            <span data-i18n="process-as-">Process as:</span>
+                            <span>
+                                <label>
+                                    <input type="radio" name="algo" value="algo-direct" data-key />
+                                    <span data-i18n="text">Text</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="algo" value="algo-steinberg" data-key checked />
+                                    <span data-i18n="picture">Picture</span>
+                                </label>
+                            </span>
+                        </span>
+                        <!-- "brightness" is historically "threshold" -->
+                        <label class="label-span-input">
+                            <span data-i18n="brightness-">Brightness:</span>
+                            <input type="range" min="0" max="256" value="86" step="16" name="threshold" data-key data-default />
+                        </label>
+                        <!-- "Strength", so-called "darkness", or internally "energy" -->
+                        <label class="label-span-input" data-hide-as="print">
+                            <span data-i18n="strength-">Strength:</span>
+                            <input type="range" min="0" max="256" value="64" step="16" name="energy" data-key data-default />
+                        </label>
+                        <!-- "Quality", just speed of paper feeding, but slower makes better heating -->
+                        <label class="label-span-input" data-hide-as="print">
+                            <span data-i18n="quality-">Quality:</span>
+                            <input type="range" min="24" max="36" value="32" step="4" name="quality" data-key data-default />
+                        </label>
+                    </div>
+                    <label class="label-input-span" data-hide-as="print">
+                        <input type="checkbox" name="transparent-as-white" data-key checked />
+                        <span data-i18n="transparent-as-white">Transparent as White</span>
+                    </label>
+                    <div class="center">
+                        <button data-i18n="show-more-options" data-show="print" data-once data-key>Show More Options</button>
+                    </div>
                 </div>
                 <div class="panel active" id="panel-help">
                     <div>
@@ -66,22 +71,26 @@
                     </div>
                 </div>
                 <div class="panel" id="panel-settings">
-                    <label for="scan-time" data-i18n="scan-time-">Scan Time:</label>
-                    <input type="number" name="scan-time" id="scan-time" min="1" max="10" value="4" data-key />
-                    <span data-i18n="-seconds">seconds</span>
-                    <br />
-                    <!-- <input type="checkbox" name="flip-h" id="flip-h" data-key />
-                    <label for="flip-h" data-i18n="flip-horizontally">Flip Horizontally</label>
-                    <input type="checkbox" name="flip-v" id="flip-v" data-key />
-                    <label for="flip-v" data-i18n="flip-vertically">Flip Vertically</label> -->
-                    <input type="checkbox" name="flip" id="flip" data-key />
-                    <label for="flip" data-i18n="cat-face-toward">Cat Face Toward</label>
-                    <hr />
-                    <input type="checkbox" name="dry-run" id="dry-run" data-key />
-                    <label for="dry-run" data-i18n="dry-run">Dry Run</label>
-                    <input type="checkbox" name="dump" id="dump" data-key />
-                    <label for="dump" data-i18n="dump-traffic">Dump Traffic</label>
-                    <br />
+                    <div class="input-group">
+                        <label class="label-span-input">
+                            <span data-i18n="scan-time-">Scan Time:</span>
+                            <input type="number" name="scan-time" min="1" max="10" value="4" data-key />
+                            <span data-i18n="-seconds">seconds</span>
+                        </label>
+                    </div>
+                    <label class="label-input-span">
+                        <input type="checkbox" name="flip" data-key />
+                        <span data-i18n="cat-face-toward">Cat Face Toward</span>
+                    </label>
+                    <!-- <hr /> -->
+                    <label class="label-input-span">
+                        <input type="checkbox" name="dry-run" data-key />
+                        <span data-i18n="dry-run">Dry Run</span>
+                    </label>
+                    <!-- <label class="label-input-span">
+                        <input type="checkbox" name="dump" data-key />
+                        <span data-i18n="dump-traffic">Dump Traffic</span>
+                    </label> -->
                     <button id="set-accessibility" data-key>
                         <span>🌎</span>
                         <span data-i18n="accessibility">Accessibility</span>
@@ -145,20 +154,26 @@
             </div>
             <div>
                 <h2 data-i18n="layout">Layout</h2>
-                <input type="checkbox" name="dark-theme" id="dark-theme" data-key />
-                <label for="dark-theme" data-i18n="dark-theme">Dark Theme</label>
-                <br />
-                <input type="checkbox" name="high-contrast" id="high-contrast" data-key />
-                <label for="high-contrast" data-i18n="high-contrast">High Contrast</label>
-                <br />
-                <input type="checkbox" name="no-animation" id="no-animation" data-key />
-                <label for="no-animation" data-i18n="disable-animation">Disable Animation</label>
-                <br />
-                <input type="checkbox" name="force-rtl" id="force-rtl" data-key />
-                <label for="force-rtl" data-i18n="right-to-left-text-order">Right-to-left text order</label>
-                <br />
-                <input type="checkbox" name="large-font" id="large-font" data-key />
-                <label for="large-font" data-i18n="large-font">Large Font</label>
+                <label class="label-input-span">
+                    <input type="checkbox" name="dark-theme" data-key />
+                    <span data-i18n="dark-theme">Dark Theme</span>
+                </label>
+                <label class="label-input-span">
+                    <input type="checkbox" name="high-contrast" data-key />
+                    <span data-i18n="high-contrast">High Contrast</span>
+                </label>
+                <label class="label-input-span">
+                    <input type="checkbox" name="no-animation" data-key />
+                    <span data-i18n="disable-animation">Disable Animation</span>
+                </label>
+                <label class="label-input-span">
+                    <input type="checkbox" name="force-rtl" data-key />
+                    <span data-i18n="right-to-left-text-order">Right-to-left text order</span>
+                </label>
+                <label class="label-input-span">
+                    <input type="checkbox" name="large-font" data-key />
+                    <span data-i18n="large-font">Large Font</span>
+                </label>
             </div>
         </div>
         <iframe id="frame" src="about:blank" name="frame" title="frame" data-key="v"></iframe>
@@ -170,7 +185,7 @@
                 <!-- Dialog content -->
             </div>
             <div id="dialog-choices">
-                <input id="dialog-input" type="text" id="dialog-input" placeholder="" data-key="m">
+                <input id="dialog-input" type="text" placeholder="" data-key="m">
                 <hr />
             </div>
         </div>

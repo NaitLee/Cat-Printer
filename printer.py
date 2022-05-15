@@ -275,6 +275,7 @@ class PrinterDriver(Commander):
     flip_v: bool = False
     wrap: bool = False
     rtl: bool = False
+    font_scale: int = 1
 
     energy: int = None
     quality: int = 24
@@ -468,7 +469,8 @@ class PrinterDriver(Commander):
         text_io = io.TextIOWrapper(file, encoding='utf-8')
         if self.text_canvas is None:
             self.text_canvas = TextCanvas(paper_width, wrap=self.wrap,
-                rtl=self.rtl, font_path=self.font_family + '.pf2')
+                    rtl=self.rtl, font_path=self.font_family + '.pf2',
+                    scale=self.font_scale)
         # with stdin you maybe trying out a typewriter
         # so print a "ruler", indicating max characters in one line
         if file is sys.stdin.buffer:
@@ -480,16 +482,16 @@ class PrinterDriver(Commander):
                 width_stats[char] = pf2[char].width
             average = pf2.point_size // 2
             if (width_stats[' '] == width_stats['i'] ==
-                width_stats['m'] == width_stats['M']):
+                    width_stats['m'] == width_stats['M']):
                 # monospace
                 average = width_stats['A']
             else:
                 # variable width, use a rough average
                 average = (width_stats['a'] + width_stats['A'] +
-                           width_stats['0'] + width_stats['+']) // 4
+                        width_stats['0'] + width_stats['+']) // 4
             # ruler
             info('-------+' * (paper_width // average // 8) +
-                 '-' * (paper_width // average % 8))
+                    '-' * (paper_width // average % 8))
         self._prepare()
         printer_data = PrinterData(paper_width)
         buffer = io.BytesIO()
@@ -502,7 +504,7 @@ class PrinterDriver(Commander):
                     buffer.write(data)
                     line_count += 1
                 flip(buffer, self.text_canvas.width, self.text_canvas.height * line_count,
-                     self.flip_h, self.flip_v, overwrite=True)
+                        self.flip_h, self.flip_v, overwrite=True)
                 while chunk := buffer.read(paper_width // 8):
                     printer_data.write(chunk)
                     if self.dry_run:
@@ -550,17 +552,17 @@ def magick_text(stdin, image_width, font_size, font_family):
     'Pipe an io to ImageMagick for processing text to image, return output io'
     read_fd, write_fd = os.pipe()
     subprocess.Popen([_MagickExe, '-background', 'white', '-fill', 'black',
-        '-size', f'{image_width}x', '-font', font_family, '-pointsize', str(font_size),
-        'caption:@-', 'pbm:-'],
-        stdin=stdin, stdout=io.FileIO(write_fd, 'w'))
+            '-size', f'{image_width}x', '-font', font_family, '-pointsize',
+            str(font_size), 'caption:@-', 'pbm:-'],
+            stdin=stdin, stdout=io.FileIO(write_fd, 'w'))
     return io.FileIO(read_fd, 'r')
 
 def magick_image(stdin, image_width, dither):
     'Pipe an io to ImageMagick for processing "usual" image to pbm, return output io'
     read_fd, write_fd = os.pipe()
     subprocess.Popen([_MagickExe, '-', '-fill', 'white', '-opaque', 'transparent',
-        '-resize', f'{image_width}x', '-dither', dither, '-monochrome', 'pbm:-'],
-        stdin=stdin, stdout=io.FileIO(write_fd, 'w'))
+            '-resize', f'{image_width}x', '-dither', dither, '-monochrome', 'pbm:-'],
+            stdin=stdin, stdout=io.FileIO(write_fd, 'w'))
     return io.FileIO(read_fd, 'r')
 
 class HelpFormatterI18n(argparse.HelpFormatter):
@@ -607,29 +609,29 @@ def _main():
     )
     # TODO: group some switches to dedicated help
     parser.add_argument('-h', '--help', action='store_true',
-                        help=i18n('show-this-help-message'))
+            help=i18n('show-this-help-message'))
     parser.add_argument('file', default='-', metavar='File', type=str,
-                        help=i18n('path-to-input-file-dash-for-stdin'))
+            help=i18n('path-to-input-file-dash-for-stdin'))
     parser.add_argument('-s', '--scan', metavar='Time[,XY01[,MacAddress]]', default='4', type=str,
-                        help=i18n('scan-for-a-printer'))
+            help=i18n('scan-for-a-printer'))
     parser.add_argument('-c', '--convert', metavar='text|image', type=str, default='',
-                        help=i18n('convert-input-image-with-imagemagick'))
+            help=i18n('convert-input-image-with-imagemagick'))
     parser.add_argument('-p', '--image', metavar='flip|fliph|flipv', type=str, default='',
-                        help=i18n('image-printing-options'))
+            help=i18n('image-printing-options'))
     parser.add_argument('-t', '--text', metavar='Size[,FontFamily][,pf2][,nowrap][,rtl]', type=str,
-                        default='', help=i18n('text-printing-mode-with-options'))
+            default='', help=i18n('text-printing-mode-with-options'))
     parser.add_argument('-e', '--energy', metavar='0.0-1.0', type=float, default=None,
-                        help=i18n('control-printer-thermal-strength'))
+            help=i18n('control-printer-thermal-strength'))
     parser.add_argument('-q', '--quality', metavar='1-4', type=int, default=3,
-                        help=i18n('print-quality'))
+            help=i18n('print-quality'))
     parser.add_argument('-d', '--dry', action='store_true',
-                        help=i18n('dry-run-test-print-process-only'))
+            help=i18n('dry-run-test-print-process-only'))
     parser.add_argument('-f', '--fake', metavar='XY01', type=str, default='',
-                        help=i18n('virtual-run-on-specified-model'))
+            help=i18n('virtual-run-on-specified-model'))
     parser.add_argument('-m', '--dump', action='store_true',
-                        help=i18n('dump-the-traffic'))
+            help=i18n('dump-the-traffic'))
     parser.add_argument('-n', '--nothing', action='store_true',
-                        help=i18n('do-nothing'))
+            help=i18n('do-nothing'))
 
     if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
         parser.print_help()
@@ -644,6 +646,10 @@ def _main():
     identifier = ','.join(scan_param[1:])
     if args.energy is not None:
         printer.energy = int(args.energy * 0xff)
+    elif args.convert == 'text' or args.text:
+        printer.energy = 96
+    else:
+        printer.energy = 64
     if args.quality is not None:
         printer.quality = 4 * (args.quality + 5)
 
@@ -665,6 +671,30 @@ def _main():
 
     info(i18n('cat-printer'))
 
+    if args.file == '-':
+        file = sys.stdin.buffer
+    else:
+        file = open(args.file, 'rb')
+
+    mode = 'pbm'
+
+    if args.text:
+        info(i18n('text-printing-mode'))
+        printer.font_family = font_family or 'font'
+        if 'pf2' not in text_param:
+            # TODO: remove hardcoded width
+            file = magick_text(file, 384,
+                    font_size, font_family)
+        else:
+            printer.font_scale = font_size
+            mode = 'text'
+    elif args.convert:
+        file = magick_image(file, 384, (
+            'None'
+            if args.convert == 'text'
+            else 'FloydSteinberg')
+        )
+
     if args.dry:
         info(i18n('dry-run-test-print-process-only'))
         printer.dry_run = True
@@ -675,29 +705,6 @@ def _main():
         info(i18n('connecting'))
         printer.scan(identifier, use_result=True)
     printer.dump = args.dump
-
-    mode = 'pbm'
-
-    if args.file == '-':
-        file = sys.stdin.buffer
-    else:
-        file = open(args.file, 'rb')
-
-    if args.text:
-        info(i18n('text-printing-mode'))
-        printer.font_family = font_family or 'font'
-        if 'pf2' not in text_param:
-            # TODO: remove hardcoded width
-            file = magick_text(file, 384,
-                font_size, font_family)
-        else:
-            mode = 'text'
-    elif args.convert:
-        file = magick_image(file, 384, (
-            'None'
-            if args.convert == 'text'
-            else 'FloydSteinberg')
-        )
 
     if args.nothing:
         global Printer

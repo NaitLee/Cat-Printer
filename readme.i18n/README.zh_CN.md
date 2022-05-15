@@ -46,7 +46,7 @@
   - 还有安卓！
 
 - 是[自由软件](https://www.gnu.org/philosophy/free-sw.html)！
-  - 不像“原版”专有应用，此作品为在乎*开放思想与计算自由*的人而生！
+  - 不像那些专有应用，此作品为在乎*开放思想与计算自由*的人而生！
 
 - 有意思！
   - 做什么都可以！
@@ -118,7 +118,7 @@ Copyright © 2021-2022 NaitLee Soft. 保留一些权利。
 敬请查看文件 `COPYING`，`LICENSE`，以及在 `www/jslicense.html` 中有关 JavaScript 许可的详细内容。
 
 具体地，`printer.py`，`server.py` 和 `main.js` 以 GNU GPL 3 发布。  
-除去来自其他人的贡献（版权可能归贡献者所有）及可能的第三方依赖，所有其余部分在公有领域（CC0）。
+其余所有部分，若无特殊声明，均在公有领域（CC0）。
 
 --------
 
@@ -136,8 +136,11 @@ Copyright © 2021-2022 NaitLee Soft. 保留一些权利。
 
 - 当然不能没有 Python 和 Web 技术！
 - [Bleak](https://bleak.readthedocs.io/en/latest/) 跨平台蓝牙低功耗库，牛！
-- [roddeh-i18n](https://github.com/roddeh/i18njs)，当前内置的国际化脚本受此启发
+- [roddeh-i18n](https://github.com/roddeh/i18njs)，当前内置的国际化功能受此启发
+- [PF2 font](http://grub.gibibit.com/New_font_format)，很好的简易像素字体格式
+- ImageMagick 和 Ghostscript，有用的东西已经在系统里，就当然不用考虑别的了
 - [python-for-android](https://python-for-android.readthedocs.io/en/latest/)，虽然有些麻烦的地方
 - [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) 从 Java 拯救了我的生命
 - Stack Overflow 和整个互联网，你们让我从零开始了解了安卓“活动” `Activity`
+  ……当然还有其他方面的帮助
 - ……每个人都是好样的！

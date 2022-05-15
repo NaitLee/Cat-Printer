@@ -29,6 +29,7 @@ def int16be(b: bytes):
     u = uint16be(b)
     return u - ((u >> 15 & 0b1) << 16)
 
+
 class Character():
     'A PF2 character'
 
@@ -39,6 +40,11 @@ class Character():
     device_width: int
     bitmap_data: bytes
 
+    def get_bit(self, x, y):
+        'Get the bit at (x, y) of this character\'s raster glyph'
+        char_byte = (self.width * y + x) // 8
+        char_bit = 7 - (self.width * y + x) % 8
+        return self.bitmap_data[char_byte] & (0b1 << char_bit)
 
 class PF2():
     'The PF2 class, for serializing a PF2 font file'
@@ -133,3 +139,49 @@ class PF2():
 
     def __del__(self):
         self.data_io.close()
+
+
+class CharacterS(Character):
+    'A "scaled" character'
+
+    scale: int = 1
+
+    def get_bit(self, x, y):
+        'Get the bit at (x, y) of this character\'s raster glyph'
+        scale = self.scale
+        width = self.width // scale
+        x //= scale
+        y //= scale
+        char_byte = (width * y + x) // 8
+        char_bit = 7 - (width * y + x) % 8
+        return (self.bitmap_data[char_byte] &
+                (0b1 << char_bit)) >> char_bit
+
+class PF2S(PF2):
+    'PF2 class with glyph scaling support'
+
+    scale: int = 1
+
+    def __init__(self, *args, scale: int=1, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scale = scale
+        self.point_size *= scale
+        self.max_width *= scale
+        self.max_height *= scale
+        self.ascent *= scale
+        self.descent *= scale
+
+    def get_char(self, char):
+        scale = self.scale
+        char = super().get_char(char)
+        chars = CharacterS()
+        chars.scale = scale
+        chars.width = char.width * scale
+        chars.height = char.height * scale
+        chars.device_width = char.device_width * scale
+        chars.x_offset = char.x_offset * scale
+        chars.y_offset = char.y_offset * scale
+        chars.bitmap_data = char.bitmap_data
+        return chars
+
+    __getitem__ = get_char

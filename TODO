@@ -11,6 +11,8 @@ Note: not ordered. do whatever I/you want
 + Try to implement enough without more dependencies
 + ...
 
+? Optimize PF2 text printing? It seems a bit slow (in algorithm).
+? Built-in PostScript? (Even if very basic)
 ? Data compression for GB03. Optional
 ? Put Android APP on F-Droid? But it needs automatic build system...
   Android guys can help this!

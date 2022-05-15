@@ -36,6 +36,9 @@ body {
     margin: 1em 0;
     user-select: none;
 }
+body.android .hide-on-android {
+    display: none;
+}
 .selectable {
     user-select: all;
 }
@@ -93,6 +96,40 @@ button:hover {
 }
 button:active {
     box-shadow: 0 0 var(--span) inset var(--fore-color);
+}
+.input-group {
+    display: table;
+    width: 100%;
+}
+.label-span-input {
+    display: table-row;
+    box-sizing: border-box;
+    margin: var(--span-half) var(--span);
+}
+.label-span-input>:nth-child(1) {
+    display: table-cell;
+    min-width: 5em;
+    padding: 0 var(--span);
+    text-align: end;
+}
+.label-span-input>:nth-child(2) {
+    display: table-cell;
+    min-width: 6em;
+    text-align: start;
+}
+.label-input-span {
+    display: block;
+    box-sizing: border-box;
+    margin: var(--span-half) var(--span);
+}
+.label-input-span>:nth-child(1) {
+    display: inline-block;
+    padding: 0 var(--span);
+    text-align: end;
+}
+.label-input-span>:nth-child(2) {
+    display: inline-block;
+    text-align: start;
 }
 @keyframes notice-fade {
     to { background-color: transparent; border-color: transparent; }
@@ -227,7 +264,7 @@ p {
     height: calc(var(--panel-height) - var(--compact-menu-height));
     padding: var(--span-double) var(--span);
     box-sizing: border-box;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .panel.sub.active {
     height: calc(var(--panel-height) / 2);
