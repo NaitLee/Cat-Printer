@@ -3,17 +3,19 @@ Note: not ordered. do whatever I/you want
 
 + Cookbook of basic things
 + Write good help/manual
++ Some sort of Wiki
 + Make error notice short while let users see detailed help/manual for what-to-do
 + Even better CUPS/IPP support
-+ Even better frontend usability, more functions
++ Even better frontend, language-friendly text printing
 + Make a build guide for android:
   Summary the hacks to p4a, bleak p4a recipe, p4a webview bootstrap, and AdvancedWebView
 + Try to implement enough without more dependencies
++ Plugin, for including community features
 + ...
 
 ? Optimize PF2 text printing? It seems a bit slow (in algorithm).
-? Built-in PostScript? (Even if very basic)
+? Built-in PostScript (Even if very basic)
 ? Data compression for GB03. Optional
 ? Put Android APP on F-Droid? But it needs automatic build system...
   Android guys can help this!
-? ... Or put to APKPure?
+? ... Or put to APKPure? But wait for good frontend before doing all of these
