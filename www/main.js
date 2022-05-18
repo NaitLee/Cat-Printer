@@ -455,13 +455,17 @@ class CanvasController {
         
         // Use Word Wrap to split the text over multiple lines
         let lines = [];
-        const getMaxCharsPerLine = (text, ctx) => {
+        // Calculate the aproximate maximum length of a string
+        // taking font and text size in account
+        const getMaxCharsPerLine = (text, ctx) => { 
             let textWidth = ctx.measureText(text).width;
             let textIndex = maxWidth / textWidth;
 
             if (textIndex > 1) { return text.length}
             return Math.floor(textIndex * text.length); 
         }
+
+        // Wrap the text if it does not fit on a single line
         const wrapText = (text, maxLength) => {
             let splitPos = maxLength - 1;
             while (text[splitPos] != " " && splitPos > 0) {
@@ -470,14 +474,13 @@ class CanvasController {
             if (splitPos == 0) { splitPos = maxLength; }
             return [text.slice(0, splitPos).trim(), text.slice(splitPos, text.length).trim()];
         }
-
+        
         while (ctx.measureText(text).width > maxWidth) {
             let line;
             [line, text] = wrapText(text, getMaxCharsPerLine(text, ctx));
             lines.push(line);
         }
         lines.push(text)
-
 
         let yPos = yStep;
         for (let line of lines) {
