@@ -445,10 +445,10 @@ class CanvasController {
         const yStep = textSize;
         
         const ctx = this.canvas.getContext("2d");
-        ctx.font = textSize + "px " + textFont;
+        let canvasFont = textSize + "px " + textFont;
         // const textWidth = ctx.measureText(textSize);
         const maxWidth = this.canvas.width - 10;
-
+        
         
         let text = prompt("Enter text");
         if (text == null) { return; }
@@ -460,11 +460,11 @@ class CanvasController {
         const getMaxCharsPerLine = (text, ctx) => { 
             let textWidth = ctx.measureText(text).width;
             let textIndex = maxWidth / textWidth;
-
+            
             if (textIndex > 1) { return text.length}
             return Math.floor(textIndex * text.length); 
         }
-
+        
         // Wrap the text if it does not fit on a single line
         const wrapText = (text, maxLength) => {
             let splitPos = maxLength - 1;
@@ -475,26 +475,32 @@ class CanvasController {
             return [text.slice(0, splitPos).trim(), text.slice(splitPos, text.length).trim()];
         }
         
+        ctx.font = canvasFont;
         while (ctx.measureText(text).width > maxWidth) {
             let line;
             [line, text] = wrapText(text, getMaxCharsPerLine(text, ctx));
             lines.push(line);
         }
-        lines.push(text)
+        lines.push(text);
+        this.height = (lines.length * yStep) + (yStep / 2);
+        ctx.font = canvasFont; // Setting this.height resets the font.
 
         let yPos = yStep;
         for (let line of lines) {
             ctx.fillText(line, 0, yPos); 
             yPos += yStep;
         }
+
         this.crop();
+
+        this.useAlgorithm("algo-direct");
+        document.getElementsByName("algo")[0].checked = true;
         
         this.imageUrl = this.canvas.toDataURL();
         this.activatePreview();
         
         this.controls.classList.add('hidden');
-        this.preview.hidden = true;
-        
+
         hint('#button-print');
         return true;
     }
