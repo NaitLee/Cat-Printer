@@ -494,7 +494,8 @@ class CanvasController {
         this.crop();
 
         this.useAlgorithm("algo-direct");
-        document.getElementsByName("algo")[0].checked = true;
+        let textAlgo = document.querySelector('input[name="algo"][value="algo-direct"]');
+        textAlgo.checked = true;
         
         this.imageUrl = this.canvas.toDataURL();
         this.activatePreview();
