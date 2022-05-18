@@ -317,6 +317,7 @@ class CanvasController {
 
         putEvent('input[name="algo"]', 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
         putEvent('#insert-picture'   , 'click', () => this.insertPicture(), this);
+        putEvent('#insert-text'   , 'click', () => this.insertText(), this);
         putEvent('#button-preview'   , 'click', this.activatePreview , this);
         putEvent('#button-reset'     , 'click', this.reset           , this);
         putEvent('#canvas-expand'    , 'click', this.expand          , this);
@@ -436,6 +437,48 @@ class CanvasController {
             hidden_area.appendChild(input);
             input.click();
         }
+    }
+    insertText() {
+        let text = prompt("Enter text");
+        let lines = [];
+
+        // Use Word Wrap to split the text over multiple lines
+        const wrapText = (text, maxLength) => {
+            let splitPos = maxLength - 1;
+            while (text[splitPos] != " " && splitPos > 0) {
+                splitPos--;
+            }
+            if (splitPos == 0) { splitPos = maxLength; }
+            return [text.slice(0, splitPos), text.slice(splitPos, text.length)];
+        }
+
+        const maxLength = 33;
+        while (text.length > maxLength) {
+            let line;
+            [line, text] = wrapText(text, maxLength);
+            lines.push(line);
+        }
+        lines.push(text)
+
+        let ctx = this.canvas.getContext("2d");
+        ctx.font = "20px Sans-Serif";
+
+        const yStep = 20;
+        let yPos = yStep;
+        for (let line of lines) {
+            ctx.fillText(line, 0, yPos); 
+            yPos += yStep;
+        }
+        this.crop();
+        
+        this.imageUrl = this.canvas.toDataURL();
+        this.activatePreview();
+        
+        this.controls.classList.add('hidden');
+        this.preview.hidden = true;
+        
+        hint('#button-print');
+        return true;
     }
     reset() {
         let canvas = this.canvas;
