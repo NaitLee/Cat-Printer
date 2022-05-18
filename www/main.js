@@ -478,7 +478,13 @@ class CanvasController {
         ctx.font = canvasFont;
         while (ctx.measureText(text).width > maxWidth) {
             let line;
-            [line, text] = wrapText(text, getMaxCharsPerLine(text, ctx));
+            let maxChars = getMaxCharsPerLine(text, ctx);
+            if (maxChars == 0) { 
+                lines.push(text.slice(0, 1));
+                text = text.slice(1, text.length);
+                continue;
+            }
+            [line, text] = wrapText(text, maxChars);
             lines.push(line);
         }
         lines.push(text);
