@@ -468,7 +468,7 @@ class CanvasController {
         const wrap_by_space = (text, max_length) => {
             let split_pos = text.lastIndexOf(" ", max_length);
 
-            if (split_pos == 0) { split_pos = max_length; }
+            if (split_pos <= 0) { split_pos = max_length; }
             return [text.slice(0, split_pos).trim(), text.slice(split_pos, text.length).trim()];
         }
         
