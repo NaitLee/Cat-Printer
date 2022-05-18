@@ -91,6 +91,19 @@
                         <input type="checkbox" name="dump" data-key />
                         <span data-i18n="dump-traffic">Dump Traffic</span>
                     </label> -->
+                    <label data-i18n="text-font">Text font</label>
+                    <select id="text-font">
+                        <option value="Serif">Serif</option>
+                        <option value="Sans-serif" selected>Sans-serif</option>
+                        <option value="monospace">Monospace</option>
+                        <option value="cursive">Cursive</option>
+                    </select>
+                    <br>
+                    <label>
+                        <span data-i18n="text-size-">Text size:</span>
+                        <input id="text-size" type="number" name="text-size" min="1" max="100" value="20" data-key />
+                        <span>px</span>
+                    </label>
                     <button id="set-accessibility" data-key>
                         <span>🌎</span>
                         <span data-i18n="accessibility">Accessibility</span>
