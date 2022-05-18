@@ -298,6 +298,9 @@ class CanvasController {
         this.preview = document.getElementById('preview');
         this.canvas = document.getElementById('canvas');
         this.controls = document.getElementById('control-overlay');
+        this.textSize = document.getElementById("text-size");
+        this.textFont = document.getElementById("text-font");
+        this.textAlgorithm = document.querySelector('input[name="algo"][value="algo-direct"]');
         this.height = CanvasController.defaultHeight;
         this._thresholdRange = document.querySelector('[name="threshold"]');
         this._energyRange = document.querySelector('[name="energy"]');
@@ -317,7 +320,7 @@ class CanvasController {
 
         putEvent('input[name="algo"]', 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
         putEvent('#insert-picture'   , 'click', () => this.insertPicture(), this);
-        putEvent('#insert-text'   , 'click', () => this.insertText(), this);
+        putEvent('#insert-text'   , 'click', () => Dialog.prompt(i18n('enter-text'), (text) => this.insertText(text), true), this);
         putEvent('#button-preview'   , 'click', this.activatePreview , this);
         putEvent('#button-reset'     , 'click', this.reset           , this);
         putEvent('#canvas-expand'    , 'click', this.expand          , this);
@@ -438,70 +441,63 @@ class CanvasController {
             input.click();
         }
     }
-    insertText() {
-        
-        const textSize = parseInt(document.getElementById("text-size").value);
-        const textFont = document.getElementById("text-font").value;
-        const yStep = textSize;
+    insertText(text) {
+        if (text == null) { return; }
+
+        const text_size = parseInt(this.textSize.value);
+        const text_font = this.textFont.value;
+        const y_step = text_size;
         
         const ctx = this.canvas.getContext("2d");
-        let canvasFont = textSize + "px " + textFont;
-        // const textWidth = ctx.measureText(textSize);
-        const maxWidth = this.canvas.width - 10;
-        
-        
-        let text = prompt("Enter text");
-        if (text == null) { return; }
+        let canvas_font = text_size + "px " + text_font;
+        const max_width = this.canvas.width - 10;
         
         // Use Word Wrap to split the text over multiple lines
         let lines = [];
         // Calculate the aproximate maximum length of a string
         // taking font and text size in account
-        const getMaxCharsPerLine = (text, ctx) => { 
-            let textWidth = ctx.measureText(text).width;
-            let textIndex = maxWidth / textWidth;
+        const get_max_chars_per_line = (text, ctx) => { 
+            let text_width = ctx.measureText(text).width;
+            let textIndex = max_width / text_width;
             
             if (textIndex > 1) { return text.length}
             return Math.floor(textIndex * text.length); 
         }
         
         // Wrap the text if it does not fit on a single line
-        const wrapText = (text, maxLength) => {
-            let splitPos = maxLength - 1;
-            while (text[splitPos] != " " && splitPos > 0) {
-                splitPos--;
-            }
-            if (splitPos == 0) { splitPos = maxLength; }
-            return [text.slice(0, splitPos).trim(), text.slice(splitPos, text.length).trim()];
+        const wrap_by_space = (text, max_length) => {
+            let split_pos = text.lastIndexOf(" ", max_length);
+
+            if (split_pos == 0) { split_pos = max_length; }
+            return [text.slice(0, split_pos).trim(), text.slice(split_pos, text.length).trim()];
         }
         
-        ctx.font = canvasFont;
-        while (ctx.measureText(text).width > maxWidth) {
+        ctx.font = canvas_font;
+        while (ctx.measureText(text).width > max_width) {
             let line;
-            let maxChars = getMaxCharsPerLine(text, ctx);
-            if (maxChars == 0) { 
+            let max_chars = get_max_chars_per_line(text, ctx);
+            if (max_chars == 0) { 
                 lines.push(text.slice(0, 1));
                 text = text.slice(1, text.length);
                 continue;
             }
-            [line, text] = wrapText(text, maxChars);
+            [line, text] = wrap_by_space(text, max_chars);
             lines.push(line);
         }
         lines.push(text);
-        this.height = (lines.length * yStep) + (yStep / 2);
-        ctx.font = canvasFont; // Setting this.height resets the font.
+        this.height = (lines.length * y_step) + (y_step / 2);
+        ctx.font = canvas_font; // Setting this.height resets the font.
 
-        let yPos = yStep;
+        let y_pos = y_step;
         for (let line of lines) {
-            ctx.fillText(line, 0, yPos); 
-            yPos += yStep;
+            ctx.fillText(line, 0, y_pos); 
+            y_pos += y_step;
         }
 
         this.crop();
 
-        this.useAlgorithm("algo-direct");
-        let textAlgo = document.querySelector('input[name="algo"][value="algo-direct"]');
-        textAlgo.checked = true;
+        this.textAlgorithm.checked = true;
+        this.textAlgorithm.dispatchEvent(new Event("change"));
         
         this.imageUrl = this.canvas.toDataURL();
         this.activatePreview();
