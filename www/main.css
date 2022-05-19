@@ -660,3 +660,12 @@ body.high-contrast #control-overlay { background-color: var(--shade); }
     font-family: 'Unifont';
     src: local('Unifont') url('unifont.ttf') url('unifont.otf');
 }
+#insert-text-area { white-space: pre; height: 50vh; }
+#text-textarea { display: inline-grid;position: relative;margin: auto 0; }
+#text-settings {
+    display: inline-block;
+    vertical-align: top;
+    margin: auto;
+    position: absolute; 
+    padding: 0px 0px 0px 10px;
+}
