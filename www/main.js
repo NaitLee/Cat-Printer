@@ -300,6 +300,7 @@ class CanvasController {
         this.controls = document.getElementById('control-overlay');
         this.textSize = document.getElementById("text-size");
         this.textFont = document.getElementById("text-font");
+        this.wrapBySpace = document.querySelector('input[name="wrap-by-space"]');
         this.textAlgorithm = document.querySelector('input[name="algo"][value="algo-direct"]');
         this.height = CanvasController.defaultHeight;
         this._thresholdRange = document.querySelector('[name="threshold"]');
@@ -466,9 +467,13 @@ class CanvasController {
         
         // Wrap the text if it does not fit on a single line
         const wrap_by_space = (text, max_length) => {
-            let split_pos = text.lastIndexOf(" ", max_length);
+            let split_pos = max_length;
 
-            if (split_pos <= 0) { split_pos = max_length; }
+            if (this.wrapBySpace.checked) {
+                split_pos = text.lastIndexOf(" ", max_length);
+                if (split_pos <= 0) { split_pos = max_length; }
+            }
+
             return [text.slice(0, split_pos).trim(), text.slice(split_pos, text.length).trim()];
         }
         
@@ -484,6 +489,7 @@ class CanvasController {
             [line, text] = wrap_by_space(text, max_chars);
             lines.push(line);
         }
+        
         lines.push(text);
         this.height = (lines.length * y_step) + (y_step / 2);
         ctx.font = canvas_font; // Setting this.height resets the font.
@@ -653,6 +659,7 @@ class Main {
                 (value) => this.settings['text_mode'] = (value === 'algo-direct')
             );
             this.attachSetter('[name="transparent-as-white"]', 'change', 'transparent_as_white');
+            this.attachSetter('[name="wrap-by-space"]', 'change', 'wrap_by_space');
             this.attachSetter('[name="dry-run"]', 'change', 'dry_run',
                 (checked) => checked && Notice.note('dry-run-test-print-process-only')
             );

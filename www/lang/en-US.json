@@ -131,5 +131,6 @@
     "show-more-options": "Show More Options",
     "text-font": "Font",
     "text-size": "Text size",
-    "enter-text": "Enter text"
+    "enter-text": "Enter text",
+    "wrap-by-space": "Wrap words by spaces"
 }

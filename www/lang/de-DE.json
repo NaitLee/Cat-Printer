@@ -106,5 +106,6 @@
     "some-rights-reserved": "Einige Rechte sind vorbehalten.",
     "text-font": "Schriftart",
     "text-size": "Textgröße",
-    "enter-text": "Text eingeben"
+    "enter-text": "Text eingeben",
+    "wrap-by-space": "autom. Zeilenumbruch"
 }
