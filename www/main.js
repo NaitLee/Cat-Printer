@@ -300,6 +300,7 @@ class CanvasController {
         this.controls = document.getElementById('control-overlay');
         this.textSize = document.getElementById("text-size");
         this.textFont = document.getElementById("text-font");
+        this.textArea = document.getElementById("insert-text-area");
         this.wrapBySpace = document.querySelector('input[name="wrap-by-space"]');
         this.textAlgorithm = document.querySelector('input[name="algo"][value="algo-direct"]');
         this.height = CanvasController.defaultHeight;
@@ -321,7 +322,7 @@ class CanvasController {
 
         putEvent('input[name="algo"]', 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
         putEvent('#insert-picture'   , 'click', () => this.insertPicture(), this);
-        putEvent('#insert-text'   , 'click', () => Dialog.prompt(i18n('enter-text'), (text) => this.insertText(text), true), this);
+        putEvent('#insert-text'   , 'click', () => Dialog.alert("#text-input", () => this.insertText(this.textArea.value))); //Dialog.prompt(i18n('enter-text'), (text) => this.insertText(text), true), this);
         putEvent('#button-preview'   , 'click', this.activatePreview , this);
         putEvent('#button-reset'     , 'click', this.reset           , this);
         putEvent('#canvas-expand'    , 'click', this.expand          , this);
@@ -466,8 +467,12 @@ class CanvasController {
         }
         
         // Wrap the text if it does not fit on a single line
-        const wrap_by_space = (text, max_length) => {
+        const wrap_text = (text, max_length) => {
             let split_pos = max_length;
+            let newline_index = text.indexOf("\n");
+            if (newline_index > 0 && newline_index < max_length) {
+                return [text.slice(0, newline_index).trim(), text.slice(newline_index, text.length).trim()];
+            }
 
             if (this.wrapBySpace.checked) {
                 split_pos = text.lastIndexOf(" ", max_length);
@@ -486,11 +491,14 @@ class CanvasController {
                 text = text.slice(1, text.length);
                 continue;
             }
-            [line, text] = wrap_by_space(text, max_chars);
+            [line, text] = wrap_text(text, max_chars);
             lines.push(line);
         }
         
-        lines.push(text);
+        for (let split of text.split("\n")) {
+            lines.push(split);
+        }
+
         this.height = (lines.length * y_step) + (y_step / 2);
         ctx.font = canvas_font; // Setting this.height resets the font.
 
