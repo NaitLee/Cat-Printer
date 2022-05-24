@@ -320,9 +320,16 @@ class CanvasController {
             return prevent_default(event);
         });
 
+        this.textArea.style["font-size"] = this.textSize.value + "px";
+        this.textArea.style["font-family"] = this.textFont.value;
+        this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all";
+
         putEvent('input[name="algo"]', 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
         putEvent('#insert-picture'   , 'click', () => this.insertPicture(), this);
-        putEvent('#insert-text'   , 'click', () => Dialog.alert("#text-input", () => this.insertText(this.textArea.value))); //Dialog.prompt(i18n('enter-text'), (text) => this.insertText(text), true), this);
+        putEvent('#insert-text'   , 'click', () => Dialog.alert("#text-input", () => this.insertText(this.textArea.value)));
+        putEvent('#text-size'   , 'change', () => this.textArea.style["font-size"] = this.textSize.value + "px"); 
+        putEvent('#text-font'   , 'change', () => this.textArea.style["font-family"] = this.textFont.value); 
+        putEvent('input[name="wrap-by-space"]'   , 'change', () => this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all"); //TODO: refresh on startup
         putEvent('#button-preview'   , 'click', this.activatePreview , this);
         putEvent('#button-reset'     , 'click', this.reset           , this);
         putEvent('#canvas-expand'    , 'click', this.expand          , this);

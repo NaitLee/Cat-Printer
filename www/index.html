@@ -178,31 +178,22 @@
         </div>
         <div id="text-input">
             <h1 data-i18n="insert-text">Insert Text</h1>
-            <span>
+            <div style="display:flex; flex-direction: column;">
+                
+                <div id="text-settings">
+                    <select id="text-font" style="margin: 0px; margin-left: 0px; margin-left: 10px;">
+                        <option value="Serif">Serif</option>
+                        <option value="Sans-serif" selected>Sans-serif</option>
+                        <option value="monospace">Monospace</option>
+                        <option value="cursive">Cursive</option>
+                    </select>
+                    <input id="text-size" type="number" name="text-size" min="1" max="100" value="20" data-key style="margin: 0px;"/>
+                    <label data-i18n="wrap-by-space"><input type="checkbox" name="wrap-by-space" data-key checked />Wrap text</label>
+                </div>
                 <div id="text-textarea">
                     <textarea id="insert-text-area"></textarea>
                 </div>
-                
-                <div id="text-settings">
-                    <label data-i18n="text-font">Font</label>
-                        <select id="text-font">
-                            <option value="Serif">Serif</option>
-                            <option value="Sans-serif" selected>Sans-serif</option>
-                            <option value="monospace">Monospace</option>
-                            <option value="cursive">Cursive</option>
-                        </select>
-                        <br>
-                        <label>
-                            <span data-i18n="text-size-">Size:</span>
-                            <input id="text-size" type="number" name="text-size" min="1" max="100" value="20" data-key />
-                            <span>px</span>
-                        </label>
-                        <br>
-                        <input type="checkbox" name="wrap-by-space" data-key checked />
-                        <span data-i18n="wrap-by-space">Wrap text</span>
-                    </label>
-                </div>
-            </span>
+            </div>
         </div>
         <iframe id="frame" src="about:blank" name="frame" title="frame" data-key="v"></iframe>
     </div>
