@@ -307,6 +307,7 @@ class CanvasController {
         this._thresholdRange = document.querySelector('[name="threshold"]');
         this._energyRange = document.querySelector('[name="energy"]');
         this.imageUrl = null;
+        this.textAlign = 0; // 0: Left, 1: Center, 2: Right
 
         const prevent_default = (event) => {
             event.preventDefault();
@@ -329,7 +330,7 @@ class CanvasController {
         putEvent('#insert-text'   , 'click', () => Dialog.alert("#text-input", () => this.insertText(this.textArea.value)));
         putEvent('#text-size'   , 'change', () => this.textArea.style["font-size"] = this.textSize.value + "px"); 
         putEvent('#text-font'   , 'change', () => this.textArea.style["font-family"] = this.textFont.value); 
-        putEvent('input[name="wrap-by-space"]'   , 'change', () => this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all"); //TODO: refresh on startup
+        putEvent('input[name="wrap-by-space"]'   , 'change', () => this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all");
         putEvent('#button-preview'   , 'click', this.activatePreview , this);
         putEvent('#button-reset'     , 'click', this.reset           , this);
         putEvent('#canvas-expand'    , 'click', this.expand          , this);
@@ -511,7 +512,14 @@ class CanvasController {
 
         let y_pos = y_step;
         for (let line of lines) {
-            ctx.fillText(line, 0, y_pos); 
+            let x_pos = 0;
+            if (this.textAlign == 2) {
+                x_pos = Math.max(max_width - ctx.measureText(line).width, 0)
+            } else if (this.textAlign == 1) {
+                x_pos = Math.max(max_width - ctx.measureText(line).width, 0) / 2;
+            }
+            
+            ctx.fillText(line, x_pos, y_pos); 
             y_pos += y_step;
         }
 
