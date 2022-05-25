@@ -132,5 +132,9 @@
     "text-font": "Font",
     "text-size": "Size",
     "enter-text": "Enter text",
-    "wrap-by-space": "Wrap words by spaces"
+    "wrap-by-space": "Wrap words by spaces",
+    "text-align": "Align text",
+    "align-left": "Left",
+    "align-mid": "Center",
+    "align-right": "Right"
 }

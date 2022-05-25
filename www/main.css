@@ -660,4 +660,11 @@ body.high-contrast #control-overlay { background-color: var(--shade); }
     font-family: 'Unifont';
     src: local('Unifont') url('unifont.ttf') url('unifont.otf');
 }
-#insert-text-area { white-space: pre; height: 50vh; width: var(--paper-width); overflow: hidden auto; white-space: pre-line;}
+#insert-text-area { 
+    white-space: pre; 
+    height: 50vh; 
+    width: var(--paper-width); 
+    overflow: hidden auto; 
+    white-space: pre-line;
+    resize:none;
+}

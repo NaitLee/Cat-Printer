@@ -307,7 +307,7 @@ class CanvasController {
         this._thresholdRange = document.querySelector('[name="threshold"]');
         this._energyRange = document.querySelector('[name="energy"]');
         this.imageUrl = null;
-        this.textAlign = 0; // 0: Left, 1: Center, 2: Right
+        this.textAlign = document.getElementById("text-align");
 
         const prevent_default = (event) => {
             event.preventDefault();
@@ -330,6 +330,7 @@ class CanvasController {
         putEvent('#insert-text'   , 'click', () => Dialog.alert("#text-input", () => this.insertText(this.textArea.value)));
         putEvent('#text-size'   , 'change', () => this.textArea.style["font-size"] = this.textSize.value + "px"); 
         putEvent('#text-font'   , 'change', () => this.textArea.style["font-family"] = this.textFont.value); 
+        putEvent('#text-align'   , 'change', () => this.textArea.style["text-align"] = this.textAlign.value); 
         putEvent('input[name="wrap-by-space"]'   , 'change', () => this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all");
         putEvent('#button-preview'   , 'click', this.activatePreview , this);
         putEvent('#button-reset'     , 'click', this.reset           , this);
@@ -513,9 +514,10 @@ class CanvasController {
         let y_pos = y_step;
         for (let line of lines) {
             let x_pos = 0;
-            if (this.textAlign == 2) {
+             // Text-alignment
+            if (this.textAlign.value == "right") {
                 x_pos = Math.max(max_width - ctx.measureText(line).width, 0)
-            } else if (this.textAlign == 1) {
+            } else if (this.textAlign.value == "center") {
                 x_pos = Math.max(max_width - ctx.measureText(line).width, 0) / 2;
             }
             
