@@ -317,7 +317,16 @@ class CanvasController {
         this.canvas.addEventListener('dragover', prevent_default);
         this.canvas.addEventListener('dragenter', prevent_default);
         this.canvas.addEventListener('drop', (event) => {
-            this.insertPicture(event.dataTransfer.files);
+            if (event.dataTransfer?.files[0]?.type.split("/")[0] == "text") {
+                let file_reader = new FileReader();
+                file_reader.onload = () => {
+                    this.textArea.value = file_reader.result; 
+                    Dialog.alert("#text-input", () => this.insertText(this.textArea.value));
+                };
+                file_reader.readAsText(event.dataTransfer.files[0]);
+            } else {
+                this.insertPicture(event.dataTransfer.files);
+            }
             return prevent_default(event);
         });
 
@@ -480,7 +489,7 @@ class CanvasController {
             let split_pos = max_length;
             let newline_index = text.indexOf("\n");
             if (newline_index > 0 && newline_index < max_length) {
-                return [text.slice(0, newline_index).trim(), text.slice(newline_index, text.length).trim()];
+                return [text.slice(0, newline_index), text.slice(newline_index, text.length)];
             }
 
             if (this.wrapBySpace.checked) {
@@ -488,7 +497,7 @@ class CanvasController {
                 if (split_pos <= 0) { split_pos = max_length; }
             }
 
-            return [text.slice(0, split_pos).trim(), text.slice(split_pos, text.length).trim()];
+            return [text.slice(0, split_pos), text.slice(split_pos, text.length)];
         }
         
         ctx.font = canvas_font;

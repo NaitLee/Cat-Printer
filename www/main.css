@@ -665,6 +665,6 @@ body.high-contrast #control-overlay { background-color: var(--shade); }
     height: 50vh; 
     width: var(--paper-width); 
     overflow: hidden auto; 
-    white-space: pre-line;
+    white-space: break-spaces;
     resize:none;
 }
