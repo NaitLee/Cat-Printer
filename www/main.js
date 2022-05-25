@@ -307,7 +307,11 @@ class CanvasController {
         this._thresholdRange = document.querySelector('[name="threshold"]');
         this._energyRange = document.querySelector('[name="energy"]');
         this.imageUrl = null;
-        this.textAlign = document.getElementById("text-align");
+        this.textAlign = "left"; 
+        
+        for (let elem of document.querySelectorAll("input[name=text-align]")){
+            if (elem.checked) { this.textAlign = elem.value; }
+        }
 
         const prevent_default = (event) => {
             event.preventDefault();
@@ -339,7 +343,10 @@ class CanvasController {
         putEvent('#insert-text'   , 'click', () => Dialog.alert("#text-input", () => this.insertText(this.textArea.value)));
         putEvent('#text-size'   , 'change', () => this.textArea.style["font-size"] = this.textSize.value + "px"); 
         putEvent('#text-font'   , 'change', () => this.textArea.style["font-family"] = this.textFont.value); 
-        putEvent('#text-align'   , 'change', () => this.textArea.style["text-align"] = this.textAlign.value); 
+        putEvent('input[name="text-align"]', 'change', (event) => {
+            this.textAlign = event.currentTarget.value
+            this.textArea.style["text-align"] = this.textAlign;
+        }, this);
         putEvent('input[name="wrap-by-space"]'   , 'change', () => this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all");
         putEvent('#button-preview'   , 'click', this.activatePreview , this);
         putEvent('#button-reset'     , 'click', this.reset           , this);

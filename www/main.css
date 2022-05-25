@@ -668,3 +668,35 @@ body.high-contrast #control-overlay { background-color: var(--shade); }
     white-space: break-spaces;
     resize:none;
 }
+
+.text-align-container span {
+    padding: 0px;
+    margin: 0;
+    display: inline-block;
+}
+.text-align-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 25px;
+    width: 25px;
+}
+
+.text-align-checkmark {
+    /* position: absolute; */
+    background-repeat: no-repeat;
+    background-image: url("icons/text-left.svg)");
+    background-position: center;
+    background-size: 90%;
+    width: 25px;
+    height: 25px;
+    min-width: 25px;
+    border: var(--border) solid var(--fore-color);
+    padding: var(--span-half) var(--span);
+}
+.text-align-container input:checked ~ .text-align-checkmark {
+    background-color: whitesmoke;
+  }
+.text-align-left { background-image: url("icons/text-left.svg")}
+.text-align-center { background-image: url("icons/text-center.svg")}
+.text-align-right { background-image: url("icons/text-right.svg")}

@@ -195,14 +195,20 @@
                         <option value="Verdana">Verdana (sans-serif)</option>
                     </select>
                     <input id="text-size" type="number" name="text-size" min="1" max="100" value="20" data-key style="margin: 0px;"/>
-                    <label data-i18n="wrap-by-space"><input type="checkbox" name="wrap-by-space" data-key checked />Wrap text</label>
-                    <label data-i18n="text-align">Align text</label>
                     <br>
-                    <select id="text-align" style="margin: 0px; margin-left: 0px; margin-left: 10px;">
-                        <option value="left" data-i18n="align-left">Left</option>
-                        <option value="center" data-i18n="align-mid">Middle</option>
-                        <option value="right" data-i18n="align-right">Right</option>
-                    </select>
+                    <label data-i18n="wrap-by-space"><input type="checkbox" name="wrap-by-space" data-key checked />Wrap text</label>
+                    <span class="text-align-container">
+                        <input type="radio" name="text-align" value="left"/>
+                        <span class="text-align-checkmark text-align-left"></span>
+                    </span>
+                    <span class="text-align-container">
+                        <input type="radio" name="text-align" value="center"/>
+                        <span class="text-align-checkmark text-align-center"></span>
+                    </span>
+                    <span class="text-align-container">
+                        <input type="radio" name="text-align" value="right"/>
+                        <span class="text-align-checkmark text-align-center"></span>
+                    </span>
                 </div>
                 <div id="text-textarea">
                     <textarea id="insert-text-area"></textarea>
