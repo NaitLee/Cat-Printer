@@ -554,6 +554,11 @@ class CanvasController {
         this.activatePreview();
         this.imageUrl = null;
         this.controls.classList.remove('hidden');
+        
+        // Reset hinted button
+        for (let elem of document.getElementsByClassName("hint")) {
+            elem.classList.remove("hint");
+        }
     }
     makePbm() {
         let blob = mono2pbm(this.previewData, this.preview.width, this.preview.height);
