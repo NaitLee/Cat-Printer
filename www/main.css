@@ -667,6 +667,7 @@ body.high-contrast #control-overlay { background-color: var(--shade); }
     overflow: hidden auto; 
     white-space: break-spaces;
     resize:none;
+    padding-top: .65ex;
 }
 
 .text-align-container span {
@@ -714,4 +715,4 @@ input[name="wrap-by-space"] { margin-right: 5px; }
     justify-content: center;
 }
 label[name="wrap-by-space-label"] { padding-right: 2%; }
-#text-font { height: 100%; }
+#text-font { height: 100%; margin: 0px; }
