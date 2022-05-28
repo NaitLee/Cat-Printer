@@ -107,9 +107,5 @@
     "text-font": "Schriftart",
     "text-size": "Textgröße",
     "enter-text": "Text eingeben",
-    "wrap-by-space": "Autom. Zeilenumbruch",
-    "text-align": "Textausrichtung",
-    "align-left": "Linksbündig",
-    "align-mid": "Zentriert",
-    "align-right": "Rechtsbündig"
+    "wrap-by-space": "Autom. Zeilenumbruch"
 }

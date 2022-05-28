@@ -700,3 +700,18 @@ body.high-contrast #control-overlay { background-color: var(--shade); }
 .text-align-left { background-image: url("icons/text-left.svg")}
 .text-align-center { background-image: url("icons/text-center.svg")}
 .text-align-right { background-image: url("icons/text-right.svg")}
+
+input[name="wrap-by-space"] { margin-right: 5px; }
+#text-settings {
+    display: flex;
+    flex-direction: column;
+}
+.text-settings-group {
+    margin-top: 1rem;
+}
+.text-settings-group[name="wrap-and-align"] {
+    display: flex;
+    justify-content: center;
+}
+label[name="wrap-by-space-label"] { padding-right: 2%; }
+#text-font { height: 100%; }
