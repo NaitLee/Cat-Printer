@@ -668,6 +668,7 @@ body.high-contrast #control-overlay { background-color: var(--shade); }
     white-space: break-spaces;
     resize:none;
     padding-top: .65ex;
+    line-height: 1.25;
 }
 
 .text-align-container span {
