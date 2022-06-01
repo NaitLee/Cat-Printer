@@ -469,7 +469,7 @@ class CanvasController {
         }
     }
     insertText(text) {
-        if (text == null) { return; }
+        if (text == null || text.trim() == "") { return; }
 
         const text_size = parseInt(this.textSize.value);
         const text_font = this.textFont.value;
