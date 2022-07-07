@@ -1,4 +1,10 @@
-'Cat-Printer: Core driver'
+'''
+Cat-Printer Core
+
+Copyright © 2021-2022 NaitLee Soft. All rights reserved.
+
+License GPL-3.0-or-later: https://www.gnu.org/licenses/gpl-3.0.html
+'''
 
 import os
 import io

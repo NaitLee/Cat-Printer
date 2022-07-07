@@ -1,9 +1,14 @@
+`
+Copyright © 2021-2022 NaitLee Soft. No rights reserved.
+
+License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
+`;
+
 // Polyfills
 
 // home-made minimal fetch
 // Note: only useful with this application. Extend (or remove) it as needed.
 // In fact I wanted to support Otter Browser for resource-concerning people
-// But it still can't cope with few other JS (even after transpiled to es5) and CSS variables
 if (!window.fetch) window.fetch = function(url, options) {
     options = options || {};
     return new Promise(function(resolve, reject) {

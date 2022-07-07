@@ -105,3 +105,51 @@ Took some misc things.
 Made a minor change in `server.py`,
 but resulting in MUCH faster server response...
 I don't know what's the point. But it's great. Period.
+
+
+... ... (went away for other ideas)
+
+JULY
+
+7th
+
+In this period I've struggled about many bad things, notably Node.js.
+That's the worst dev experience, ever. Darn it and luckily I didn't take it as my primary skill.
+
+I'd tell less about; here is a place to start to know what's wrong with all of those:
+    http://harmful.cat-v.org/software/
+
+(Don't take everything serious; what really matters is the philosophy: do one thing and do it well.)
+
+I'm trying to balance it all the way. And look that in this small project:
+    how users are satisfied, average or advanced;
+    how developers contributed, novice or experienced.
+
+Here is an unseen star of the galaxy, not even comparable to the megas.
+But, settling here means that we are unique, and its existence is the best gift, to the world, to everyone.
+
+Hope the spirit will persist.
+
+----
+
+After seeking around, I'll go farther. In my GitHub profile Bio there is a short description.
+
+Here in this project, I have idea: Tcl/Tk
+    https://tcl.tk/
+
+I want to make a path to communicate between that Python backend and a "better" frontend.
+There's currently one, Web, but Web is too heavy in some cases, and I'm not that satisfied.
+Tcl/Tk is a good choice. Python have Tkinter, but I don't go with it.
+
+The simplest approach is shell/subprocess `python3 printer.py` at Tcl side.
+Feel free to make one if you have experience & time, but I'd go in other way --
+
+I want it through stdin/stdout of `wish`, the Tk shell.
+Tk just do the UI, and echo interactions back (like when user click button, or input text)
+The same can also be applied to Web, but maybe with frequent/delayed requests (or even WebSocket),
+so that it become universal.
+That may involve another (partial) rewrite.
+
+Afraid not, experiment always worth it. And remember: it's all about idea, everyone can make use of then.
+
+Yawn... bed time...

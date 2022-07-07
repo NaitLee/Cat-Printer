@@ -1,4 +1,9 @@
-'Minimal internationalization lib'
+'''
+Minimal internationalization
+
+Copyright © 2021-2022 NaitLee Soft. No rights reserved.
+License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
+'''
 
 import os
 import json
@@ -6,7 +11,7 @@ import locale
 
 class I18nLib():
     ''' Minimal implementation of current frontend i18n in Python.
-        Not Complete (yet)!
+        Yet incomplete.
     '''
 
     lang: str

@@ -1,6 +1,10 @@
-''' Python lib for reading PF2 font files: http://grub.gibibit.com/New_font_format
-    I'd like to put it in Public Domain.
-    Don't forget to see how it's used in `text_print.py`
+'''
+Python lib for reading PF2 font files: http://grub.gibibit.com/New_font_format
+
+Copyright © 2021-2022 NaitLee Soft. No rights reserved.
+License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
+
+Don't forget to see how it's used in `text_print.py`
 '''
 
 import io

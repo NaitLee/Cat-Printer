@@ -7,15 +7,21 @@ Note: not ordered. do whatever I/you want
 + Make error notice short while let users see detailed help/manual for what-to-do
 + Even better CUPS/IPP support
 + Even better frontend, language-friendly text printing
++ Tcl/Tk frontend. More in dev-diary.txt, July 7th.
++ Re-style frontend to make it usable in e.g. Otter Browser
 + Make a build guide for android:
   Summary the hacks to p4a, bleak p4a recipe, p4a webview bootstrap, and AdvancedWebView
 + Try to implement enough without more dependencies
-+ Plugin, for including community features
++ Arch Linux package / AUR, package for other distros
++ Service for other init systems (a systemd unit file is there)
 + ...
 
 ? Optimize PF2 text printing? It seems a bit slow (in algorithm).
 ? Built-in PostScript (Even if very basic)
 ? Data compression for GB03. Optional
+? Plugin, for including community features (that involves usefulness but also bloatness)
+  It's usually messy. Try forking in your own way, at the moment.
+? Process picture with WebAssembly? (Web frontend only)
 ? Put Android APP on F-Droid? But it needs automatic build system...
   Android guys can help this!
-? ... Or put to APKPure? But wait for good frontend before doing all of these
+? ... Or put to APKPure? But make frontend well before doing all of these

@@ -1,4 +1,4 @@
-'Printer model specifications'
+'Printer model specifications. License CC0-1.0-only'
 
 class Model():
     ''' A printer model

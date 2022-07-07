@@ -1,7 +1,7 @@
 
 # Contributing
 
-Thank you for considering this project.
+Thank you for looking into this project.
 
 Let's keep short & be positive:
 
@@ -37,37 +37,39 @@ You can seek for help here, to do grammar extensions & leftovers.
 
 3. Keep the existing "way". Here are details:
 
-- Think about the Unix Philosophy before doing.
+- Think about the Unix Philosophy before doing. Try to suck less.
 - Follow coding style & naming convention.
-- Consider the use cases, support Web UI and/or command-line backend
+- Think about the use cases: Web UI and/or command-line backend, average and/or advanced users
 - Test the code well. Document if necessary.
 - Don't forget internationalization & necessary accessibility features.
 
 4. Finally, "rules". Just skim these, don't feel pressure as I trust you won't mistake:
 
 - Don't leak development/test cache/junk to the repo. Please.  
-  And never put pictures/executables/any big binary to this repo. Try uploading to an issue/discussion instead.
-- Don't connect to an online service to fetch resource.
+  And never put pictures/executables/any big binary to this repo. Try uploading in an issue/discussion instead.
+- Don't connect to an online service to fetch resource.  
+  If necessary, ask the user first.
 - No more 3rd-party blackbox dependencies/assets, without explaining & using its most functionality.  
-  Consider using existing system programs, or implementing it in your own.  
+  Consider using existing system programs, or implementing enough from scratch.  
   If that really happened, make it optional (i.e. don't fail the load just for its non-existence),  
   And don't push the dependency source code.  
   For big dependencies, if you really love it, it's suggested to fork this repo & develop in your own way.  
-- Don't make anti-features. Don't be someone yourself dislike most. Examples:
-  - You can do: simple borders & stickers, simple PostScript interpreter, another common printing protocol
+- Don't make anti-features. Don't be someone yourself dislike most.  
+  Examples:
+  - You can do: simple borders & stickers, scribbling, simple PostScript interpreter, another common printing protocol
   - Considering previous rule, discuss first: Bar/QR Code, formula, Native (non-Web) UI
   - You shouldn't do: Way too fancy UI/editor, Cloud storage, camera integration & OCR
-  - Never consider: Accounting, non-free service integration, advertisement injection
+  - Never consider: online account, non-free service integration, analysis/telemetry
 - Please don't violate the license (GNU General Public License version 3)  
   Modification to existing files are released under its existing license,  
   mostly GPL3 or CC0, according to statement in readme.
 - If you want to preserve your copyright & use other license, create new file(s) for your work.  
   But, never release your code under any non-free license.
 
-5. You can take any part of this project to do something else. It's still contribution!
+5. You can take any part of this project to do something else. It's also contribution! Let the ideas spread!
 
 ## Footnote
 
 Nothing could go wrong. Trust yourself & try your best.
 
-Let's together build a better project, and a better world.
+Let's together build it better. Thank you.

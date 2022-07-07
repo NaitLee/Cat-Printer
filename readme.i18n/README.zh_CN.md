@@ -11,7 +11,7 @@
 
 |    |    |
 |----|----|
-| 支持 | `GB0X, GT01, YT01`  |
+| 已知支持 | `GB0X, GT01, YT01`  |
 
 \* `X` 表示任意数字
 
@@ -115,10 +115,16 @@ python3 server.py
 
 Copyright © 2021-2022 NaitLee Soft. 保留一些权利。
 
-敬请查看文件 `COPYING`，`LICENSE`，以及在 `www/jslicense.html` 中有关 JavaScript 许可的详细内容。
+```
+本程序是自由软件：你可以再分发之和/或依照由自由软件基金会发布的 GNU 通用公共许可证修改之，无论是版本 3 许可证，还是（按你的决定）任何以后版都可以。
+发布该程序是希望它能有用，但是并无保障；甚至连可销售和符合某个特定的目的都不保证。请参看 GNU 通用公共许可证，了解详情。
+你应该随程序获得一份 GNU 通用公共许可证的复本。如果没有，请看 <https://www.gnu.org/licenses/>。 
+```
 
-具体地，`printer.py`，`server.py` 和 `main.js` 以 GNU GPL 3 发布。  
-其余所有部分，若无特殊声明，均在公有领域（CC0）。
+敬请查看文件 `LICENSE`，以及在 `www/jslicense.html` 中有关 JavaScript 许可的详细内容。
+
+具体地，`printer.py`，`server.py` 和 `main.js` 以 GNU GPL 3 发布（`GPL-3.0-or-later`）。  
+其余所有部分，若无特殊声明，均在公有领域（`CC0-1.0-only`）。
 
 --------
 
@@ -143,4 +149,6 @@ Copyright © 2021-2022 NaitLee Soft. 保留一些权利。
 - [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) 从 Java 拯救了我的生命
 - Stack Overflow 和整个互联网，你们让我从零开始了解了安卓“活动” `Activity`
   ……当然还有其他方面的帮助
+- 每一位贡献于 Issue/Pull Request/Discussion 的人
+- 每一位使用此作品并关心软件自由的人
 - ……每个人都是好样的！

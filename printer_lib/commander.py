@@ -1,4 +1,9 @@
-'Printer Commander'
+'''
+Cat-Printer Commander, way to communicate with cat printers via bluetooth
+
+Copyright © 2021-2022 NaitLee Soft. No rights reserved.
+License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
+'''
 
 from abc import ABCMeta, abstractmethod
 

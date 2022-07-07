@@ -12,7 +12,7 @@ Currently:
 
 |    |    |
 |----|----|
-| Supported | `GB0X, GT01, YT01`  |
+| Known to support | `GB0X, GT01, YT01`  |
 
 \* `X` represents any digit
 
@@ -117,10 +117,16 @@ Of course Pull Requests are welcome if you can handle them!
 
 Copyright © 2021-2022 NaitLee Soft. Some rights reserved.
 
-See file `COPYING`, `LICENSE`, and detail of used JavaScript in file `www/jslicense.html`
+```
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+```
 
-Particularly, `printer.py`, `server.py` and `main.js` are released under GNU GPL 3.  
-All other parts, except which have special statements, are in Public Domain (CC0).
+See file `LICENSE`, and detail of used JavaScript in file `www/jslicense.html`
+
+Particularly, `printer.py`, `server.py` and `main.js` are released under GNU GPL 3 (`GPL-3.0-or-later`).  
+All other parts, except which have special statements, are in Public Domain (`CC0-1.0-only`).
 
 --------
 
@@ -142,4 +148,6 @@ Also interested in code development? See [development.md](development.md)!
 - [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) for saving my life from Java
 - Stack Overflow & the whole Internet, you let me know Android `Activity` all from beginning
   ... and many other helpful ideas as well
+- Everyone that contributed through Issue/Pull Request/Discussion
+- Everyone that is using this & caring about software freedom
 - ... Everyone is Awesome!

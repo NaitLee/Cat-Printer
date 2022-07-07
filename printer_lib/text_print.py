@@ -1,4 +1,4 @@
-'Things used by Text Printing feature'
+'Things used by Text Printing feature. License CC0-1.0-only'
 
 from .pf2 import PF2S
 
