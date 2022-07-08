@@ -120,6 +120,7 @@
             <div id="control-overlay">
                 <div>
                     <button id="insert-picture" data-i18n="insert-picture" data-key="Enter">Insert Picture</button>
+                    <button id="insert-text" data-i18n="insert-text" data-key="">Insert Text</button>
                     <p data-i18n="or-drag-file-to-below" class="hide-on-android">Or drag file to below</p>
                 </div>
             </div>
@@ -174,6 +175,48 @@
                     <input type="checkbox" name="large-font" data-key />
                     <span data-i18n="large-font">Large Font</span>
                 </label>
+            </div>
+        </div>
+        <div id="text-input">
+            <h1 data-i18n="insert-text">Insert Text</h1>
+            <div>
+                
+                <div id="text-settings">
+                    <div name="font-and-size" class="text-settings-group">
+
+                        <select id="text-font">
+                            <option value="Arial">Arial (sans-serif)</option>
+                            <option value="Brush Script MT">Brush Script MT (cursive)</option>
+                            <option value="Courier New">Courier New (monospace)</option>
+                            <option value="Garamond">Garamond (serif)</option>
+                            <option value="Georgia">Georgia (serif)</option>
+                            <option value="Helvetica" selected>Helvetica (sans-serif)</option>
+                            <option value="Tahoma">Tahoma (sans-serif)</option>
+                            <option value="Times New Roman">Times New Roman (serif)</option>
+                            <option value="Trebuchet MS">Trebuchet MS (sans-serif)</option>
+                            <option value="Verdana">Verdana (sans-serif)</option>
+                        </select>
+                        <input id="text-size" type="number" name="text-size" min="1" max="100" value="20" data-key style="margin: 0px;"/>
+                    </div>
+                    <div name="wrap-and-align" class="text-settings-group">
+                        <label data-i18n="wrap-by-space" name="wrap-by-space-label"><input type="checkbox" name="wrap-by-space" data-key checked />Wrap text</label>
+                        <span class="text-align-container">
+                            <input type="radio" name="text-align" value="left" checked/>
+                            <span class="text-align-checkmark text-align-left"></span>
+                        </span>
+                        <span class="text-align-container">
+                            <input type="radio" name="text-align" value="center"/>
+                            <span class="text-align-checkmark text-align-center"></span>
+                        </span>
+                        <span class="text-align-container">
+                            <input type="radio" name="text-align" value="right"/>
+                            <span class="text-align-checkmark text-align-right"></span>
+                        </span>
+                    </div>
+                </div>
+                <div id="text-textarea">
+                    <textarea id="insert-text-area"></textarea>
+                </div>
             </div>
         </div>
         <iframe id="frame" src="about:blank" name="frame" title="frame" data-key="v"></iframe>

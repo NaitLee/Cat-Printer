@@ -8,6 +8,7 @@
     "canvas": "Canvas",
     "document": "Document",
     "insert-picture": "Insert Picture",
+    "insert-text": "Insert Text",
     "help": "Help",
     "javascript-license-information": "JavaScript License Information",
     "settings": "Settings",
@@ -94,7 +95,7 @@
     "everyone-is-awesome": "Everyone is awesome!",
     "license": "License",
     "exiting": "Exiting…",
-
+    
     "dark-theme": "Dark Theme",
     "high-contrast": "High Contrast",
     "welcome": "Welcome!",
@@ -127,5 +128,9 @@
     "cat-face-toward": "Cat Face Toward",
     "quality-": "Quality:",
     "print-quality": "Print quality",
-    "show-more-options": "Show More Options"
+    "show-more-options": "Show More Options",
+    "text-font": "Font",
+    "text-size": "Size",
+    "enter-text": "Enter text",
+    "wrap-by-space": "Wrap words by spaces"
 }

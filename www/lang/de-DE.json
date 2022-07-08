@@ -9,6 +9,7 @@
     "canvas": "Leinwand",
     "document": "Dokument",
     "insert-picture": "Bild einfügen",
+    "insert-text": "Text einfügen",
     "help": "Hilfe",
     "javascript-license-information": "Informationen zur JavaScript-Lizenz",
     "settings": "Einstellungen",
@@ -97,10 +98,14 @@
     "everyone-is-awesome": "Jeder ist super",
     "license": "Lizenz",
     "exiting": "Exiting…",
-
+    
     "dark-theme": "Dark Theme",
     "high-contrast": "High Contrast",
     "copyright-and-license": "Copyright and License",
     "welcome": "Welcome!",
-    "some-rights-reserved": "Einige Rechte sind vorbehalten."
+    "some-rights-reserved": "Einige Rechte sind vorbehalten.",
+    "text-font": "Schriftart",
+    "text-size": "Textgröße",
+    "enter-text": "Text eingeben",
+    "wrap-by-space": "Autom. Zeilenumbruch"
 }

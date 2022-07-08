@@ -305,10 +305,20 @@ class CanvasController {
         this.preview = document.getElementById('preview');
         this.canvas = document.getElementById('canvas');
         this.controls = document.getElementById('control-overlay');
+        this.textSize = document.getElementById("text-size");
+        this.textFont = document.getElementById("text-font");
+        this.textArea = document.getElementById("insert-text-area");
+        this.wrapBySpace = document.querySelector('input[name="wrap-by-space"]');
+        this.textAlgorithm = document.querySelector('input[name="algo"][value="algo-direct"]');
         this.height = CanvasController.defaultHeight;
         this._thresholdRange = document.querySelector('[name="threshold"]');
         this._energyRange = document.querySelector('[name="energy"]');
         this.imageUrl = null;
+        this.textAlign = "left"; 
+        
+        for (let elem of document.querySelectorAll("input[name=text-align]")){
+            if (elem.checked) { this.textAlign = elem.value; }
+        }
 
         const prevent_default = (event) => {
             event.preventDefault();
@@ -318,12 +328,33 @@ class CanvasController {
         this.canvas.addEventListener('dragover', prevent_default);
         this.canvas.addEventListener('dragenter', prevent_default);
         this.canvas.addEventListener('drop', (event) => {
-            this.insertPicture(event.dataTransfer.files);
+            if (event.dataTransfer?.files[0]?.type.split("/")[0] == "text") {
+                let file_reader = new FileReader();
+                file_reader.onload = () => {
+                    this.textArea.value = file_reader.result; 
+                    Dialog.alert("#text-input", () => this.insertText(this.textArea.value));
+                };
+                file_reader.readAsText(event.dataTransfer.files[0]);
+            } else {
+                this.insertPicture(event.dataTransfer.files);
+            }
             return prevent_default(event);
         });
 
+        this.textArea.style["font-size"] = this.textSize.value + "px";
+        this.textArea.style["font-family"] = this.textFont.value;
+        this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all";
+
         putEvent('input[name="algo"]', 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
         putEvent('#insert-picture'   , 'click', () => this.insertPicture(), this);
+        putEvent('#insert-text'   , 'click', () => Dialog.alert("#text-input", () => this.insertText(this.textArea.value)));
+        putEvent('#text-size'   , 'change', () => this.textArea.style["font-size"] = this.textSize.value + "px"); 
+        putEvent('#text-font'   , 'change', () => this.textArea.style["font-family"] = this.textFont.value); 
+        putEvent('input[name="text-align"]', 'change', (event) => {
+            this.textAlign = event.currentTarget.value
+            this.textArea.style["text-align"] = this.textAlign;
+        }, this);
+        putEvent('input[name="wrap-by-space"]'   , 'change', () => this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all");
         putEvent('#button-preview'   , 'click', this.activatePreview , this);
         putEvent('#button-reset'     , 'click', this.reset           , this);
         putEvent('#canvas-expand'    , 'click', this.expand          , this);
@@ -444,6 +475,92 @@ class CanvasController {
             input.click();
         }
     }
+    insertText(text) {
+        if (text == null || text.trim() == "") { return; }
+
+        const text_size = parseInt(this.textSize.value);
+        const text_font = this.textFont.value;
+        const y_step = text_size;
+        
+        const ctx = this.canvas.getContext("2d");
+        let canvas_font = text_size + "px " + text_font;
+        const max_width = this.canvas.width - 10;
+        
+        // Use Word Wrap to split the text over multiple lines
+        let lines = [];
+        // Calculate the aproximate maximum length of a string
+        // taking font and text size in account
+        const get_max_chars_per_line = (text, ctx) => { 
+            let text_width = ctx.measureText(text).width;
+            let textIndex = max_width / text_width;
+            
+            if (textIndex > 1) { return text.length}
+            return Math.floor(textIndex * text.length); 
+        }
+        
+        // Wrap the text if it does not fit on a single line
+        const wrap_text = (text, max_length) => {
+            let split_pos = max_length;
+            let newline_index = text.indexOf("\n");
+            if (newline_index > 0 && newline_index < max_length) {
+                return [text.slice(0, newline_index), text.slice(newline_index, text.length)];
+            }
+
+            if (this.wrapBySpace.checked) {
+                split_pos = text.lastIndexOf(" ", max_length);
+                if (split_pos <= 0) { split_pos = max_length; }
+            }
+
+            return [text.slice(0, split_pos), text.slice(split_pos, text.length)];
+        }
+        
+        ctx.font = canvas_font;
+        while (ctx.measureText(text).width > max_width) {
+            let line;
+            let max_chars = get_max_chars_per_line(text, ctx);
+            if (max_chars == 0) { 
+                lines.push(text.slice(0, 1));
+                text = text.slice(1, text.length);
+                continue;
+            }
+            [line, text] = wrap_text(text, max_chars);
+            lines.push(line);
+        }
+        
+        for (let split of text.split("\n")) {
+            lines.push(split);
+        }
+
+        this.height = (lines.length * y_step) + (y_step / 2);
+        ctx.font = canvas_font; // Setting this.height resets the font.
+
+        let y_pos = y_step;
+        for (let line of lines) {
+            let x_pos = 0;
+             // Text-alignment
+            if (this.textAlign.value == "right") {
+                x_pos = Math.max(max_width - ctx.measureText(line).width, 0)
+            } else if (this.textAlign.value == "center") {
+                x_pos = Math.max(max_width - ctx.measureText(line).width, 0) / 2;
+            }
+            
+            ctx.fillText(line, x_pos, y_pos); 
+            y_pos += y_step;
+        }
+
+        this.crop();
+
+        this.textAlgorithm.checked = true;
+        this.textAlgorithm.dispatchEvent(new Event("change"));
+        
+        this.imageUrl = this.canvas.toDataURL();
+        this.activatePreview();
+        
+        this.controls.classList.add('hidden');
+
+        hint('#button-print');
+        return true;
+    }
     reset() {
         let canvas = this.canvas;
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
@@ -451,6 +568,11 @@ class CanvasController {
         this.activatePreview();
         this.imageUrl = null;
         this.controls.classList.remove('hidden');
+        
+        // Reset hinted button
+        for (let elem of document.getElementsByClassName("hint")) {
+            elem.classList.remove("hint");
+        }
     }
     makePbm() {
         let blob = mono2pbm(this.previewData, this.preview.width, this.preview.height);
@@ -590,6 +712,7 @@ class Main {
                 (value) => this.settings['text_mode'] = (value === 'algo-direct')
             );
             this.attachSetter('[name="transparent-as-white"]', 'change', 'transparent_as_white');
+            this.attachSetter('[name="wrap-by-space"]', 'change', 'wrap_by_space');
             this.attachSetter('[name="dry-run"]', 'change', 'dry_run',
                 (checked) => checked && Notice.note('dry-run-test-print-process-only')
             );
