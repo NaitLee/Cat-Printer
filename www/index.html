@@ -27,12 +27,12 @@
                             <span data-i18n="process-as-">Process as:</span>
                             <span>
                                 <label>
-                                    <input type="radio" name="algo" value="algo-direct" data-key />
-                                    <span data-i18n="text">Text</span>
-                                </label>
-                                <label>
                                     <input type="radio" name="algo" value="algo-steinberg" data-key checked />
                                     <span data-i18n="picture">Picture</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="algo" value="algo-direct" data-key />
+                                    <span data-i18n="text">Text</span>
                                 </label>
                             </span>
                         </span>
@@ -52,6 +52,10 @@
                             <input type="range" min="24" max="36" value="32" step="4" name="quality" data-key data-default />
                         </label>
                     </div>
+                    <label class="label-input-span">
+                        <input type="checkbox" name="rotate" data-key />
+                        <span data-i18n="rotate-image">Rotate Image</span>
+                    </label>
                     <label class="label-input-span" data-hide-as="print">
                         <input type="checkbox" name="transparent-as-white" data-key checked />
                         <span data-i18n="transparent-as-white">Transparent as White</span>
@@ -120,7 +124,7 @@
             <div id="control-overlay">
                 <div>
                     <button id="insert-picture" data-i18n="insert-picture" data-key="Enter">Insert Picture</button>
-                    <button id="insert-text" data-i18n="insert-text" data-key="">Insert Text</button>
+                    <button id="insert-text" data-i18n="insert-text" data-key="\">Insert Text</button>
                     <p data-i18n="or-drag-file-to-below" class="hide-on-android">Or drag file to below</p>
                 </div>
             </div>
@@ -131,7 +135,6 @@
             <div class="center buttons">
                 <!-- <button id="canvas-expand" data-i18n="expand">Expand</button>
                 <button id="canvas-crop" data-i18n="crop">Crop</button> -->
-                <!-- <button id="button-preview" data-i18n="preview">Preview</button> -->
                 <button id="button-reset" data-i18n="reset" data-key>Reset</button>
                 <button id="button-print" data-i18n="print" data-key=" ">Print</button>
             </div>
@@ -141,6 +144,7 @@
     <div id="hidden" class="hard-hidden">
         <!-- Hidden area for putting elements -->
         <input type="file" id="file" />
+        <img src="" id="img" alt="hidden-image" />
         <div id="accessibility">
             <div>
                 <h2>
@@ -180,42 +184,37 @@
         <div id="text-input">
             <h1 data-i18n="insert-text">Insert Text</h1>
             <div>
-                
                 <div id="text-settings">
                     <div name="font-and-size" class="text-settings-group">
-
-                        <select id="text-font">
-                            <option value="Arial">Arial (sans-serif)</option>
-                            <option value="Brush Script MT">Brush Script MT (cursive)</option>
-                            <option value="Courier New">Courier New (monospace)</option>
-                            <option value="Garamond">Garamond (serif)</option>
-                            <option value="Georgia">Georgia (serif)</option>
-                            <option value="Helvetica" selected>Helvetica (sans-serif)</option>
-                            <option value="Tahoma">Tahoma (sans-serif)</option>
-                            <option value="Times New Roman">Times New Roman (serif)</option>
-                            <option value="Trebuchet MS">Trebuchet MS (sans-serif)</option>
-                            <option value="Verdana">Verdana (sans-serif)</option>
+                        <select id="text-font" contenteditable="true" data-key>
+                            <option value="serif" data-i18n="serif">Serif</option>
+                            <option value="sans-serif" data-i18n="sans-serif" selected>Sans Serif</option>
+                            <option value="monospace" data-i18n="monospace">Monospace</option>
+                            <option value="Unifont" data-i18n="unifont">Unifont</option>
                         </select>
                         <input id="text-size" type="number" name="text-size" min="1" max="100" value="20" data-key style="margin: 0px;"/>
                     </div>
                     <div name="wrap-and-align" class="text-settings-group">
-                        <label data-i18n="wrap-by-space" name="wrap-by-space-label"><input type="checkbox" name="wrap-by-space" data-key checked />Wrap text</label>
+                        <label>
+                            <input type="checkbox" name="wrap-words-by-spaces" data-key checked />
+                            <span data-i18n="wrap-words-by-spaces">Wrap words by spaces</span>
+                        </label>
                         <span class="text-align-container">
-                            <input type="radio" name="text-align" value="left" checked/>
+                            <input type="radio" name="text-align" value="left" data-key checked />
                             <span class="text-align-checkmark text-align-left"></span>
                         </span>
                         <span class="text-align-container">
-                            <input type="radio" name="text-align" value="center"/>
+                            <input type="radio" name="text-align" value="center" data-key />
                             <span class="text-align-checkmark text-align-center"></span>
                         </span>
                         <span class="text-align-container">
-                            <input type="radio" name="text-align" value="right"/>
+                            <input type="radio" name="text-align" value="right" data-key />
                             <span class="text-align-checkmark text-align-right"></span>
                         </span>
                     </div>
                 </div>
                 <div id="text-textarea">
-                    <textarea id="insert-text-area"></textarea>
+                    <textarea id="insert-text-area" data-key="/"></textarea>
                 </div>
             </div>
         </div>

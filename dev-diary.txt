@@ -153,3 +153,34 @@ That may involve another (partial) rewrite.
 Afraid not, experiment always worth it. And remember: it's all about idea, everyone can make use of then.
 
 Yawn... bed time...
+
+9th
+
+Did some stylesheet fix.
+
+Then go for image rotation. It shouldn't be that hard:
+
+0	1	2	3	16	17	18	19	32	33	34	35	48	49	50	51
+4	5	6	7	20	21	22	23	36	37	38	39	52	53	54	55
+8	9	10	11	24	25	26	27	40	41	42	43	56	57	58	59
+12	13	14	15	28	29	30	31	44	45	46	47	60	61	62	63
+16	17	18	19	32	33	34	35	48	49	50	51	64	65	66	67
+20	21	22	23	36	37	38	39	52	53	54	55	68	69	70	71
+
+0	1	2	3	4	5	6	7	8	9	10	11	12	13	14	15	16	17	18	19	20	21	22	23
+16	17	18	19	20	21	22	23	24	25	26	27	28	29	30	31	32	33	34	35	36	37	38	39
+32	33	34	35	36	37	38	39	40	41	42	43	44	45	46	47	48	49	50	51	52	53	54	55
+48	49	50	51	52	53	54	55	56	57	58	59	60	61	62	63	64	65	66	67	68	69	70	71
+
+Think about HTML canvas ImageData, one dimensional [R,G,B,A,...] array.
+The "big" problem is just make a procedure to transform from the first matrix to the second.
+(and flip the result horizontally)
+
+Know what happened? I produced a right procedure from very start, but the image screwed up.
+
+Tried to "fix" it, used at least 4 hours, finally found it's a matter of didn't floor a floating number.
+(Height is got by multiplying aspect ratio)
+
+So the Internet JavaScript memes are damned true.
+    https://programmerhumor.io/javascript-memes/why-is-it-like-this-2/
+    https://programmerhumor.io/javascript-memes/sorry-dad-_-2/
