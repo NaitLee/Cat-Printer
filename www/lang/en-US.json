@@ -133,5 +133,21 @@
     "text-size": "Size",
     "enter-text": "Enter text",
     "wrap-by-space": "Wrap words by spaces",
-    "wrap-text": "Wrap text"
+    "wrap-text": "Wrap text",
+    "you-can-see-all-javascript-programs-used": "You can see all JavaScript programs used along with this application are Free Software.",
+    "javascript-resource": "Resource",
+    "javascript-license": "License",
+    "javascript-source": "Source",
+    "javascript-description": "Description",
+    "javascript-everyjs-description": "Dynamic concatenation of all development scripts",
+    "javascript-maincompjs-description": "All following development scripts, transpiled for compatibility.",
+    "javascript-loaderjs-description": "For dynamically loading other scripts, and fallback if there are problems.",
+    "javascript-polyfilljs-description": "Add features which are not supported by old browsers.",
+    "javascript-i18nextjs-description": "I18n \"extensions\"",
+    "javascript-i18njs-description": "For internationalization (language support)",
+    "javascript-imagejs-description": "For canvas image manipulation",
+    "javascript-accessibilityjs-description": "Accessibility features",
+    "javascript-catprinter-description": "The main script for Cat-Printer",
+    "free-software": "Free Software",
+    "free-software-description": "Software which respects your computing freedom."
 }
