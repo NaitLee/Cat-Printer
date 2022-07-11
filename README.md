@@ -18,7 +18,7 @@ Currently:
 
 ## Features
 
-*Currently it's in development. More will be here soon!*
+*This project is still in development. More features may be added in the future!*
 
 - Simple!
   - Operate via Web UI just in browser,
@@ -70,12 +70,12 @@ extract to somewhere and run `start.bat`
 
 ### GNU/Linux
 
-You can get the "pure" release, extract it, fire a terminal inside and run:  
+You can get the "pure" release, extract it, fire up a terminal and run:  
 ```bash
 python3 server.py
 ```
 
-On Arch Linux based distros you may first install `bluez`, as it's often missing  
+On Arch Linux based distros you may first install `bluez`, as it may not be installled by default
 ```bash
 sudo pacman -S bluez bluez-utils
 ```
@@ -95,7 +95,7 @@ After that, fetch & use a "bare" release:
 python3 server.py
 ```
 
-Currently in Mac the browser will not pop up automatically. Please run manually and go to `http://127.0.0.1:8095`, or just click [here](http://127.0.0.1:8095).
+Currently the web browser will not open automatically in MacOS. Please run manually and go to `http://127.0.0.1:8095`, or just click [here](http://127.0.0.1:8095).
 
 ### Worth to Note
 
