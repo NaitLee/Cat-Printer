@@ -274,32 +274,38 @@ class CanvasController {
     canvas;
     imageUrl;
     algorithm;
-    _height;
-    _threshold;
-    _energy;
-    _thresholdRange;
-    _energyRange;
+    algoElements;
+    textFont;
+    textSize;
+    textArea;
     transparentAsWhite;
     previewData;
+    rotate;
+    #height;
+    #threshold;
+    #energy;
+    #thresholdRange;
+    #energyRange;
+    #rotateCheck;
     static defaultHeight = 384;
     static defaultThreshold = 256 / 3;
     get threshold() {
-        return this._threshold;
+        return this.#threshold;
     }
     set threshold(value) {
-        this._threshold = this._thresholdRange.value = value;
+        this.#threshold = this.#thresholdRange.value = value;
     }
     get energy() {
-        return this._energy;
+        return this.#energy;
     }
     set energy(value) {
-        this._energy = this._energyRange.value = value;
+        this.#energy = this.#energyRange.value = value;
     }
     get height() {
-        return this._height;
+        return this.#height;
     }
     set height(value) {
-        this.canvas.height = this.preview.height = this._height = value;
+        this.canvas.height = this.preview.height = this.#height = value;
     }
     constructor() {
         this.preview = document.getElementById('preview');
@@ -308,13 +314,13 @@ class CanvasController {
         this.textSize = document.getElementById("text-size");
         this.textFont = document.getElementById("text-font");
         this.textArea = document.getElementById("insert-text-area");
-        this.wrapBySpace = document.querySelector('input[name="wrap-by-space"]');
-        this.textAlgorithm = document.querySelector('input[name="algo"][value="algo-direct"]');
+        this.wrapBySpace = document.querySelector('input[name="wrap-words-by-spaces"]');
         this.height = CanvasController.defaultHeight;
-        this._thresholdRange = document.querySelector('[name="threshold"]');
-        this._energyRange = document.querySelector('[name="energy"]');
+        this.#thresholdRange = document.querySelector('[name="threshold"]');
+        this.#energyRange = document.querySelector('[name="energy"]');
         this.imageUrl = null;
-        this.textAlign = "left"; 
+        this.textAlign = "left";
+        this.rotate = false;
         
         for (let elem of document.querySelectorAll("input[name=text-align]")){
             if (elem.checked) { this.textAlign = elem.value; }
@@ -336,7 +342,7 @@ class CanvasController {
                 };
                 file_reader.readAsText(event.dataTransfer.files[0]);
             } else {
-                this.insertPicture(event.dataTransfer.files);
+                this.useFiles(event.dataTransfer.files);
             }
             return prevent_default(event);
         });
@@ -345,8 +351,10 @@ class CanvasController {
         this.textArea.style["font-family"] = this.textFont.value;
         this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all";
 
+        this.algoElements = document.querySelectorAll('input[name="algo"]');
+
         putEvent('input[name="algo"]', 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
-        putEvent('#insert-picture'   , 'click', () => this.insertPicture(), this);
+        putEvent('#insert-picture'   , 'click', () => this.useFiles(), this);
         putEvent('#insert-text'   , 'click', () => Dialog.alert("#text-input", () => this.insertText(this.textArea.value)));
         putEvent('#text-size'   , 'change', () => this.textArea.style["font-size"] = this.textSize.value + "px"); 
         putEvent('#text-font'   , 'change', () => this.textArea.style["font-family"] = this.textFont.value); 
@@ -354,11 +362,13 @@ class CanvasController {
             this.textAlign = event.currentTarget.value
             this.textArea.style["text-align"] = this.textAlign;
         }, this);
-        putEvent('input[name="wrap-by-space"]'   , 'change', () => this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all");
+        putEvent('input[name="wrap-words-by-spaces"]'   , 'change', () => this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all");
         putEvent('#button-preview'   , 'click', this.activatePreview , this);
         putEvent('#button-reset'     , 'click', this.reset           , this);
         putEvent('#canvas-expand'    , 'click', this.expand          , this);
         putEvent('#canvas-crop'      , 'click', this.crop            , this);
+        putEvent('[name="rotate"]'   , 'change', e => this.setRotate(e.currentTarget.checked), this);
+        this.#rotateCheck = document.querySelector('[name="rotate"]');
 
         putEvent('[name="threshold"]', 'change', (event) => {
             this.threshold = parseInt(event.currentTarget.value);
@@ -374,17 +384,27 @@ class CanvasController {
         }, this);
     }
     useAlgorithm(name) {
+        for (let e of this.algoElements) {
+            e.checked = e.value === name;
+        }
         this.algorithm = name;
         this.threshold = CanvasController.defaultThreshold;
-        this._thresholdRange.dispatchEvent(new Event('change'));
+        this.#thresholdRange.dispatchEvent(new Event('change'));
         this.energy = name == 'algo-direct' ? 96 : 64;
-        this._energyRange.dispatchEvent(new Event('change'));
+        this.#energyRange.dispatchEvent(new Event('change'));
         this.activatePreview();
     }
     expand(length = CanvasController.defaultHeight) {
         this.height += length;
     }
-    crop() {}
+    crop() {
+        // STUB
+    }
+    setRotate(value) {
+        this.#rotateCheck.checked = value;
+        this.rotate = value;
+        if (this.imageUrl !== null) this.putImage(this.imageUrl);
+    }
     visualEnergy(amount) {
         let rate = amount / 256;
         let brightness = Math.max(1.6 - rate * 1.5, 0.75),
@@ -437,46 +457,68 @@ class CanvasController {
         this.previewData = mono_data;
         context_p.putImageData(new_data, 0, 0);
     }
-    insertPicture(files) {
-        const put_image = (url) => {
-            this.imageUrl = url;
-            let img = document.createElement('img');
-            img.src = url;
-            hidden_area.appendChild(img);
-            img.addEventListener('load', () => {
-                let canvas = this.canvas;
-                let rate = img.height / img.width;
-                this.height = canvas.width * rate;
-                let context = canvas.getContext('2d');
-                context.drawImage(img, 0, 0, canvas.width, canvas.height);
-                this.crop();
-                this.activatePreview();
-                hint('#button-print');
-            });
-        }
-        let use_files = (files) => {
+    putImage(url) {
+        let img = document.getElementById('img');
+        img.src = url;
+        img.addEventListener('load', () => {
+            let canvas = this.canvas;
+            let ctx = canvas.getContext('2d');
+            if (this.rotate) {
+                let intermediate_canvas = document.createElement('canvas');
+                /**
+                 *       w         h
+                 *    +------+   +---+
+                 *  h |      |   |   | w
+                 *    +------+   |   | intermediate_canvas
+                 *     canvas    +---+
+                 */
+                let w = canvas.width;
+                let h = this.height = Math.floor(canvas.width * img.width / img.height);
+                intermediate_canvas.width = h;
+                intermediate_canvas.height = w;
+                let i_ctx = intermediate_canvas.getContext('2d');
+                i_ctx.drawImage(img, 0, 0, h, w);
+                let i_data = i_ctx.getImageData(0, 0, h, w);
+                let data = ctx.createImageData(w, h);
+                for (let j = 0; j < h; j++) {
+                    for (let i = 0; i < w; i++) {
+                        for (let d = 0; d < 4; d++)
+                            data.data[(i * 4 + d)  +  (j * w * 4)] = i_data.data[(j * 4 + d)  +  ((w - i) * 4 * h)];
+                    }
+                }
+                ctx.putImageData(data, 0, 0);
+            } else {
+                this.height = Math.floor(canvas.width * img.height / img.width);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            }
+            this.crop();
+            this.activatePreview();
+            hint('#button-print');
+        });
+    }
+    useFiles(files) {
+        const use_files = (files) => {
             let file = files[0];
             if (!file) return;
             let url = URL.createObjectURL(file);
-            put_image(url);
+            this.imageUrl = url;
+            this.putImage(url);
             this.controls.classList.add('hidden');
         }
-        if (files) use_files(files);
-        else {
-            document.querySelectorAll('.dummy').forEach(e => e.remove());
-            let input = document.createElement('input');
-            input.classList.add('dummy');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.addEventListener('change', () => {
-                use_files(input.files);
-            });
-            hidden_area.appendChild(input);
-            input.click();
-        }
+        if (files) { use_files(files); return; }
+        document.querySelectorAll('.dummy').forEach(e => e.remove());
+        let input = document.createElement('input');
+        input.classList.add('dummy');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.addEventListener('change', () => {
+            use_files(input.files);
+        });
+        hidden_area.appendChild(input);
+        input.click();
     }
     insertText(text) {
-        if (text == null || text.trim() == "") { return; }
+        if (text == null || text.trim() == "") { return false; }
 
         const text_size = parseInt(this.textSize.value);
         const text_font = this.textFont.value;
@@ -550,12 +592,12 @@ class CanvasController {
 
         this.crop();
 
-        this.textAlgorithm.checked = true;
-        this.textAlgorithm.dispatchEvent(new Event("change"));
-        
-        this.imageUrl = this.canvas.toDataURL();
-        this.activatePreview();
-        
+        this.useAlgorithm('algo-direct');
+        this.threshold = 16;
+
+        this.setRotate(false);
+        this.putImage(this.imageUrl = this.canvas.toDataURL());
+
         this.controls.classList.add('hidden');
 
         hint('#button-print');
@@ -597,7 +639,7 @@ function applyI18nToDom(doc) {
 async function initI18n(current_language) {
     if (typeof i18n === 'undefined') return;
     /** @type {HTMLSelectElement} */
-    let language_options = document.getElementById('select-language');
+    let language_select = document.getElementById('select-language');
     /** @type {{ [code: string]: string }} */
     let list = await fetch('/lang/list.json').then(r => r.json());
     let use_language = async (value) => {
@@ -605,6 +647,7 @@ async function initI18n(current_language) {
         i18n.add(value, await fetch(`/lang/${value}.json`).then(r => r.json()), true);
         applyI18nToDom();
     }
+    language_select.addEventListener('change', () => use_language(language_select.value));
     for (let code in list) {
         let option = document.createElement('option');
         option.value = code;
@@ -614,22 +657,22 @@ async function initI18n(current_language) {
             let option = event.currentTarget;
             let value = option.value;
             option.selected = true;
-            language_options.selectedIndex = option.index;
+            language_select.selectedIndex = option.index;
             use_language(value);
             Notice.note('welcome');
         });
-        language_options.appendChild(option);
+        language_select.appendChild(option);
     }
     if (!navigator.languages) {
         if (!navigator.language) return;
         else navigator.languages = [navigator.language, 'en-US'];
     }
     if (current_language) {
-        for (let option of language_options.children)
+        for (let option of language_select.children)
             if (option.value === current_language)
                 option.click();
     } else for (let code of navigator.languages)
-        if (list[code]) for (let option of language_options.children)
+        if (list[code]) for (let option of language_select.children)
             if (option.value === code) {
                 option.setAttribute('data-default', '');
                 if (!current_language) option.click();
@@ -697,22 +740,22 @@ class Main {
             await initI18n(this.settings['language']);
 
             this.canvasController = new CanvasController();
-            putEvent('#button-exit', 'click', () => this.exit(false), this);
-            putEvent('#button-exit', 'contextmenu',
-                (event) => (event.preventDefault(), this.exit(true)), this);
-            putEvent('#button-print', 'click', this.print, this);
-            putEvent('#device-refresh', 'click', this.searchDevices, this);
+            putEvent('#button-exit'     , 'click', () => this.exit(false), this);
+            putEvent('#button-print'    , 'click', this.print, this);
+            putEvent('#device-refresh'  , 'click', this.searchDevices, this);
+            putEvent('#button-exit'     , 'contextmenu', (event) => (event.preventDefault(), this.exit(true)), this);
             putEvent('#set-accessibility', 'click', () => Dialog.alert('#accessibility'));
             this.attachSetter('#device-options', 'input', 'printer', 
                 (value) => callApi('/connect', { device: value })
             );
             putEvent('a[target="frame"]', 'click', () => Dialog.alert('#frame'));
-            this.attachSetter('[name="scan-time"]', 'change', 'scan_timeout');
-            this.attachSetter('input[name="algo"]', 'change', 'mono_algorithm',
+            this.attachSetter('[name="scan-time"]'  , 'change', 'scan_timeout');
+            this.attachSetter('[name="rotate"]'     , 'change', 'rotate');
+            this.attachSetter('input[name="algo"]'  , 'change', 'mono_algorithm',
                 (value) => this.settings['text_mode'] = (value === 'algo-direct')
             );
             this.attachSetter('[name="transparent-as-white"]', 'change', 'transparent_as_white');
-            this.attachSetter('[name="wrap-by-space"]', 'change', 'wrap_by_space');
+            this.attachSetter('[name="wrap-words-by-spaces"]', 'change', 'wrap_by_space');
             this.attachSetter('[name="dry-run"]', 'change', 'dry_run',
                 (checked) => checked && Notice.note('dry-run-test-print-process-only')
             );
@@ -731,16 +774,13 @@ class Main {
             this.attachSetter('[name="high-contrast"]', 'change', 'high_contrast',
                 (checked) => apply_class('high-contrast', checked)
             );
-            this.attachSetter('[name="threshold"]', 'change', 'threshold');
-            this.attachSetter('[name="energy"]', 'change', 'energy');
-            this.attachSetter('[name="quality"]', 'change', 'quality');
-            this.attachSetter('[name="flip"]', 'change', 'flip');
-            // this.attachSetter('[name="flip-h"]', 'change', 'flip_h');
-            // this.attachSetter('[name="flip-v"]', 'change', 'flip_v');
-            // this.attachSetter('[name="dump"]', 'change', 'dump');
+            this.attachSetter('[name="threshold"]'  , 'change', 'threshold');
+            this.attachSetter('[name="energy"]'     , 'change', 'energy');
+            this.attachSetter('[name="quality"]'    , 'change', 'quality');
+            this.attachSetter('[name="flip"]'       , 'change', 'flip');
             await this.activateConfig();
             // one exception
-            this.attachSetter('#select-language option', 'click', 'language');
+            this.attachSetter('#select-language', 'change', 'language');
 
             if (this.settings['is_android']) {
                 document.body.classList.add('android');
@@ -856,24 +896,29 @@ class Main {
         Notice.note('you-can-close-this-page-manually');
     }
     /** @param {Response} response */
-    async bluetoothProblemHandler(response) {
+    async handleBluetoothProblem(response) {
         // Not complete yet, it's different across other platforms
         let error_details = await response.json();
         if (
             error_details.name === 'org.bluez.Error.NotReady' ||
             error_details.name === 'org.freedesktop.DBus.Error.UnknownObject' ||
+            error_details.name === 'org.bluez.Error.NotReady' ||
             error_details.details.includes('not turned on') ||
             error_details.details.includes('WinError -2147020577')
         ) Notice.warn('please-enable-bluetooth');
         else if (
             error_details.details.includes('no running event loop')
         ) Notice.error('internal-error-please-see-terminal');
-        else throw new Error('Unknown Bluetooth Problem');
+        else
+            ErrorHandler.report(
+                new Error('API Failure'),
+                JSON.stringify(await response.json(), undefined, 4)
+            )
         return null;
     }
     async searchDevices() {
         Notice.wait('scanning-for-devices');
-        let search_result = await callApi('/devices', null, this.bluetoothProblemHandler);
+        let search_result = await callApi('/devices', null, this.handleBluetoothProblem);
         if (search_result === null) return false;
         let devices = search_result.devices;
         Array.from(this.deviceOptions.children).forEach(e => e.remove());
@@ -901,23 +946,18 @@ class Main {
             method: 'POST',
             body: this.canvasController.makePbm()
         }).then(async (response) => {
-            if (response.ok) Notice.note('finished')
-            else {
-                let json = response.json();
-                response.json = () => json;
-                let error_data = await response.json();
-                if (/address.+not found|Not connected/.test(error_data.details) ||
-                        error_data.name === 'EOFError') {
-                    if (await this.searchDevices()) this.print();
-                    else Notice.error('please-check-if-the-printer-is-down');
-                } else if (error_data.name === 'no-available-devices-found')
-                    Notice.warn('no-available-devices-found');
-                else
-                    ErrorHandler.report(
-                        new Error('API Failure'),
-                        JSON.stringify(await response.json(), undefined, 4)
-                    )
-            }
+            if (response.ok) { Notice.note('finished'); return; }
+            let json = response.json();
+            response.json = () => json;
+            let error_data = await response.json();
+            if (/address.+not found|Not connected/.test(error_data.details) ||
+                    error_data.name === 'EOFError') {
+                if (await this.searchDevices()) this.print();
+                else Notice.error('please-check-if-the-printer-is-down');
+            } else if (error_data.name === 'no-available-devices-found')
+                Notice.warn('no-available-devices-found');
+            else
+                this.handleBluetoothProblem(response);
         });
     }
 }

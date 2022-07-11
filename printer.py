@@ -635,7 +635,7 @@ def _main():
     parser.add_argument('-f', '--fake', metavar='XY01', type=str, default='',
             help=i18n('virtual-run-on-specified-model'))
     parser.add_argument('-m', '--dump', action='store_true',
-            help=i18n('dump-the-traffic'))
+            help=i18n('dump-traffic'))
     parser.add_argument('-n', '--nothing', action='store_true',
             help=i18n('do-nothing'))
 

@@ -91,7 +91,7 @@
     "contributors": "Contributors",
     "developer": "Developer",
     "translator": "Translator",
-    "all-testers-and-users": "All testers & users",
+    "all-users-and-developers": "All users & developers",
     "everyone-is-awesome": "Everyone is awesome!",
     "license": "License",
     "exiting": "Exiting…",
@@ -132,7 +132,6 @@
     "text-font": "Font",
     "text-size": "Size",
     "enter-text": "Enter text",
-    "wrap-by-space": "Wrap words by spaces",
     "wrap-text": "Wrap text",
     "you-can-see-all-javascript-programs-used": "You can see all JavaScript programs used along with this application are Free Software.",
     "javascript-resource": "Resource",
@@ -149,5 +148,11 @@
     "javascript-accessibilityjs-description": "Accessibility features",
     "javascript-catprinter-description": "The main script for Cat-Printer",
     "free-software": "Free Software",
-    "free-software-description": "Software which respects your computing freedom."
+    "free-software-description": "Software which respects your computing freedom.",
+    "wrap-words-by-spaces": "Wrap words by spaces",
+    "minor-tweaks": "Minor Tweaks",
+    "serif": "Serif",
+    "sans-serif": "Sans Serif",
+    "monospace": "Monospace",
+    "rotate-image": "Rotate Image"
 }
