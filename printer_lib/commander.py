@@ -137,7 +137,7 @@ class Commander(metaclass=ABCMeta):
 
     def set_energy(self, amount: int):
         ''' Set thermal energy, max to `0xffff`
-            By default, it's seems around `0x3000`, aka 1 / 5.
+            By default, it's seems around `0x3000` (1 / 5)
         '''
         self.send( self.make_command(0xaf, int_to_bytes(amount)) )
 

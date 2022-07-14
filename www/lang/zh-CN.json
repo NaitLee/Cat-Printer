@@ -128,5 +128,7 @@
     "serif": "衬线字体",
     "sans-serif": "无衬线字体",
     "monospace": "等宽字体",
-    "rotate-image": "旋转图像"
+    "rotate-image": "旋转图像",
+    "test-unknown-device": "测试未知设备",
+    "now-will-scan-for-all-bluetooth-devices-nearby": "现在将搜索附近所有设备。"
 }

@@ -1,0 +1,12 @@
+{
+  "extends": "assemblyscript/std/assembly.json",
+  "include": [
+    "./**/*.ts"
+  ],
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "outDir": "../www/",
+    "module": "None",
+    "declaration": true
+  }
+}

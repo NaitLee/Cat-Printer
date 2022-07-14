@@ -184,3 +184,15 @@ Tried to "fix" it, used at least 4 hours, finally found it's a matter of didn't 
 So the Internet JavaScript memes are damned true.
     https://programmerhumor.io/javascript-memes/why-is-it-like-this-2/
     https://programmerhumor.io/javascript-memes/sorry-dad-_-2/
+
+14th
+
+... How silly is the above approach. This time I simply changed to Uint32Array. That became much more trivial.
+
+So, I've re-written the image processing "lib". I wanted to go for WebAssembly (with AssemblyScript), so made it separate (in dir `wasm`).
+After finish, it really worked -- but it's ~100% slower than the equivalent JavaScript (`asc` versus `tsc`)
+And that may involve unacceptable change to scripting structure (ESModule etc.), thus Wasm was given up.
+But hey, in this rewrite some algorithm practial overhead was removed, thus much more efficient! Enjoy the blazing speed!
+
+In main.js the event handler was reworked too. No more double event dispatches.
+Thanks to this, another image processing performance problem is fixed.

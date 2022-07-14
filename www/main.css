@@ -36,6 +36,7 @@ body {
     margin: 1em 0;
     user-select: none;
 }
+body, .shade { transition: background-color calc(var(--anim-time) * 2) ease-in; }
 * {
     box-sizing: border-box;
 }
@@ -179,7 +180,7 @@ main, header, footer {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
-    overflow-x: hidden;
+    /* overflow-x: hidden; */ /* this causes sticky position not work */
 }
 .canvas-side {
     flex-grow: 0;
@@ -203,6 +204,13 @@ main, header, footer {
     border: var(--border) solid var(--fore-color);
     border-bottom: none;
     margin-top: var(--span);
+}
+.canvas-side>.buttons {
+    position: sticky;
+    bottom: 0;
+    padding: var(--span) 0;
+    background-color: var(--back-color);
+    z-index: 1;
 }
 .compact-menu {
     display: flex;
@@ -300,6 +308,9 @@ input[type="range"] {
 #hidden, .hard-hidden {
     display: none;
 }
+#hint-tab-control {
+    position: relative;
+}
 #error-record {
     font-family: 'DejaVu Sans Mono', 'Consolas', monospace;
     width: 100%;
@@ -378,7 +389,7 @@ iframe#frame {
 #dialog>.content {
     max-width: 100%;
     width: 42em;
-    max-height: 80vh;
+    max-height: 100vh;
     margin: 12vh auto;
     border: var(--border) solid var(--fore-color);
     transition: transform var(--anim-time) var(--curve);
@@ -391,18 +402,18 @@ iframe#frame {
     transform: scaleY(0);
 }
 #dialog-content {
-    max-height: 60vh;
     margin: auto;
     padding: var(--span-double);
     padding-bottom: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    max-height: calc(76vh - 1em);
+    overflow-y: auto;
 }
 #dialog-choices {
     margin: auto;
     padding: var(--span);
     padding-top: 0;
+    position: sticky;
+    bottom: 0;
 }
 #choice-input {
     max-width: 100%;
@@ -412,13 +423,12 @@ iframe#frame {
     text-align: initial;
     display: flex;
     flex-direction: row;
-}
-#accessibility>*:nth-child(1) {
-    flex-grow: 1;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 #select-language {
     /* width: calc(100% - var(--span-double)); */
-    width: 12em;
+    width: 100%;
     height: 8em;
     border: var(--border) solid var(--fore-color);
     padding: var(--span);
@@ -430,9 +440,11 @@ iframe#frame {
 #select-language option:hover {
     text-decoration: underline;
 }
-#accessibility>*:nth-child(2) {
-    flex-grow: 1;
+#accessibility>* {
+    flex-grow: 0;
+    min-width: 16em;
     white-space: nowrap;
+    margin: 1em;
 }
 @keyframes jump {
     0% { transform: translateY(0); }
@@ -542,14 +554,7 @@ a {
     }
     .canvas-side>.buttons,
     .menu-side>.buttons {
-        position: sticky;
-        bottom: var(--span);
         width: 100%;
-        z-index: 1;
-    }
-    .canvas-side>.buttons button,
-    .menu-side>.buttons button {
-        background-color: var(--back-color);
     }
     #control-overlay {
         width: 100%;
@@ -590,7 +595,7 @@ a {
         height: var(--compact-menu-height);
     }
 }
-@media (max-width: 384px) {
+@media (max-width: 385px) {
     #preview, #canvas, #control-overlay, .canvas-side>* {
         width: 100%;
         border: none;
@@ -607,19 +612,17 @@ a {
 
 @media (prefers-color-scheme: dark) {
     :root { --fore-color: #eee; --back-color: #333; --shade: rgba(51, 51, 51, 0.5); }
-    body, .shade { transition: background-color calc(var(--anim-time) * 2) ease-in; }
     a:link, a:visited { color: #66f; }
     a:hover, a:active { color: #77f; }
     .canvas-group, .logo { filter: brightness(0.6); }
     #control-overlay { background-color: var(--shade); }
 }
 /* so silly... */
-body.dark { --fore-color: #eee; --back-color: #333; --shade: rgba(51, 51, 51, 0.5); }
-body.dark, .shade { transition: background-color calc(var(--anim-time) * 2) ease-in; }
-body.dark a:link, body.dark a:visited { color: #66f; }
-body.dark a:hover, body.dark a:active { color: #77f; }
-body.dark .canvas-group, body.dark .logo { filter: brightness(0.6); }
-body.dark #control-overlay { background-color: var(--shade); }
+body.dark-theme { --fore-color: #eee; --back-color: #333; --shade: rgba(51, 51, 51, 0.5); }
+body.dark-theme a:link, body.dark-theme a:visited { color: #66f; }
+body.dark-theme a:hover, body.dark-theme a:active { color: #77f; }
+body.dark-theme .canvas-group, body.dark-theme .logo { filter: brightness(0.6); }
+body.dark-theme #control-overlay { background-color: var(--shade); }
 @media (prefers-reduced-motion) {
     body *,
     body *::before,

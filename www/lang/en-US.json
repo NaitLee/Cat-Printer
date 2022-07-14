@@ -137,5 +137,7 @@
     "serif": "Serif",
     "sans-serif": "Sans Serif",
     "monospace": "Monospace",
-    "rotate-image": "Rotate Image"
+    "rotate-image": "Rotate Image",
+    "test-unknown-device": "Test Unknown Device",
+    "now-will-scan-for-all-bluetooth-devices-nearby": "Now will scan for all bluetooth devices nearby."
 }
