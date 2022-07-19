@@ -133,12 +133,15 @@ All other parts, except which have special statements, are in Public Domain (`CC
 
 --------
 
-## Development
+## Contribution
 
-You may interested in language support, anyway. See the translation files in directory `www/lang` and `readme.i18n`!
-Note: you can correct some mistakes in them, if there are any. Also feel free to make it (truly) better!
+You may interested in language support, anyway. There are translation files in directory `www/lang` and `readme.i18n/`!
 
-Also interested in code development? See [development.md](development.md)!
+You can correct mistakes here/there, if there are any. Also feel free to make it (truly) better!
+
+Also interested in code development? See [CONTRIBUTING.md](CONTRIBUTING.md) and [development.md](development.md)!
+
+After that, give yourself a credit in `www/about.html`, if you prefer.
 
 ### Credits
 

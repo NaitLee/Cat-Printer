@@ -59,9 +59,11 @@ body.android .hide-on-android {
     transition-timing-function: ease-out;
 }
 button, input[type="number"], input[type="text"], select,
-#dialog>.shade, #dialog>.content,
-#canvas {
+#dialog>.shade, #dialog>.content, #canvas {
     transition-timing-function: cubic-bezier(.08,.82,.17,1);
+}
+#dialog>.shade {
+    transition-duration: calc(var(--anim-time) / 2);
 }
 a {
     transition: color var(--anim-time) ease-out;

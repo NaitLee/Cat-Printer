@@ -452,7 +452,7 @@ class CanvasController {
                       threshold,
                       this.transparentAsWhite
                   )
-                : this.grayscaleCache).slice();
+                : this.grayscaleCache).slice(0);
         /** @type {Uint8ClampedArray} */
         let result;
         switch (this.algorithm) {
@@ -475,6 +475,7 @@ class CanvasController {
         let before = document.createElement('canvas');
         let b_ctx = before.getContext('2d');
         let img = document.getElementById('img');
+        img.src = ''; // trigger some dumb browser
         img.src = url;
         img.addEventListener('load', () => {
             let canvas = this.canvas;
@@ -631,11 +632,15 @@ class CanvasController {
     }
 }
 
+/** Global variable indicating current language */
+var language = navigator.language;
+
 /** @param {Document} doc */
 function applyI18nToDom(doc) {
     doc = doc || document;
     let elements = doc.querySelectorAll('*[data-i18n]');
     let i18n_data, translated_string;
+    doc.querySelector('html').lang = language;
     elements.forEach(element => {
         i18n_data = element.getAttribute('data-i18n');
         translated_string = i18n(i18n_data);
@@ -652,10 +657,10 @@ async function initI18n(current_language) {
     /** @type {{ [code: string]: string }} */
     let list = await fetch('/lang/list.json').then(r => r.json());
     let use_language = async (value) => {
-        i18n.useLanguage(value);
+        language = value;
+        i18n.useLanguage(language);
         i18n.add(value, await fetch(`/lang/${value}.json`).then(r => r.json()), true);
         applyI18nToDom();
-        document.querySelector('html').lang = value;
     }
     language_select.addEventListener('change', () => use_language(language_select.value));
     for (let code in list) {
