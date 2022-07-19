@@ -15,7 +15,6 @@
     --fore-color: #111;
     --back-color: #eee;
     --canvas-back: #fff;
-    --curve: cubic-bezier(.08,.82,.17,1);
     --panel-height: 20em;
     --target-color: rgba(0, 255, 255, 0.2);
     --notice-wait: rgba(0, 128, 255, 0.2);
@@ -24,6 +23,19 @@
     --notice-error: rgba(255, 0, 0, 0.2);
     --shade: rgba(238, 238, 238, 0.5);
 }
+@media (prefers-color-scheme: dark) {
+    :root { --fore-color: #eee; --back-color: #333; --shade: rgba(51, 51, 51, 0.5); }
+    a:link, a:visited { color: #66f; }
+    a:hover, a:active { color: #77f; }
+    .canvas-group, .logo { opacity: 0.6; }
+    #control-overlay { background-color: var(--shade); }
+}
+/* so silly... */
+body.dark-theme { --fore-color: #eee; --back-color: #333; --shade: rgba(51, 51, 51, 0.5); }
+body.dark-theme a:link, body.dark-theme a:visited { color: #66f; }
+body.dark-theme a:hover, body.dark-theme a:active { color: #77f; }
+body.dark-theme .canvas-group, body.dark-theme .logo { opacity: 0.6; }
+body.dark-theme #control-overlay { background-color: var(--shade); }
 
 body {
     border: none;
@@ -36,12 +48,23 @@ body {
     margin: 1em 0;
     user-select: none;
 }
-body, .shade { transition: background-color calc(var(--anim-time) * 2) ease-in; }
-* {
-    box-sizing: border-box;
-}
 body.android .hide-on-android {
     display: none;
+}
+* {
+    box-sizing: border-box;
+    transition-property: background-color, transform,/* box-shadow,*/ flex-grow, opacity;
+    transition-delay: 0s;
+    transition-duration: var(--anim-time);
+    transition-timing-function: ease-out;
+}
+button, input[type="number"], input[type="text"], select,
+#dialog>.shade, #dialog>.content,
+#canvas {
+    transition-timing-function: cubic-bezier(.08,.82,.17,1);
+}
+a {
+    transition: color var(--anim-time) ease-out;
 }
 .selectable {
     user-select: all;
@@ -84,7 +107,6 @@ button, input[type="number"], input[type="text"], select {
     margin: var(--span-half) var(--span);
     border: var(--border) solid var(--fore-color);
     padding: var(--span-half) var(--span);
-    transition: all var(--anim-time) var(--curve);
     cursor: pointer;
     min-width: 6em;
     line-height: calc(var(--font-size) + var(--span));
@@ -219,9 +241,7 @@ main, header, footer {
     background-color: var(--back-color);
 }
 .compact-button {
-    width: max-content;
     height: var(--compact-menu-height);
-    flex-grow: 1;
     line-height: var(--compact-menu-height);
     text-align: center;
     cursor: pointer;
@@ -230,12 +250,11 @@ main, header, footer {
     border-bottom: var(--border) solid transparent;
     padding: 0;
     margin: 0;
+    flex-grow: 1;
 }
 .compact-button:hover {
     transform: unset;
-    margin: 0;
-    padding: 0 var(--span) calc(var(--span-double));
-    min-width: 6em;
+    flex-grow: 1.2;
 }
 .compact-button.active {
     border: var(--border) solid var(--fore-color);
@@ -253,7 +272,6 @@ main, header, footer {
 #canvas {
     position: absolute;
     opacity: 0;
-    transition: opacity var(--anim-time) var(--curve);
     z-index: 1;
 }
 #canvas:hover {
@@ -384,7 +402,6 @@ iframe#frame {
     text-align: center;
     z-index: 2;
     opacity: 1;
-    transition: opacity var(--anim-time) var(--curve);
 }
 #dialog>.content {
     max-width: 100%;
@@ -392,7 +409,6 @@ iframe#frame {
     max-height: 100vh;
     margin: 12vh auto;
     border: var(--border) solid var(--fore-color);
-    transition: transform var(--anim-time) var(--curve);
     transform-origin: center 33%;
 }
 #dialog.hidden {
@@ -464,7 +480,7 @@ iframe#frame {
     text-align: center;
     z-index: 3;
     opacity: 1;
-    transition: opacity var(--anim-time) var(--curve);
+    transition-duration: 0.2s;
 }
 .logo {
     background-image: url('icon.svg');
@@ -519,9 +535,6 @@ iframe#frame {
     transform: translate(-1em, calc(var(--font-size) * -1));
 }
 
-a {
-    transition: all var(--anim-time) ease-out;
-}
 @keyframes delay-scrollable {
     from { overflow: hidden; }
     to { overflow: auto; }
@@ -603,44 +616,26 @@ a {
     }
 }
 
-/* @media (min-resolution: 120dpi) {
-    :root { --font-size: calc(1.2rem * var(--dpi-zoom)); }
-}
-@media (min-resolution: 144dpi) {
-    :root { --font-size: calc(1.2rem * var(--dpi-zoom) * var(--dpi-zoom)); }
-} */
-
-@media (prefers-color-scheme: dark) {
-    :root { --fore-color: #eee; --back-color: #333; --shade: rgba(51, 51, 51, 0.5); }
-    a:link, a:visited { color: #66f; }
-    a:hover, a:active { color: #77f; }
-    .canvas-group, .logo { filter: brightness(0.6); }
-    #control-overlay { background-color: var(--shade); }
-}
-/* so silly... */
-body.dark-theme { --fore-color: #eee; --back-color: #333; --shade: rgba(51, 51, 51, 0.5); }
-body.dark-theme a:link, body.dark-theme a:visited { color: #66f; }
-body.dark-theme a:hover, body.dark-theme a:active { color: #77f; }
-body.dark-theme .canvas-group, body.dark-theme .logo { filter: brightness(0.6); }
-body.dark-theme #control-overlay { background-color: var(--shade); }
 @media (prefers-reduced-motion) {
     body *,
     body *::before,
     body *::after {
-        transition-duration: 0ms !important;
-        transition: none;
-        animation-timing-function: steps(1);
-        animation-duration: 0ms !important;
+        transition-duration: 0s !important;
+        animation-duration: 0s !important;
+        transition-timing-function: steps(1) !important;
+        animation-timing-function: steps(1) !important;
     }
 }
-/* but i have no way... */
+body.no-animation,
+body.hard-animation,
 body.no-animation *,
+body.hard-animation *:not(#loading-screen, #loading-screen *),
 body.no-animation *::before,
 body.no-animation *::after {
-    transition-duration: 0ms !important;
-    transition: none;
-    animation-timing-function: steps(1);
-    animation-duration: 0ms !important;
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+    transition-timing-function: steps(1) !important;
+    animation-timing-function: steps(1) !important;
 }
 
 body.large-font,
@@ -670,7 +665,7 @@ body.high-contrast {
 }
 body.high-contrast .shade { transition-duration: 0s; opacity: 1; }
 /* body.high-contrast * { background-color: var(--back-color); } */
-body.high-contrast .logo, body.high-contrast .canvas-group { filter: unset !important; }
+body.high-contrast .logo, body.high-contrast .canvas-group { opacity: 1 !important; }
 body.high-contrast #notice * { border: var(--border) dashed var(--fore-color); }
 body.high-contrast a:any-link { color: #00f; }
 body.high-contrast #control-overlay { background-color: var(--shade); }

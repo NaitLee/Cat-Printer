@@ -655,6 +655,7 @@ async function initI18n(current_language) {
         i18n.useLanguage(value);
         i18n.add(value, await fetch(`/lang/${value}.json`).then(r => r.json()), true);
         applyI18nToDom();
+        document.querySelector('html').lang = value;
     }
     language_select.addEventListener('change', () => use_language(language_select.value));
     for (let code in list) {
@@ -828,6 +829,7 @@ class Main {
             }
             if (typeof initKeyboardShortcuts === 'function') initKeyboardShortcuts();
             // this.searchDevices();
+            document.body.classList.remove('hard-animation');
             document.querySelector('main').classList.remove('hard-hidden');
             document.getElementById('loading-screen').classList.add('hidden');
             resolve();
