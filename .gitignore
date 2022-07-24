@@ -7,6 +7,8 @@ www/main.comp.js
 www/vconsole.js
 # https://github.com/delight-im/Android-AdvancedWebView
 build-android/advancedwebview
+# cd wasm && npm install
+wasm/node_modules
 # python bytecode
 *.pyc
 # releases

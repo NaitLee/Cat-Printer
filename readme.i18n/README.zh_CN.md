@@ -3,17 +3,14 @@
 
 🐱🖨 猫咪打印机：此应用*跨平台地*对一些蓝牙“喵喵机”提供支持！
 
-[![cat-printer-poster](https://repository-images.githubusercontent.com/403563361/ad018f6e-3a6e-4028-84b2-205f7d35c22b)](https://repository-images.githubusercontent.com/403563361/ad018f6e-3a6e-4028-84b2-205f7d35c22b)
+[![cat-printer-poster](https://repository-images.githubusercontent.com/403563361/93e32942-856c-4552-a8b0-b03c0976a3a7)](https://repository-images.githubusercontent.com/403563361/93e32942-856c-4552-a8b0-b03c0976a3a7)
 
 ## 型号
 
-目前有：
+已知支持：`GB0X, GT01, YT01` （`X` 表示任意数字）
 
-|    |    |
-|----|----|
-| 已知支持 | `GB0X, GT01, YT01`  |
-
-\* `X` 表示任意数字
+可在 Web 界面测试未列出的型号。在 `设置 -> 测试未知设备`  
+有概率成功！
 
 ## 特性
 
@@ -60,10 +57,14 @@
 应用可能请求“后台位置”权限，您可以拒绝它。  
 （前台）位置权限是较新版安卓系统扫描蓝牙设备所需要的。
 
+建议将扫描时间设为 1 秒。
+
 ### Windows
 
 获取名称中有 "windows" 的版本，  
 解压并运行 `start.bat`
+
+Windows 通常需要较长的扫描时间。默认为 4 秒，可按需调整。
 
 ### GNU/Linux
 
@@ -71,6 +72,8 @@
 ```bash
 python3 server.py
 ```
+
+建议将扫描时间设为 2 秒。
 
 在 Arch Linux 等发行版您可能需要首先安装 `bluez`  
 ```bash
@@ -130,13 +133,17 @@ Copyright © 2021-2022 NaitLee Soft. 保留一些权利。
 
 ## 开发
 
-您可能对翻译工作感兴趣。可于目录 `www/lang` 和 `readme.i18n` 中查看翻译文件！
+您可能对翻译工作感兴趣。可于目录 `www/lang` 和 `readme.i18n/` 中查看翻译文件！
 
 注：
-1. 通常英语与简体中文同时更新。请考虑其他，如繁体中文（需注意在繁体中与简体的用字、技术术语差别）。  
-2. 如果（真的）有能力，您也可以纠正/改善某些翻译！
+1. 通常英语与简体中文同时更新。请考虑其他，如繁体中文（需注意在繁体中与简体的用字、技术术语差别）。
+2. 目前使用 [OpenCC](https://github.com/BYVoid/OpenCC) 转换简体到繁体（臺灣正體）。若有不当之处，请指出。  
+  当前仅转换程序界面语言、暂不转换文档。
+3. 如果（真的）有能力，您也可以纠正/改善某些翻译！
 
 还想写代码？看看 [development.md](development.md)！（英文）
+
+那之后，可以将您的贡献概括添加至 `www/about.html`
 
 ### 鸣谢
 

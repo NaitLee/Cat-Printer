@@ -270,7 +270,7 @@ class PrinterDriver(Commander):
     model: Model = None
     'The printer model'
 
-    scan_timeout: float = 4.0
+    scan_time: float = 4.0
 
     connection_timeout : float = 5.0
 
@@ -351,15 +351,19 @@ class PrinterDriver(Commander):
             self.device.start_notify(self.rx_characteristic, notify)
         )
 
-    def scan(self, identifier: str=None, *, use_result=False):
+    def scan(self, identifier: str=None, *, use_result=False, everything=False):
         ''' Scan for supported devices, optionally filter with `identifier`,
             which can be device model (bluetooth name), and optionally MAC address, after a comma.
             If `use_result` is True, connect to the first available device to driver instantly.
+            If `everything` is True, return all bluetooth devices found.
             Note: MAC address doesn't work on Apple MacOS. In place with it,
             You need an UUID of BLE device dynamically given by MacOS.
         '''
         if self.fake:
-            return
+            return []
+        if everything:
+            devices = self.loop(BleakScanner.discover(self.scan_time))
+            return devices
         if identifier:
             if identifier.find(',') != -1:
                 name, address = identifier.split(',')
@@ -370,12 +374,12 @@ class PrinterDriver(Commander):
                 if use_result:
                     self.connect(name, address)
                 return [BLEDevice(address, name)]
-            elif (identifier not in Models and
+            if (identifier not in Models and
                 identifier[2::3] != ':::::' and len(identifier.replace('-', '')) != 32):
                 error('model-0-is-not-supported-yet', identifier, exception=PrinterError)
         # scanner = BleakScanner()
         devices = [x for x in self.loop(
-            BleakScanner.discover(self.scan_timeout)
+            BleakScanner.discover(self.scan_time)
         ) if x.name in Models]
         if identifier:
             if identifier in Models:
@@ -397,7 +401,7 @@ class PrinterDriver(Commander):
             self.scan(identifier, use_result=True)
         if self.device is None and not self.fake:
             error('no-available-devices-found', exception=PrinterError)
-        if mode == 'pbm' or mode == 'default':
+        if mode in ('pbm', 'default'):
             printer_data = PrinterData(self.model.paper_width, file)
             self._print_bitmap(printer_data)
         elif mode == 'text':
@@ -443,7 +447,7 @@ class PrinterDriver(Commander):
         if self.quality:    # well, slower makes stable heating
             self.set_speed(self.quality)
         if self.energy is not None:
-            self.set_energy(self.energy * 0xff)
+            self.set_energy(self.energy * 0x100)
         self.apply_energy()
         self.update_device()
         self.flush()
@@ -648,7 +652,7 @@ def _main():
     printer = PrinterDriver()
 
     scan_param = args.scan.split(',')
-    printer.scan_timeout = float(scan_param[0])
+    printer.scan_time = float(scan_param[0])
     identifier = ','.join(scan_param[1:])
     if args.energy is not None:
         printer.energy = int(args.energy * 0xff)

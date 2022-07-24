@@ -1,3 +1,4 @@
+
 `
 Cat-Printer: Web Frontend
 
@@ -205,62 +206,89 @@ async function callApi(path, body, errorPreHandler) {
         }
     });
 }
-/**
- * call addEventListener on all selected elements by `seletor`,
- * with each element itself as `this` unless specifyed `thisArg`,
- * with type `type` and a function `callback`.
- * If an element have attribute `data-default` or `checked`, dispatch event immediately on it.
- * You can of course assign resulting object to a variable for futher use.
- */
-class EventPutter {
-    elements;
-    callback;
-    /**
-     * @param {string} selector
-     * @param {string} type
-     * @param {(event?: Event) => void} callback
-     * @param {any} thisArg
-     */
-    constructor(selector, type, callback, thisArg) {
-        let elements = this.elements = document.querySelectorAll(selector);
-        if (elements.length === 0) return;
-        this.callback = callback;
-        elements.forEach(element => {
-            element.addEventListener(type, function(event) {
-                event.stopPropagation();
-                event.cancelBubble = true;
-                callback.call(thisArg || element, event);
-            });
-            if (element.hasAttribute('data-default') || element.checked) {
-                element.dispatchEvent(new Event(type));
-            }
-        });
-    }
-}
-/**
- * @param {string} selector
- * @param {string} type
- * @param {(event?: Event) => void} callback
- * @param {any} thisArg
- */
-function putEvent(selector, type, callback, thisArg) {
-    return new EventPutter(selector, type, callback, thisArg);
-}
 
-(function() {
+const Ev = (function() {
+    /** @type {Record<string, NodeListOf<HTMLElement>>} */
+    let map = {};
+    return {
+        /**
+         * Attach event & callback to elements selected by selector.
+         * @param {string} selector
+         * @param {string} type
+         * @param {(event?: Event) => void} callback
+         * @param {any} thisArg
+         */
+        put: function(selector, type, callback, thisArg) {
+            let elements = document.querySelectorAll(selector);
+            map[selector] = elements;
+            for (let e of elements) {
+                e.addEventListener(type, function(event) {
+                    event.stopPropagation();
+                    event.cancelBubble = true;
+                    callback.call(thisArg || e, event);
+                });
+                if (e.hasAttribute('data-default') || e.checked) {
+                    e.dispatchEvent(new Event(type));
+                }
+            }
+        },
+        /**
+         * Dispatch event to elements that are selected before with the same selector.
+         * Optionally set a value.
+         * @param {string} selector
+         * @param {string} type
+         * @param {{
+         *  event?: Event,
+         *  value?: string | number | boolean
+         * }} args
+         */
+        dispatch: function(selector, type, { event, value } = {}) {
+            if (map[selector] === undefined) return;
+            for (let e of map[selector]) {
+                if (value !== undefined)
+                    switch (e.type) {
+                        case 'checkbox':
+                            if (e.checked === !value) e.click();
+                            break;
+                        case 'radio':
+                            if (e.value === value) e.click();
+                            break;
+                        case 'text':
+                        case 'number':
+                        case 'range':
+                            e.value = value;
+                            break;
+                        default:
+                            if (e.value === value) e.click();
+                    }
+                else e.dispatchEvent(event || new Event(type));
+            }
+        }
+    };
+})();
+
+/**
+ * Open a panel
+ * @type {(id: string) => void}
+ */
+const Panel = (function() {
     let panels = document.querySelectorAll('.panel');
     let buttons = document.querySelectorAll('*[data-panel]');
-    panels.forEach(panel => {
+    let map = {};
+    for (let panel of panels) {
         let button = document.querySelector(`*[data-panel="${panel.id}"]`);
-        if (button) button.addEventListener('click', event => {
+        if (!button) continue;
+        button.addEventListener('click', event => {
             event.stopPropagation();
             panels.forEach(p => p.classList.remove('active'));
             buttons.forEach(b => b.classList.remove('active'));
             panel.classList.add('active');
             button.classList.add('active');
         });
+        map[panel.id] = button;
         if (panel.hasAttribute('data-default')) button.click();
-    });
+    }
+    return id => map[id]?.click();
 })();
 
 /**
@@ -273,33 +301,33 @@ class CanvasController {
     /** @type {HTMLCanvasElement} */
     canvas;
     imageUrl;
+    isImageNew;
+    // this costs most of the effort. cache it
+    /** @type {Uint8ClampedArray} */
+    grayscaleCache;
     algorithm;
-    algoElements;
     textFont;
     textSize;
     textArea;
     transparentAsWhite;
-    previewData;
+    previewPbm;
     rotate;
     #height;
     #threshold;
     #energy;
-    #thresholdRange;
-    #energyRange;
-    #rotateCheck;
     static defaultHeight = 384;
     static defaultThreshold = 256 / 3;
     get threshold() {
         return this.#threshold;
     }
     set threshold(value) {
-        this.#threshold = this.#thresholdRange.value = value;
+        Ev.dispatch('#threshold', 'change', { value: this.#threshold = value });
     }
     get energy() {
         return this.#energy;
     }
     set energy(value) {
-        this.#energy = this.#energyRange.value = value;
+        Ev.dispatch('#energy', 'change', { value: this.#energy = value });
     }
     get height() {
         return this.#height;
@@ -316,11 +344,11 @@ class CanvasController {
         this.textArea = document.getElementById("insert-text-area");
         this.wrapBySpace = document.querySelector('input[name="wrap-words-by-spaces"]');
         this.height = CanvasController.defaultHeight;
-        this.#thresholdRange = document.querySelector('[name="threshold"]');
-        this.#energyRange = document.querySelector('[name="energy"]');
         this.imageUrl = null;
         this.textAlign = "left";
         this.rotate = false;
+        this.isImageNew = true;
+        this.grayscaleCache = null;
         
         for (let elem of document.querySelectorAll("input[name=text-align]")){
             if (elem.checked) { this.textAlign = elem.value; }
@@ -351,47 +379,44 @@ class CanvasController {
         this.textArea.style["font-family"] = this.textFont.value;
         this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all";
 
-        this.algoElements = document.querySelectorAll('input[name="algo"]');
-
-        putEvent('input[name="algo"]', 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
-        putEvent('#insert-picture'   , 'click', () => this.useFiles(), this);
-        putEvent('#insert-text'   , 'click', () => Dialog.alert("#text-input", () => this.insertText(this.textArea.value)));
-        putEvent('#text-size'   , 'change', () => this.textArea.style["font-size"] = this.textSize.value + "px"); 
-        putEvent('#text-font'   , 'change', () => this.textArea.style["font-family"] = this.textFont.value); 
-        putEvent('input[name="text-align"]', 'change', (event) => {
-            this.textAlign = event.currentTarget.value
+        Ev.put('[name="algo"]'  , 'change', (event) => this.useAlgorithm(event.currentTarget.value), this);
+        Ev.put('#insert-picture', 'click' , () => this.useFiles(), this);
+        Ev.put('#insert-text'   , 'click' , () => Dialog.alert("#text-input", () => this.insertText(this.textArea.value)));
+        Ev.put('#text-size'     , 'change', () => this.textArea.style["font-size"] = this.textSize.value + "px"); 
+        Ev.put('#text-font'     , 'change', () => this.textArea.style["font-family"] = this.textFont.value); 
+        Ev.put('input[name="text-align"]', 'change', (event) => {
+            this.textAlign = event.currentTarget.value;
             this.textArea.style["text-align"] = this.textAlign;
         }, this);
-        putEvent('input[name="wrap-words-by-spaces"]'   , 'change', () => this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all");
-        putEvent('#button-preview'   , 'click', this.activatePreview , this);
-        putEvent('#button-reset'     , 'click', this.reset           , this);
-        putEvent('#canvas-expand'    , 'click', this.expand          , this);
-        putEvent('#canvas-crop'      , 'click', this.crop            , this);
-        putEvent('[name="rotate"]'   , 'change', e => this.setRotate(e.currentTarget.checked), this);
-        this.#rotateCheck = document.querySelector('[name="rotate"]');
+        Ev.put('input[name="wrap-words-by-spaces"]', 'change',
+            () => this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all");
+        Ev.put('#button-preview'   , 'click', this.activatePreview , this);
+        Ev.put('#button-reset'     , 'click', this.reset           , this);
+        Ev.put('#canvas-expand'    , 'click', this.expand          , this);
+        Ev.put('#canvas-crop'      , 'click', this.crop            , this);
+        Ev.put('[name="rotate"]'   , 'change', e => this.setRotate(e.currentTarget.checked), this);
 
-        putEvent('[name="threshold"]', 'change', (event) => {
+        Ev.put('[name="threshold"]', 'change', (event) => {
             this.threshold = parseInt(event.currentTarget.value);
+            // it's really new
+            this.isImageNew = true;
             this.activatePreview();
         }, this);
-        putEvent('[name="energy"]', 'change', (event) => {
+        Ev.put('[name="energy"]', 'change', (event) => {
             this.energy = parseInt(event.currentTarget.value);
             this.visualEnergy(this.energy);
         }, this);
-        putEvent('[name="transparent-as-white"]', 'change', (event) => {
+        Ev.put('[name="transparent-as-white"]', 'change', (event) => {
             this.transparentAsWhite = event.currentTarget.checked;
+            this.isImageNew = true;
             this.activatePreview();
         }, this);
     }
     useAlgorithm(name) {
-        for (let e of this.algoElements) {
-            e.checked = e.value === name;
-        }
         this.algorithm = name;
-        this.threshold = CanvasController.defaultThreshold;
-        this.#thresholdRange.dispatchEvent(new Event('change'));
-        this.energy = name == 'algo-direct' ? 96 : 64;
-        this.#energyRange.dispatchEvent(new Event('change'));
+        // Ev.dispatch('[name="algo"]', 'change', { value: name });
+        Ev.dispatch('[name="threshold"]', 'change', { value: CanvasController.defaultThreshold });
+        Ev.dispatch('[name="energy"]', 'change', { value: (name == 'algo-direct' ? 96 : 64) });
         this.activatePreview();
     }
     expand(length = CanvasController.defaultHeight) {
@@ -401,7 +426,6 @@ class CanvasController {
         // STUB
     }
     setRotate(value) {
-        this.#rotateCheck.checked = value;
         this.rotate = value;
         if (this.imageUrl !== null) this.putImage(this.imageUrl);
     }
@@ -414,87 +438,72 @@ class CanvasController {
     activatePreview() {
         if (!this.imageUrl) return;
         let preview = this.preview;
-        let t = Math.min(this.threshold, 255);
+        let threshold = Math.min(this.threshold, 255);
         let canvas = this.canvas;
         let w = canvas.width, h = canvas.height;
         preview.width = w; preview.height = h;
         let context_c = canvas.getContext('2d');
         let context_p = preview.getContext('2d');
-        let data = context_c.getImageData(0, 0, w, h);
-        let mono_data = new Uint8ClampedArray(w * h);
-        monoGrayscale(data.data, mono_data, w, h, t, this.transparentAsWhite);
+        let rgba_data = context_c.getImageData(0, 0, w, h);
+        let gray_data = (this.grayscaleCache =
+            this.isImageNew || !this.grayscaleCache
+                ? monoGrayscale(
+                      new Uint32Array(rgba_data.data.buffer),
+                      threshold,
+                      this.transparentAsWhite
+                  )
+                : this.grayscaleCache).slice(0);
+        /** @type {Uint8ClampedArray} */
+        let result;
         switch (this.algorithm) {
             case 'algo-direct':
-                monoDirect(mono_data, w, h, t);
+                result = monoDirect(gray_data, w, h);
                 break;
             case 'algo-steinberg':
-                monoSteinberg(mono_data, w, h, Math.floor(t / 2 - 64));
+                result = monoSteinberg(gray_data, w, h);
                 break;
             case 'algo-halftone':
-                // monoHalftone(mono_data, w, h, t);
-                // Sorry, do it later
-                break;
-            case 'algo-new':
-                monoNew(mono_data, w, h, t);
-                break;
-            case 'algo-new-h':
-                monoNewH(mono_data, w, h, Math.floor(t / 2 - 64));
-                break;
-            case 'algo-new-v':
-                monoNewV(mono_data, w, h, t);
-                break;
-            case 'algo-legacy':
-                monoLegacy(mono_data, w, h, t);
+                result = monoHalftone(gray_data, w, h);
                 break;
         }
-        let new_data = context_p.createImageData(w, h);
-        let p;
-        for (let i = 0; i < mono_data.length; i++) {
-            p = i * 4;
-            new_data.data.fill(mono_data[i], p, p + 3);
-            new_data.data[p + 3] = 255;
-        }
-        this.previewData = mono_data;
-        context_p.putImageData(new_data, 0, 0);
+        this.previewPbm = monoToPbm(result);
+        let rgba = new Uint8ClampedArray(monoToRgba(result).buffer);
+        context_p.putImageData(new ImageData(rgba, w, h), 0, 0);
+        this.isImageNew = false;
     }
     putImage(url) {
+        let before = document.createElement('canvas');
+        let b_ctx = before.getContext('2d');
         let img = document.getElementById('img');
+        img.src = ''; // trigger some dumb browser
         img.src = url;
         img.addEventListener('load', () => {
             let canvas = this.canvas;
             let ctx = canvas.getContext('2d');
             if (this.rotate) {
-                let intermediate_canvas = document.createElement('canvas');
-                /**
-                 *       w         h
-                 *    +------+   +---+
-                 *  h |      |   |   | w
-                 *    +------+   |   | intermediate_canvas
-                 *     canvas    +---+
-                 */
                 let w = canvas.width;
                 let h = this.height = Math.floor(canvas.width * img.width / img.height);
-                intermediate_canvas.width = h;
-                intermediate_canvas.height = w;
-                let i_ctx = intermediate_canvas.getContext('2d');
-                i_ctx.drawImage(img, 0, 0, h, w);
-                let i_data = i_ctx.getImageData(0, 0, h, w);
-                let data = ctx.createImageData(w, h);
-                for (let j = 0; j < h; j++) {
-                    for (let i = 0; i < w; i++) {
-                        for (let d = 0; d < 4; d++)
-                            data.data[(i * 4 + d)  +  (j * w * 4)] = i_data.data[(j * 4 + d)  +  ((w - i) * 4 * h)];
-                    }
-                }
+                before.width = h, before.height = w;
+                b_ctx.drawImage(img, 0, 0, h, w);
+                let data = new ImageData(
+                    new Uint8ClampedArray(
+                        rotateRgba(
+                            new Uint32Array(
+                                b_ctx.getImageData(0, 0, h, w).data.buffer
+                            ), w, h
+                        ).buffer
+                    ), w, h
+                );
                 ctx.putImageData(data, 0, 0);
             } else {
                 this.height = Math.floor(canvas.width * img.height / img.width);
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             }
             this.crop();
+            this.isImageNew = true;
             this.activatePreview();
             hint('#button-print');
-        });
+        }, { once: true });
     }
     useFiles(files) {
         const use_files = (files) => {
@@ -607,6 +616,7 @@ class CanvasController {
         let canvas = this.canvas;
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
         canvas.height = CanvasController.defaultHeight;
+        this.isImageNew = true;
         this.activatePreview();
         this.imageUrl = null;
         this.controls.classList.remove('hidden');
@@ -617,16 +627,20 @@ class CanvasController {
         }
     }
     makePbm() {
-        let blob = mono2pbm(this.previewData, this.preview.width, this.preview.height);
+        let blob = new Blob([`P4\n${this.canvas.width} ${this.canvas.height}\n`, this.previewPbm]);
         return blob;
     }
 }
+
+/** Global variable indicating current language */
+var language = navigator.language;
 
 /** @param {Document} doc */
 function applyI18nToDom(doc) {
     doc = doc || document;
     let elements = doc.querySelectorAll('*[data-i18n]');
     let i18n_data, translated_string;
+    doc.querySelector('html').lang = language;
     elements.forEach(element => {
         i18n_data = element.getAttribute('data-i18n');
         translated_string = i18n(i18n_data);
@@ -643,7 +657,8 @@ async function initI18n(current_language) {
     /** @type {{ [code: string]: string }} */
     let list = await fetch('/lang/list.json').then(r => r.json());
     let use_language = async (value) => {
-        i18n.useLanguage(value);
+        language = value;
+        i18n.useLanguage(language);
         i18n.add(value, await fetch(`/lang/${value}.json`).then(r => r.json()), true);
         applyI18nToDom();
     }
@@ -698,10 +713,10 @@ class Main {
     /** @type {CanvasController} */
     canvasController;
     deviceOptions;
+    testUnknownDevice;
     /** An object containing configuration, fetched from server */
     settings;
-    /** @type {{ [key: string]: EventPutter }} */
-    setters;
+    selectorMap;
     /**
      * There are race conditions in initialization query/set,
      * use this flag to avoid
@@ -709,78 +724,100 @@ class Main {
     allowSet;
     constructor() {
         this.allowSet = false;
+        this.testUnknownDevice = false;
         this.deviceOptions = document.getElementById('device-options');
         this.settings = {};
-        this.setters = {};
+        this.selectorMap = {};
         // window.addEventListener('unload', () => this.exit());
-        this.promise = new Promise(async (resolve, reject) => {
-            /** @type {HTMLIFrameElement} */
-            let iframe = document.getElementById('frame');
-            iframe.addEventListener('load', () => {
-                if (!iframe.contentWindow.NodeList.prototype.forEach)
-                    iframe.contentWindow.NodeList.prototype.forEach = NodeList.prototype.forEach;
-                iframe.contentDocument.body.classList.value = document.body.classList.value;
-                iframe.contentDocument.body.addEventListener('keyup', (event) => {
-                    if (event.key === 'Escape' || event.keyCode === 27) {
-                        document.body.dispatchEvent(
-                            new KeyboardEvent('keyup', { key: 'Escape', keyCode: 27 })
-                        );
-                    }
-                });
-                applyI18nToDom(iframe.contentDocument);
+        /** @type {HTMLIFrameElement} */
+        let iframe = document.getElementById('frame');
+        iframe.addEventListener('load', () => {
+            if (!iframe.contentWindow.NodeList.prototype.forEach)
+                iframe.contentWindow.NodeList.prototype.forEach = NodeList.prototype.forEach;
+            iframe.contentDocument.body.classList.value = document.body.classList.value;
+            iframe.contentDocument.body.addEventListener('keyup', (event) => {
+                if (event.key === 'Escape' || event.keyCode === 27) {
+                    document.body.dispatchEvent(
+                        new KeyboardEvent('keyup', { key: 'Escape', keyCode: 27 })
+                    );
+                }
             });
-            function apply_class(class_name, value) {
-                [document, iframe.contentDocument].forEach(d => value ?
-                    d.body.classList.add(class_name) :
-                    d.body.classList.remove(class_name)
-                );
-            }
+            applyI18nToDom(iframe.contentDocument);
+        });
 
+        this.canvasController = new CanvasController();
+
+        Ev.put('#button-exit'     , 'click', () => this.exit(false), this);
+        Ev.put('#button-print'    , 'click', this.print, this);
+        Ev.put('#device-refresh'  , 'click', this.searchDevices, this);
+        Ev.put('#button-exit'     , 'contextmenu', (event) => (event.preventDefault(), this.exit(true)), this);
+        Ev.put('#set-accessibility'   , 'click', () => Dialog.alert('#accessibility'));
+        Ev.put('a[target="frame"]', 'click', () => Dialog.alert('#frame'));
+        Ev.put('#test-unknown-device' , 'click', () => {
+            Dialog.alert(i18n('now-will-scan-for-all-bluetooth-devices-nearby'), null, true);
+            this.testUnknownDevice = true;
+            Panel('panel-print');
+            Hider.show('print');
+            this.searchDevices();
+        });
+
+        this.conf('#device-options', 'change', 'printer', 
+            (value) => callApi('/connect', { device: value })
+        );
+        this.conf('[name="algo"]'  , 'change', 'mono_algorithm',
+            (value) => this.settings['text_mode'] = (value === 'algo-direct')
+        );
+        this.conf('[name="dry-run"]', 'change', 'dry_run',
+            (checked) => checked && Notice.note('dry-run-test-print-process-only')
+        );
+
+        const apply_class = (class_name, value) => {
+            for (let d of [document, iframe.contentDocument])
+                value ? d.body.classList.add(class_name)
+                    : d.body.classList.remove(class_name);
+        };
+        // const toggle_class = (class_name) => (value) => apply_class(class_name, value);
+        const conf = (...keys) => {
+            for (let key of keys)
+                this.conf(
+                    '[name="' + key + '"]', 'change',
+                    key.replace(/-/g, '_')
+                );
+        };
+        const conf_class = (...keys) => {
+            for (let key of keys)
+                this.conf(
+                    '[name="' + key + '"]', 'change',
+                    key.replace(/-/g, '_'),
+                    value => apply_class(key, value)
+                );
+        };
+
+        conf(
+            'scan-time',
+            'rotate',
+            'transparent-as-white',
+            'wrap-words-by-spaces',
+            'threshold',
+            'energy',
+            'quality',
+            'flip'
+        );
+        conf_class(
+            'no-animation',
+            'large-font',
+            'force-rtl',
+            'dark-theme',
+            'high-contrast'
+        );
+
+        this.promise = new Promise(async (resolve, reject) => {
             await this.loadConfig();
             await initI18n(this.settings['language']);
-
-            this.canvasController = new CanvasController();
-            putEvent('#button-exit'     , 'click', () => this.exit(false), this);
-            putEvent('#button-print'    , 'click', this.print, this);
-            putEvent('#device-refresh'  , 'click', this.searchDevices, this);
-            putEvent('#button-exit'     , 'contextmenu', (event) => (event.preventDefault(), this.exit(true)), this);
-            putEvent('#set-accessibility', 'click', () => Dialog.alert('#accessibility'));
-            this.attachSetter('#device-options', 'input', 'printer', 
-                (value) => callApi('/connect', { device: value })
-            );
-            putEvent('a[target="frame"]', 'click', () => Dialog.alert('#frame'));
-            this.attachSetter('[name="scan-time"]'  , 'change', 'scan_timeout');
-            this.attachSetter('[name="rotate"]'     , 'change', 'rotate');
-            this.attachSetter('input[name="algo"]'  , 'change', 'mono_algorithm',
-                (value) => this.settings['text_mode'] = (value === 'algo-direct')
-            );
-            this.attachSetter('[name="transparent-as-white"]', 'change', 'transparent_as_white');
-            this.attachSetter('[name="wrap-words-by-spaces"]', 'change', 'wrap_by_space');
-            this.attachSetter('[name="dry-run"]', 'change', 'dry_run',
-                (checked) => checked && Notice.note('dry-run-test-print-process-only')
-            );
-            this.attachSetter('[name="no-animation"]', 'change', 'no_animation',
-                (checked) => apply_class('no-animation', checked)
-            );
-            this.attachSetter('[name="large-font"]', 'change', 'large_font',
-                (checked) => apply_class('large-font', checked)
-            );
-            this.attachSetter('[name="force-rtl"]', 'change', 'force_rtl',
-                (checked) => apply_class('force-rtl', checked)
-            );
-            this.attachSetter('[name="dark-theme"]', 'change', 'dark_theme',
-                (checked) => apply_class('dark', checked)
-            );
-            this.attachSetter('[name="high-contrast"]', 'change', 'high_contrast',
-                (checked) => apply_class('high-contrast', checked)
-            );
-            this.attachSetter('[name="threshold"]'  , 'change', 'threshold');
-            this.attachSetter('[name="energy"]'     , 'change', 'energy');
-            this.attachSetter('[name="quality"]'    , 'change', 'quality');
-            this.attachSetter('[name="flip"]'       , 'change', 'flip');
             await this.activateConfig();
+
             // one exception
-            this.attachSetter('#select-language', 'change', 'language');
+            this.conf('#select-language', 'change', 'language');
 
             if (this.settings['is_android']) {
                 document.body.classList.add('android');
@@ -789,6 +826,7 @@ class Main {
                 let select = document.getElementById('select-language');
                 Array.from(select.children).forEach(e => {
                     e.selected = false;
+                    e.addEventListener('click', () => this.set({ language: e.value }));
                     div.appendChild(e);
                 });
                 div.id = 'select-language';
@@ -796,6 +834,7 @@ class Main {
             }
             if (typeof initKeyboardShortcuts === 'function') initKeyboardShortcuts();
             // this.searchDevices();
+            document.body.classList.remove('hard-animation');
             document.querySelector('main').classList.remove('hard-hidden');
             document.getElementById('loading-screen').classList.add('hidden');
             resolve();
@@ -824,30 +863,9 @@ class Main {
         if (this.settings['first_run'])
             Dialog.alert('#accessibility', () => this.set({ first_run: false }));
         for (let key in this.settings) {
+            if (this.selectorMap[key] === undefined) continue;
             let value = this.settings[key];
-            if (this.setters[key] === undefined) continue;
-            // Set the *reasonable* value
-            this.setters[key].elements.forEach(element => {
-                switch (element.type) {
-                    case 'checkbox':
-                        element.checked = value;
-                        break;
-                    case 'radio':
-                        // Only dispatch on the selected one
-                        if (element.value !== value) return;
-                        element.checked = value;
-                        break;
-                    case 'text':
-                    case 'number':
-                    case 'range':
-                        element.value = value;
-                        break;
-                    default:
-                        if (element.value === value)
-                            element.click();
-                }
-                element.dispatchEvent(new Event('change'));
-            });
+            Ev.dispatch(this.selectorMap[key], 'change', { value: value });
         }
         this.allowSet = true;
         await this.set(this.settings);
@@ -857,8 +875,9 @@ class Main {
      * @param {string} attribute The setting to change, i.e. `this.setting[attribute] = value;`
      * @param {(value: any) => any} callback Optional additinal post-procedure to call, with a *reasonable* value as parameter
      */
-    attachSetter(selector, type, attribute, callback) {
-        this.setters[attribute] = putEvent(selector, type, event => {
+    conf(selector, type, attribute, callback) {
+        this.selectorMap[attribute] = selector;
+        Ev.put(selector, type, event => {
             event.stopPropagation();
             event.cancelBubble = true;
             let input = event.currentTarget;
@@ -918,10 +937,12 @@ class Main {
     }
     async searchDevices() {
         Notice.wait('scanning-for-devices');
-        let search_result = await callApi('/devices', null, this.handleBluetoothProblem);
+        let search_result = await callApi('/devices', {
+            everything: this.testUnknownDevice
+        }, this.handleBluetoothProblem);
         if (search_result === null) return false;
         let devices = search_result.devices;
-        Array.from(this.deviceOptions.children).forEach(e => e.remove());
+        for (let e of this.deviceOptions.children) e.remove();
         if (devices.length === 0) {
             Notice.note('no-available-devices-found');
             hint('#device-refresh');
@@ -929,13 +950,13 @@ class Main {
         }
         Notice.note('found-0-available-devices', [devices.length]);
         hint('#insert-picture');
-        devices.forEach(device => {
+        for (let device of devices) {
             let option = document.createElement('option');
             option.value = `${device.name},${device.address}`;
             option.innerText = `${device.name}-${device.address.slice(3, 5)}${device.address.slice(0, 2)}`;
             this.deviceOptions.appendChild(option);
-        });
-        this.deviceOptions.dispatchEvent(new Event('input'));
+        }
+        Ev.dispatch('#device-options', 'change');
         return true;
     }
     async print() {

@@ -4,17 +4,14 @@ English | [Deutsch](./readme.i18n/README.de_DE.md) | [简体中文](./readme.i18
 
 🐱🖨 A project that provides support to some Bluetooth "Cat Printer" models, on *many* platforms!
 
-[![cat-printer-poster](https://repository-images.githubusercontent.com/403563361/ad018f6e-3a6e-4028-84b2-205f7d35c22b)](https://repository-images.githubusercontent.com/403563361/ad018f6e-3a6e-4028-84b2-205f7d35c22b)
+[![cat-printer-poster](https://repository-images.githubusercontent.com/403563361/93e32942-856c-4552-a8b0-b03c0976a3a7)](https://repository-images.githubusercontent.com/403563361/93e32942-856c-4552-a8b0-b03c0976a3a7)
 
 ## Models
 
-Currently:
+Known to support: `GB0X, GT01, YT01` (`X` represents any digit)
 
-|    |    |
-|----|----|
-| Known to support | `GB0X, GT01, YT01`  |
-
-\* `X` represents any digit
+You can test other models with the Web UI, in `Settings -> Test Unknown Device`  
+It may work!
 
 ## Features
 
@@ -63,10 +60,14 @@ Get the newest apk release and install, then well done!
 It may ask for background location permission, you can deny it safely.  
 (Foreground) Location permission is required for scanning Bluetooth devices in newer Android system.
 
+Recommend to set scan time to 1 second.
+
 ### Windows
 
 Get the newest release archive with "windows" in the file name,  
 extract to somewhere and run `start.bat`
+
+Windows typically needs longer scan time. Defaults to 4 seconds, try to find your case.
 
 ### GNU/Linux
 
@@ -75,6 +76,7 @@ You can get the "pure" release, extract it, fire up a terminal and run:
 python3 server.py
 ```
 
+It is recommended to set the scan time to 2 seconds.
 On Arch Linux based distros you may first install `bluez`, as it may not be installled by default
 ```bash
 sudo pacman -S bluez bluez-utils
@@ -130,12 +132,15 @@ All other parts, except which have special statements, are in Public Domain (`CC
 
 --------
 
-## Development
+## Contribution
 
-You may interested in language support, anyway. See the translation files in directory `www/lang` and `readme.i18n`!
-Note: you can correct some mistakes in them, if there are any. Also feel free to make it (truly) better!
+You may interested in language support, anyway. There are translation files in directory `www/lang` and `readme.i18n/`!
 
-Also interested in code development? See [development.md](development.md)!
+You can correct mistakes here/there, if there are any. Also feel free to make it (truly) better!
+
+Also interested in code development? See [CONTRIBUTING.md](CONTRIBUTING.md) and [development.md](development.md)!
+
+After that, give yourself a credit in `www/about.html`, if you prefer.
 
 ### Credits
 

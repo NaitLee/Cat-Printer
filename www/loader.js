@@ -1,8 +1,10 @@
 `
-Copyright © 2021-2022 NaitLee Soft. No rights reserved.
+No rights reserved.
 
 License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
 `;
+
+window.exports = {};
 
 /**
  * Satisfy both development and old-old webView need

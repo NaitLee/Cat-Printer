@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="main.css" />
     <link rel="icon" href="icon.svg" />
 </head>
-<body>
+<body class="hard-animation">
     <main class="hard-hidden">
         <div class="menu-side">
             <h1 id="title" data-i18n="cat-printer">Cat Printer</h1>
@@ -19,7 +19,7 @@
                         <label for="device-options" data-i18n="device-">Device:</label>
                         <select id="device-options" data-key>
                         </select>
-                        <button id="device-refresh" data-i18n="refresh" data-key>Refresh</button>
+                        <button id="device-refresh" data-i18n="scan" data-key>Scan</button>
                         <hr />
                     </div>
                     <div class="input-group">
@@ -29,6 +29,10 @@
                                 <label>
                                     <input type="radio" name="algo" value="algo-steinberg" data-key checked />
                                     <span data-i18n="picture">Picture</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="algo" value="algo-halftone" data-key />
+                                    <span data-i18n="pattern">Pattern</span>
                                 </label>
                                 <label>
                                     <input type="radio" name="algo" value="algo-direct" data-key />
@@ -99,6 +103,7 @@
                         <span>🌎</span>
                         <span data-i18n="accessibility">Accessibility</span>
                     </button>
+                    <button id="test-unknown-device" data-i18n="test-unknown-device" data-key>Test Unknown Device</button>
                     <button class="hidden" data-panel="panel-error" data-i18n="error-message" data-key>Error Message</button>
                     <div class="center">
                         <button id="button-exit" data-i18n="exit" data-key>Exit</button>
@@ -156,6 +161,7 @@
                 <br />
                 <span id="hint-tab-control" class="hide-on-android"
                  data-i18n="to-enter-keyboard-mode-press-tab">To enter Keyboard Mode, press Tab</span>
+                <br />
             </div>
             <div>
                 <h2 data-i18n="layout">Layout</h2>

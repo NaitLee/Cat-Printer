@@ -49,6 +49,7 @@ mime_type = {
     'json': 'application/json;charset=utf-8',
     'png': 'image/png',
     'svg': 'image/svg+xml;charset=utf-8',
+    'wasm': 'application/wasm',
     'octet-stream': 'application/octet-stream'
 }
 def mime(url: str):
@@ -72,10 +73,10 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
 
     settings = DictAsObject({
         'config_path': 'config.json',
-        'version': 2,
+        'version': 3,
         'first_run': True,
         'is_android': False,
-        'scan_timeout': 4.0,
+        'scan_time': 4.0,
         'dry_run': False,
         'energy': 0.2
     })
@@ -193,11 +194,13 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
     def update_printer(self):
         'Update `PrinterDriver` state/config'
         self.printer.dry_run = self.settings.dry_run
-        self.printer.scan_timeout = self.settings.scan_timeout
+        self.printer.scan_time = self.settings.scan_time
         self.printer.fake = self.settings.fake
         self.printer.dump = self.settings.dump
-        self.printer.energy = self.settings.energy
-        self.printer.quality = self.settings.quality
+        if self.settings.energy is not None:
+            self.printer.energy = int(self.settings.energy)
+        if self.settings.quality is not None:
+            self.printer.quality = int(self.settings.quality)
         self.printer.flip_h = self.settings.flip_h or self.settings.flip
         self.printer.flip_v = self.settings.flip_v or self.settings.flip
         self.printer.rtl = self.settings.force_rtl
@@ -218,7 +221,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
             devices_list = [{
                 'name': device.name,
                 'address': device.address
-            } for device in self.printer.scan()]
+            } for device in self.printer.scan(everything=data.get('everything'))]
             self.api_success({
                 'devices': devices_list
             })
@@ -313,6 +316,7 @@ class PrinterServer(HTTPServer):
     def finish_request(self, request, client_address):
         if self.handler is None:
             self.handler = self.handler_class(request, client_address, self)
+            self.handler.load_config()
             with open(os.path.join('www', 'all_js.txt'), 'r', encoding='utf-8') as file:
                 for path in file.read().split('\n'):
                     if path != '':
