@@ -16,21 +16,25 @@
 
 ## Funktionen
 
-*Derzeit befindet sich die Software im Alpha-Stadium. Mehr wird es bald geben!*
+*Derzeit befindet sich die Software im Alpha-Stadium. Demnächst mehr!
 
 - Simple!
-  - Bedienung über eine Web-UI direkt im Browser,
-  - oder oder über die Android-App!
+  - Bedienung über eine Web-UI direkt im Browser
+   
+   oder 
+  - über die Android-App!
+
+
 
 - Friendly!
-  - Sprachunterstützung! Sie können sich an der Übersetzung beteiligen!
-  - Gute Benutzeroberfläche, mit PC-/Mobil-/Tag-/Nachtmodus-Varianten!
+  - Sprachunterstützung - beteiligen Sie sich an der Übersetzung!
+  - Benutzerfreundliche Oberfläche, für PC und Mobilgeräte mit Tag- und Nachtmodus
 
 - Plattformübergreifend!
   - Windows 10 oder höher
   - GNU/Linux
   - MacOS
-  - und eine Menge zusätzlicher Anstrengungen für Android!
+  - auch unter Android verfügbar!
 
 - Frei, wie in [Freiheit](https://www.gnu.org/philosophy/free-sw.de.html)!
   - Anders als die "offizielle" proprietäre App, ist dieses Projekt für alle, denen *offener Geist und Freiheit* wichtig sind!
@@ -42,7 +46,7 @@
 
 ### Android
 
-Installieren Sie sich einfach die neueste APK-Version und Sie können direkt loslegen. 
+Installieren Sie die neueste APK-Version und legen Sie direkt los. 
 
 Es kann sein, dass die App um Erlaubnis bittet, den Standort im Hintergrund zu abzufragen.  
 Dies ist Teil der Bluetooth Bibliothek und kann ohne Probleme abgelehnt werden.
@@ -53,12 +57,12 @@ Holen Sie sich die neueste Version des Archivs mit "windows" im Dateinamen, entp
 
 ### GNU/Linux
 
-Sie können sich die "reine(pure)" Version besorgen, sie extrahieren, ein Terminal starten und dies ausführen:  
+Holen Sie sich die neueste Version des Archivs mit "pure" im Dateinamen, entpacken Sie es an einen beliebigen Ort und führen Sie den folgenden Befehl aus:
 ```bash
 python3 server.py
 ```
 
-Auf Arch Linux basierten Distributionen sollten Sie zuerst `bluez` installieren, da es oft nicht standardmäßig installiert ist
+Auf Arch Linux basierten Distributionen sollten Sie zuerst `bluez` installieren, da es oft nicht standardmäßig installiert ist.
 ```bash
 sudo pacman -S bluez bluez-utils
 ```
@@ -67,7 +71,7 @@ sudo pacman -S bluez bluez-utils
 
 Für MacOS installieren Sie bitte [Python 3](https://www.python.org/).
 
-Holen Sie eine "reine(pure)" Version und tun Sie dasselbe in einer Shell wie bei Linux:  
+Laden Sie sich die "reine (pure)" Version herunter und führen Sie dieselben Schritte aus wie unter Linux:  
 ```bash
 python3 server.py
 ```
@@ -81,13 +85,13 @@ Alternativ können Sie auch folgenden Link verwenden: [Link](http://127.0.0.1:80
 
 Für alle unterstützten Plattformen können Sie auch die "pure" Edition verwenden, wenn Sie [Python 3](https://www.python.org/) installiert haben oder die "bare" Edition, wenn Sie schon `bleak` via `pip` installiert haben.
 
-Besuchen Sie die [Releases](https://github.com/NaitLee/Cat-Printer/releases)!
+Die aktuellste Version finden Sie unter [Releases](https://github.com/NaitLee/Cat-Printer/releases)!
 
 ## Probleme?
 
-Bitte öffnen Sie ein Issue, wenn Ihnen etwas auf dem Herzen liegt!
+Bitte [erstellen Sie eine Issue](https://github.com/NaitLee/Cat-Printer/issues), wenn Ihnen etwas auf dem Herzen liegt!
 
-Natürlich sind PRs willkommen!
+PRs natürlich sind willkommen!
 
 ## Lizenz
 
@@ -105,13 +109,15 @@ Siehe Datei `LICENSE` und Details zum verwendeten JavaScript in der Datei `www/j
 
 --------
 
-## Development
+## Weiterentwicklung
 
 Falls Sie an der Übersetzung in andere Sprachen interessiert sind, schauen Sie sich die Übersetzungsdateien in den Verzeichnissen `www/lang` und `readme.i18n` an!
 
-Interessieren Sie sich auch für Programmierung? Dann schauen Sie in [development.md](development.md) nach!
+Interessieren Sie sich auch für Programmierung? 
 
-### Credits
+Dann schauen Sie in [development.md](development.md) nach!
+
+### Mitwirkende
 
 - Natürlich Python und das Web!
 - [Bleak](https://bleak.readthedocs.io/en/latest/) Steuerung des Bluetooth Low Energy Protokolls! Der totale Retter!
@@ -124,4 +130,4 @@ Interessieren Sie sich auch für Programmierung? Dann schauen Sie in [developmen
   ... und mir etliche hilfreiche Ideen gegeben
 - Jeder, der über eine Issue, Pull Request oder Diskussion bei diesem Projekt mitgewirkt hat
 - Jeder, der freie Software zu schätzen weiß
-- ... Ihr seid alle Fanstastisch!
+- ... Ihr seid alle fanstastisch!
