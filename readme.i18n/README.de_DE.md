@@ -5,35 +5,38 @@
 
 [![cat-printer-poster](https://repository-images.githubusercontent.com/403563361/93e32942-856c-4552-a8b0-b03c0976a3a7)](https://repository-images.githubusercontent.com/403563361/93e32942-856c-4552-a8b0-b03c0976a3a7)
 
-## unterstützte Geräte
+## Unterstützte Geräte
 
-Gegenwärtig:
 
 |    |    |
 |----|----|
-| Supported | GB01, GB02, GT01, GB03  |
+| Untersützt | GB01, GB02, GT01, GB03  |
 <!-- | Maybe     | N/A | -->
 <!-- | Planned   | N/A | -->
 
 ## Funktionen
 
-*Derzeit befindet sich die Software im Alpha-Stadium. Mehr wird es bald geben!*
+*Derzeit befindet sich die Software im Alpha-Stadium. Demnächst mehr!
 
 - Simple!
-  - Bedienung über eine Web-UI direkt im Browser,
-  - oder besorgen Sie sich die Android-Version!
+  - Bedienung über eine Web-UI direkt im Browser
+   
+   oder 
+  - über die Android-App!
+
+
 
 - Friendly!
-  - Sprachunterstützung! Sie können sich an der Übersetzung beteiligen!
-  - Gute Benutzeroberfläche, mit PC-/Mobil-/Licht-/Dunkelmodus-Varianten! (Systemkonfiguration adaptiv)
+  - Sprachunterstützung - beteiligen Sie sich an der Übersetzung!
+  - Benutzerfreundliche Oberfläche, für PC und Mobilgeräte mit Tag- und Nachtmodus
 
 - Plattformübergreifend!
-  - Neuere Windows 10 und darüber
+  - Windows 10 oder höher
   - GNU/Linux
-  - MacOS *(muss getestet werden*
-  - und eine Menge zusätzlicher Anstrengungen für Android!
+  - MacOS
+  - auch unter Android verfügbar!
 
-- Frei, wie in [freedom](https://www.gnu.org/philosophy/free-sw.html)!
+- Frei, wie in [Freiheit](https://www.gnu.org/philosophy/free-sw.de.html)!
   - Anders als die "offizielle" proprietäre App, ist dieses Projekt für alle, denen *offener Geist und Freiheit* wichtig sind!
 
 - und Fun!
@@ -43,10 +46,10 @@ Gegenwärtig:
 
 ### Android
 
-Holen Sie sich die neueste apk-Version und installieren Sie sie. 
+Installieren Sie die neueste APK-Version und legen Sie direkt los. 
 
-Es kann sein, dass es um die Erlaubnis bittet, den Standort im Hintergrund zu finden, was mir ein Rätsel ist.  
-Sie können es sicher verweigern.
+Es kann sein, dass die App um Erlaubnis bittet, den Standort im Hintergrund zu abzufragen.  
+Dies ist Teil der Bluetooth Bibliothek und kann ohne Probleme abgelehnt werden.
 
 ### Windows
 
@@ -54,12 +57,12 @@ Holen Sie sich die neueste Version des Archivs mit "windows" im Dateinamen, entp
 
 ### GNU/Linux
 
-Sie können sich die "reine(pure)" Version besorgen, sie extrahieren, ein Terminal starten und dies ausführen:  
+Holen Sie sich die neueste Version des Archivs mit "pure" im Dateinamen, entpacken Sie es an einen beliebigen Ort und führen Sie den folgenden Befehl aus:
 ```bash
 python3 server.py
 ```
 
-Auf Arch Linux basierten Distributionen sollten Sie zuerst `bluez` installieren, da es oft fehlt  
+Auf Arch Linux basierten Distributionen sollten Sie zuerst `bluez` installieren, da es oft nicht standardmäßig installiert ist.
 ```bash
 sudo pacman -S bluez bluez-utils
 ```
@@ -68,25 +71,27 @@ sudo pacman -S bluez bluez-utils
 
 Für MacOS installieren Sie bitte [Python 3](https://www.python.org/).
 
-Holen Sie eine "reine(pure)" Version und tun Sie dasselbe in einer Shell wie bei Linux:  
+Laden Sie sich die "reine (pure)" Version herunter und führen Sie dieselben Schritte aus wie unter Linux:  
 ```bash
 python3 server.py
 ```
 
-Auf dem Mac öffnet sich der Browser derzeit nicht automatisch. Bitte starten Sie einen Browser manuell und gehen Sie zu `http://127.0.0.1:8095`. Dieser Link sollte auch funktionieren: [der Link](http://127.0.0.1:8095)
+Auf dem Mac öffnet sich der Browser derzeit nicht automatisch. Bitte starten Sie einen Browser manuell und navigieren Sie zu `http://127.0.0.1:8095`. 
+
+Alternativ können Sie auch folgenden Link verwenden: [Link](http://127.0.0.1:8095)
 
 
 ### Anmerkung
 
-Für alle unterstützten Plattformen können Sie auch die "pure" Edition verwenden, wenn Sie [Python 3](https://www.python.org/) installiert haben oder die "bare" Edition, wenn Sie es geschafft haben, auch `bleak` über `pip` zu installieren.
+Für alle unterstützten Plattformen können Sie auch die "pure" Edition verwenden, wenn Sie [Python 3](https://www.python.org/) installiert haben oder die "bare" Edition, wenn Sie schon `bleak` via `pip` installiert haben.
 
-Besuchen Sie die [releases](https://github.com/NaitLee/Cat-Printer/releases)!
+Die aktuellste Version finden Sie unter [Releases](https://github.com/NaitLee/Cat-Printer/releases)!
 
 ## Probleme?
 
-Bitte öffnen Sie ein Issue, wenn Ihnen etwas auf dem Herzen liegt!
+Bitte [erstellen Sie eine Issue](https://github.com/NaitLee/Cat-Printer/issues), wenn Ihnen etwas auf dem Herzen liegt!
 
-Natürlich sind PRs willkommen, wenn Sie sie meistern können!
+PRs natürlich sind willkommen!
 
 ## Lizenz
 
@@ -104,18 +109,25 @@ Siehe Datei `LICENSE` und Details zum verwendeten JavaScript in der Datei `www/j
 
 --------
 
-## Development
+## Weiterentwicklung
 
-Vielleicht sind Sie ohnehin an der Sprachunterstützung interessiert. Siehe die Übersetzungsdateien im Verzeichnis `www/lang` und `readme.i18n`!
+Falls Sie an der Übersetzung in andere Sprachen interessiert sind, schauen Sie sich die Übersetzungsdateien in den Verzeichnissen `www/lang` und `readme.i18n` an!
 
-Interessieren Sie sich auch für Code-Entwicklung? Siehe [development.md](development.md)!
+Interessieren Sie sich auch für Programmierung? 
 
-### Credits
+Dann schauen Sie in [development.md](development.md) nach!
+
+### Mitwirkende
 
 - Natürlich Python und das Web!
-- [Bleak](https://bleak.readthedocs.io/en/latest/) Bluetooth Low Energy lib! Der totale Retter!
-- [roddeh-i18n](https://github.com/roddeh/i18njs), gute Arbeit!
-- [python-for-android](https://python-for-android.readthedocs.io/en/latest/), obwohl es einige schmerzhafte Schwierigkeiten gibt
-- [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) für den Schutz meines Lebens vor Java
-- Stack Overflow & das ganze Internet, ließ mich alles über Android `Activity` von Beginn an lernen
-- … Alle sind großartig!
+- [Bleak](https://bleak.readthedocs.io/en/latest/) Steuerung des Bluetooth Low Energy Protokolls! Der totale Retter!
+- [roddeh-i18n](https://github.com/roddeh/i18njs), die Inspiration für das Verwendete i18n Lokalisierungssystem!
+- [PF2 font](http://grub.gibibit.com/New_font_format), eine gute minimalistische Rasterschriftart
+- ImageMagick & Ghostscript, sehr gute Bild- und Dokumentverarbeitungstools
+- [python-for-android](https://python-for-android.readthedocs.io/en/latest/), obwohl es anfangs etwas schwierig war, es zum Laufen zu bringen
+- [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView), welches mich vor Java gerettet hat
+- Stack Overflow & das Internet, Ihr habt mir alles beigebracht, was ich über Android's `Activity` wissen musste.
+  ... und mir etliche hilfreiche Ideen gegeben
+- Jeder, der über eine Issue, Pull Request oder Diskussion bei diesem Projekt mitgewirkt hat
+- Jeder, der freie Software zu schätzen weiß
+- ... Ihr seid alle fanstastisch!
