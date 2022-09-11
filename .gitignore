@@ -19,8 +19,11 @@ cat-printer*.zip
 cat-printer-sha256-*.txt
 # bleak, the bare pip package as a folder
 build-common/bleak
-# python embeddable package, with bleak_winrt inside
+# python embeddable package, historically with bleak_winrt inside
 build-common/python-win32*
+build-common/python-w32*
+# bleak_winrt is now outside python-w32
+build-common/bleak_winrt
 # dev config
 config.json
 # dev backup

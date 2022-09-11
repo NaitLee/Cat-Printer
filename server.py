@@ -78,7 +78,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         'is_android': False,
         'scan_time': 4.0,
         'dry_run': False,
-        'energy': 0.2
+        'energy': 64
     })
     _settings_blacklist = (
         'printer', 'is_android'

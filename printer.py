@@ -74,7 +74,8 @@ try:
     from bleak import BleakClient, BleakScanner
     from bleak.backends.device import BLEDevice
     from bleak.exc import BleakError, BleakDBusError
-except ImportError:
+except ImportError as error:
+    raise error
     fatal(
         i18n('please-install-bleak-via-pip'),
         ' $ pip3 install bleak',

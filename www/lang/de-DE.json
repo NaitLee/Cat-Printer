@@ -98,7 +98,7 @@
     "all-users-and-developers": "Alle Tester & Benutzer",
     "everyone-is-awesome": "Ihr seid alle fantastisch",
     "license": "Lizenz",
-    "exiting": "Beende...",
+    "exiting": "Beende…",
     
     "dark-theme": "Dunkles Design",
     "high-contrast": "Hoher Kontrast",
@@ -124,7 +124,7 @@
     "javascript-maincompjs-description": "Transpilieren der Entwicklungsskripte für verbesserte Kompatibilität.",
     "javascript-loaderjs-description": "Dynamisches Laden von Skripten und Fallbacks.",
     "javascript-polyfilljs-description": "Nachrüsten von Funktionen in nicht unterstützten Browsern",
-    "javascript-i18nextjs-description": "I18n \"Erweiterungen\"",
+    "javascript-i18nextjs-description": "I18n „Erweiterungen“",
     "javascript-i18njs-description": "Lokalisierung und Übersetzung",
     "javascript-imagejs-description": "Bildbearbeitung",
     "javascript-accessibilityjs-description": "Barrierefreiheit",

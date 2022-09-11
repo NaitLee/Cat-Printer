@@ -103,7 +103,13 @@ with zipfile.ZipFile(bundle_name, 'w', zipfile.ZIP_DEFLATED) as bundle:
                 fullpath = os.path.join(path, name)
                 bundle.write(fullpath, os.path.join(bundle_sub_dir, fullpath))
     if edition == 'windows':
-        os.chdir('python-win32-amd64-embed')
+        for path, dirs, files in os.walk('bleak_winrt'):
+            if path.endswith('__pycache__'):
+                continue
+            for name in files:
+                fullpath = os.path.join(path, name)
+                bundle.write(fullpath, os.path.join(bundle_sub_dir, fullpath))
+        os.chdir('python-w32')
         for path, dirs, files in os.walk('.'):
             if path.endswith('__pycache__'):
                 continue
