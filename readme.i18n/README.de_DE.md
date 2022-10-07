@@ -76,9 +76,6 @@ Laden Sie sich die "reine (pure)" Version herunter und führen Sie dieselben Sch
 python3 server.py
 ```
 
-Auf dem Mac öffnet sich der Browser derzeit nicht automatisch. Bitte starten Sie einen Browser manuell und navigieren Sie zu `http://127.0.0.1:8095`. 
-
-Alternativ können Sie auch folgenden Link verwenden: [Link](http://127.0.0.1:8095)
 
 
 ### Anmerkung
