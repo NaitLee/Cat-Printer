@@ -12,8 +12,8 @@ import os
 import io
 import sys
 import json
-import platform
 import warnings
+import webbrowser
 
 # For now we can't use `ThreadingHTTPServer`
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -339,18 +339,11 @@ def serve():
         listen_all = True
     server = PrinterServer(('' if listen_all else address, port), PrinterServerHandler)
     service_url = f'http://{address}:{port}/'
-    if '-s' in sys.argv:
-        info(i18n('serving-at-0', service_url))
-    else:
-        operating_system = platform.uname().system
-        if operating_system == 'Windows':
-            os.system(f'start {service_url} > NUL')
-        elif operating_system == 'Linux':
-            os.system(f'xdg-open {service_url} &> /dev/null')
-        # TODO: I don't know about macOS
-        # elif operating_system == 'macOS':
-        else:
-            info(i18n('serving-at-0', service_url))
+    
+    info(i18n('serving-at-0', service_url))
+    if '-s' not in sys.argv:
+        webbrowser.open(service_url)
+    
     try:
         server.serve_forever()
     except KeyboardInterrupt:

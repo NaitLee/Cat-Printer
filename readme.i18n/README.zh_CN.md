@@ -95,9 +95,6 @@ pip3 install pyobjc bleak
 python3 server.py
 ```
 
-当前在 MacOS 浏览器不会自动打开。您可以手动访问 `http://127.0.0.1:8095`，或点击[这里](http://127.0.0.1:8095)
-
-
 ### 值得注意
 
 对于所有支持的平台，  
