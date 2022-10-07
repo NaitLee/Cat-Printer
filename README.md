@@ -97,8 +97,6 @@ After that, fetch & use a “bare” release:
 python3 server.py
 ```
 
-Currently the web browser will not open automatically in MacOS. Please run manually and go to `http://127.0.0.1:8095`, or just click [here](http://127.0.0.1:8095).
-
 ### Worth to Note
 
 For all supported platforms,  
