@@ -2,7 +2,7 @@ English | [Deutsch](./readme.i18n/README.de_DE.md) | [简体中文](./readme.i18
 
 # Cat-Printer
 
-🐱🖨 A project that provides support to some Bluetooth "Cat Printer" models, on *many* platforms!
+🐱🖨 A project that provides support to some Bluetooth “Cat Printer” models, on *many* platforms!
 
 [![cat-printer-poster](https://repository-images.githubusercontent.com/403563361/93e32942-856c-4552-a8b0-b03c0976a3a7)](https://repository-images.githubusercontent.com/403563361/93e32942-856c-4552-a8b0-b03c0976a3a7)
 
@@ -45,7 +45,7 @@ It may work!
   - and also Android!
 
 - Free, as in [freedom](https://www.gnu.org/philosophy/free-sw.html)!
-  - Unlike those proprietary "apps" around,  
+  - Unlike those proprietary “apps” around,  
     this project is for everyone that concerns *open-mind and freedom*!
 
 - and Fun!
@@ -64,20 +64,20 @@ Recommend to set scan time to 1 second.
 
 ### Windows
 
-Get the newest release archive with "windows" in the file name,  
+Get the newest release archive with “windows” in the file name,  
 extract to somewhere and run `start.bat`
 
 Windows typically needs longer scan time. Defaults to 4 seconds, try to find your case.
 
 ### GNU/Linux
 
-You can get the "pure" release, extract it, fire up a terminal and run:  
+You can get the “pure” release, extract it, fire up a terminal and run:  
 ```bash
 python3 server.py
 ```
 
 It is recommended to set the scan time to 2 seconds.
-On Arch Linux based distros you may first install `bluez`, as it may not be installled by default
+On Arch Linux based distros you may install `bluez` first, as it may not be installed by default
 ```bash
 sudo pacman -S bluez bluez-utils
 ```
@@ -92,7 +92,7 @@ then install `pyobjc` and `bleak` via `pip` in terminal:
 pip3 install pyobjc bleak
 ```
 
-After that, fetch & use a "bare" release:  
+After that, fetch & use a “bare” release:  
 ```bash
 python3 server.py
 ```
@@ -102,8 +102,8 @@ Currently the web browser will not open automatically in MacOS. Please run manua
 ### Worth to Note
 
 For all supported platforms,  
-You can also use "pure" edition once you have [Python 3](https://www.python.org/) installed,  
-or "bare" edition if you also managed to install `bleak` via `pip`.
+You can also use “pure” edition once you have [Python 3](https://www.python.org/) installed,  
+or “bare” edition if you also managed to install `bleak` via `pip`.
 
 If you like command-line, installing [ImageMagick](https://imagemagick.org/) and [Ghostscript](https://ghostscript.com/) could be very helpful.
 
@@ -111,7 +111,7 @@ See the [releases](https://github.com/NaitLee/Cat-Printer/releases) now!
 
 ## Problems?
 
-Please use Issue or Discussion if there's something in your mind!
+Please use Issue or Discussion if there’s something in your mind!
 
 Of course Pull Requests are welcome if you can handle them!
 
@@ -148,7 +148,7 @@ After that, give yourself a credit in `www/about.html`, if you prefer.
 - [Bleak](https://bleak.readthedocs.io/en/latest/) Bluetooth-Low-Energy library! The overall Hero!
 - [roddeh-i18n](https://github.com/roddeh/i18njs), the current built-in i18n is inspired by this
 - [PF2 font](http://grub.gibibit.com/New_font_format), great minimal raster font idea
-- ImageMagick & Ghostscript, never mention other if something useful is already in one's system
+- ImageMagick & Ghostscript, never mention other if something useful is already in one’s system
 - [python-for-android](https://python-for-android.readthedocs.io/en/latest/), though there are some painful troubles
 - [AdvancedWebView](https://github.com/delight-im/Android-AdvancedWebView) for saving my life from Java
 - Stack Overflow & the whole Internet, you let me know Android `Activity` all from beginning

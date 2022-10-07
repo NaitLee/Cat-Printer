@@ -285,7 +285,8 @@ class PrinterDriver(Commander):
     font_scale: int = 1
 
     energy: int = None
-    quality: int = 24
+    'Thermal strength of printer, range 0x0000 to 0xffff'
+    speed: int = 32
 
     mtu: int = 200
 
@@ -445,10 +446,10 @@ class PrinterDriver(Commander):
         else:
             self.start_printing()
         self.set_dpi_as_200()
-        if self.quality:    # well, slower makes stable heating
-            self.set_speed(self.quality)
+        if self.speed:    # well, slower makes stable heating
+            self.set_speed(self.speed)
         if self.energy is not None:
-            self.set_energy(self.energy * 0x100)
+            self.set_energy(self.energy)
         self.apply_energy()
         self.update_device()
         self.flush()
@@ -656,13 +657,13 @@ def _main():
     printer.scan_time = float(scan_param[0])
     identifier = ','.join(scan_param[1:])
     if args.energy is not None:
-        printer.energy = int(args.energy * 0xff)
+        printer.energy = int(args.energy * 0xffff)
     elif args.convert == 'text' or args.text:
         printer.energy = 96
     else:
         printer.energy = 64
     if args.quality is not None:
-        printer.quality = 4 * (args.quality + 5)
+        printer.speed = 4 * (args.quality + 5)
 
     image_param = args.image.split(',')
     if 'flip' in image_param:

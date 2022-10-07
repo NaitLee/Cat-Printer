@@ -130,8 +130,9 @@ class Commander(metaclass=ABCMeta):
 
     def set_speed(self, value: int):
         ''' Set how quick to feed/retract paper. **The lower, the quicker.**
-            My test shows that, a value below 4 would make printer
-            unable to feed/retract, for it's way too quick.
+            My printer with value < 4 set would make it unable to feed/retract,
+            maybe it's way too quick.
+            Speed also affects the quality, for heat time/stability reasons.
         '''
         self.send( self.make_command(0xbd, int_to_bytes(value)) )
 

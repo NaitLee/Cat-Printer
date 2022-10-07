@@ -78,7 +78,8 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         'is_android': False,
         'scan_time': 4.0,
         'dry_run': False,
-        'energy': 64
+        'energy': 64,
+        'quality': 32
     })
     _settings_blacklist = (
         'printer', 'is_android'
@@ -198,9 +199,9 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
         self.printer.fake = self.settings.fake
         self.printer.dump = self.settings.dump
         if self.settings.energy is not None:
-            self.printer.energy = int(self.settings.energy)
+            self.printer.energy = int(self.settings.energy) * 0x100
         if self.settings.quality is not None:
-            self.printer.quality = int(self.settings.quality)
+            self.printer.speed = int(self.settings.quality)
         self.printer.flip_h = self.settings.flip_h or self.settings.flip
         self.printer.flip_v = self.settings.flip_v or self.settings.flip
         self.printer.rtl = self.settings.force_rtl
