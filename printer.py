@@ -690,23 +690,7 @@ def _main():
 
     mode = 'pbm'
 
-    if args.text:
-        info(i18n('text-printing-mode'))
-        printer.font_family = font_family or 'font'
-        if 'pf2' not in text_param:
-            # TODO: remove hardcoded width
-            file = magick_text(file, 384,
-                    font_size, font_family)
-        else:
-            printer.font_scale = font_size
-            mode = 'text'
-    elif args.convert:
-        file = magick_image(file, 384, (
-            'None'
-            if args.convert == 'text'
-            else 'FloydSteinberg')
-        )
-
+    # Connect to printer
     if args.dry:
         info(i18n('dry-run-test-print-process-only'))
         printer.dry_run = True
@@ -717,6 +701,23 @@ def _main():
         info(i18n('connecting'))
         printer.scan(identifier, use_result=True)
     printer.dump = args.dump
+
+    # Prepare image / text
+    if args.text:
+        info(i18n('text-printing-mode'))
+        printer.font_family = font_family or 'font'
+        if 'pf2' not in text_param:
+            file = magick_text(file, printer.model.paper_width,
+                    font_size, font_family)
+        else:
+            printer.font_scale = font_size
+            mode = 'text'
+    elif args.convert:
+        file = magick_image(file, printer.model.paper_width, (
+            'None'
+            if args.convert == 'text'
+            else 'FloydSteinberg')
+        )
 
     if args.nothing:
         global Printer
