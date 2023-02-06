@@ -333,6 +333,19 @@ If it also worked, congrats again!
 
 Try the ultimate helper `1-build.sh`, if you also have everything in [development.md](../development.md) done.
 
+## Troubleshooting
+
+Common issues and fixes:
+
+| Error message | Fix |
+|-|-|
+| path may not be null or empty string. path='null' | Keystore needs to be specified via `--keystore <keyfile>` |
+| `/usr/bin/javac` is missing | JDK needs to be installed and selected as active java installation. |
+| setuptools could not be imported | Fixed by specifying a different python version by adding `--requirements=pip,setuptools,wheel,hostpython3==3.9.16,python3==3.9.16` |
+| No such file or directory `bleak/setup.py` | Run `2-clean-up-build.sh` or specify a different python version via the arguments provided above |
+| No such file or directory `build-android/dist` | Create a bare bundle before creating an APK |
+
+
 ## The End
 
 You made it! You now have ability to contribute much more, outside of Cat-Printer. Try to bring an app in your mind to reality, with just Python, Web, and this build environment.
