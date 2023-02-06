@@ -223,7 +223,7 @@ cd $DIR_GIT
 cp $DIR_P4A/bootstraps/webview/build/src/main/java/org/kivy/android/PythonActivity.java ./
 # some sed script doing the dirty work
 sed -i 's/import android.webkit.WebView;/import im.delight.android.webview.AdvancedWebView;/' PythonActivity.java
-sed -i -r 's/\bWebView\b/AdvancedWebView;/g' PythonActivity.java
+sed -i -r 's/\bWebView\b/AdvancedWebView/g' PythonActivity.java
 ```
 
 Not the end yet —  
