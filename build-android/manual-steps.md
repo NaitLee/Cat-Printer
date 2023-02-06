@@ -320,7 +320,7 @@ keytool -genkey -v -keystore mykeyfile.key -keyalg RSA -keysize 2048 -validity 1
 cd $DIR_GIT/Cat-Printer/build-android/
 # <dot><slash><3><tab>
 # pass the path to keyfile as parameter
-./3-formal-build.sh mykeyfile.key
+./3-formal-build.sh mykeyfile.key # On later versions of python-for-android, the keystore needs to be specified via "--keystore mykeyfile.key --signkey mykey"
 # again, feel free to check this file
 ```
 
