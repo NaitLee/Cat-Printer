@@ -53,8 +53,14 @@ Make 3 folders inside:
 ### Git Repositories
 
 ```bash
-# Remember to use your path
-DIR_GIT="/mnt/data/@/git-repo/"
+# Define your build directories
+DIR_BUILD="/mnt/data/@"
+DIR_GIT="$DIR_BUILD/git-repo/"
+
+# Make sure both directories exist
+mkdir -p $DIR_BUILD
+mkdir -p $DIR_GIT
+
 cd $DIR_GIT
 
 # Cat-Printer
@@ -116,8 +122,8 @@ System doesn’t understand it. Let’s replace them as symlinks:
 
 ```bash
 # you may already have these from p4a guide
-ANDROIDSDK="/mnt/data/@/android"
-ANDROIDNDK="/mnt/data/@/android/android-ndk-r23b"
+ANDROIDSDK="$DIR_BUILD/android"
+ANDROIDNDK="$DIR_BUILD/android/android-ndk-r23b"
 # feel free to check this script
 python3 $DIR_GIT/Cat-Printer/build-android/fix-ndk-execs.py $ANDROIDNDK
 ```
@@ -175,15 +181,15 @@ The most tricky fact is that none of these things work out-of-the-box.
 We should glue them up by hand.
 
 ```bash
-# let’s put those environment variables required by python-for-android here
-nano ~/.bashrc
-# append in the end. use your target paths!
-export ANDROIDSDK="/mnt/data/@/android"
-export ANDROIDNDK="/mnt/data/@/android/android-ndk-r23b"
+# append target paths and environment variables required by python-for-android (adjust if necessary)
+echo '
+export DIR_BUILD="/mnt/data/@"
+export ANDROIDSDK="$DIR_BUILD/android"
+export ANDROIDNDK="$DIR_BUILD/android/android-ndk-r23b"
 export ANDROIDAPI="30"
-export NDKAPI="21"
+export NDKAPI="21"' >> .bashrc
 
-# after that, apply these
+# reload environment variables
 source ~/.bashrc
 ```
 
@@ -191,12 +197,12 @@ source ~/.bashrc
 
 ```bash
 # define shortcut(s). use your target paths!
-DIR_GIT="/mnt/data/@/git-repo/"
+DIR_GIT="$DIR_BUILD/git-repo/"
 DIR_P4A="/usr/local/lib/python3.10/dist-packages/pythonforandroid/"
 
 # p4a will generate some intermediate data. “expose” this to the host for convenient manipulation.
 mkdir -p ~/.local/share/
-ln -s /mnt/data/@/p4a/ ~/.local/share/python-for-android
+ln -s $DIR_BUILD/p4a/ ~/.local/share/python-for-android
 
 # give p4a the bleak recipe. fortunately, p4a will resolve this symlink
 ln -s $DIR_GIT/bleak/bleak/backends/p4android/recipes/bleak $DIR_P4A/recipes/bleak
@@ -344,7 +350,7 @@ Common issues and fixes:
 | setuptools could not be imported | Fixed by specifying a different python version by adding `--requirements=pip,setuptools,wheel,hostpython3==3.9.16,python3==3.9.16` |
 | No such file or directory `bleak/setup.py` | Run `2-clean-up-build.sh` or specify a different python version via the arguments provided above |
 | No such file or directory `build-android/dist` | Create a bare bundle before creating an APK |
-
+| JAVA_HOME is not set and no 'java' command could be found in your PATH. | Install a JDK (e.g. `openjdk-19-jdk`) |
 
 ## The End
 
