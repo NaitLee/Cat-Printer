@@ -348,7 +348,7 @@ Common issues and fixes:
 | path may not be null or empty string. path='null' | Keystore needs to be specified via `--keystore <keyfile>` |
 | `/usr/bin/javac` is missing | JDK needs to be installed and selected as active java installation. |
 | setuptools could not be imported | Fixed by specifying a different python version by adding `--requirements=pip,setuptools,wheel,hostpython3==3.9.16,python3==3.9.16,$(cat build-deps.txt)` |
-| No such file or directory `bleak/setup.py` | Run `2-clean-up-build.sh` or specify a different python version via the arguments provided above |
+| No such file or directory `bleak/setup.py` | Run `2-clean-up-build.sh` or [download the bleak source code from PyPi](https://pypi.org/project/bleak/#files) |
 | No such file or directory `build-android/dist` | Create a bare bundle before creating an APK |
 | JAVA_HOME is not set and no 'java' command could be found in your PATH. | Install a JDK (e.g. `openjdk-19-jdk`) |
 
