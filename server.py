@@ -30,6 +30,7 @@ warnings.simplefilter('ignore', RuntimeWarning, 0, True)
 
 IsAndroid = (os.environ.get("P4A_BOOTSTRAP") is not None)
 
+
 class DictAsObject(dict):
     """ Let you use a dict like an object in JavaScript.
     """
@@ -341,9 +342,14 @@ def serve():
     server = PrinterServer(('' if listen_all else address, port), PrinterServerHandler)
     service_url = f'http://{address}:{port}/'
     
+
     info(i18n('serving-at-0', service_url))
-    if '-s' not in sys.argv:
+    if '-s' not in sys.argv and not IsAndroid:
         webbrowser.open(service_url)
+    # Request required bluetooth permissions (Android 12+)
+    if IsAndroid:
+        from android.permissions import request_permissions, Permission
+        request_permissions([Permission.BLUETOOTH_SCAN, Permission.BLUETOOTH_CONNECT])
     
     try:
         server.serve_forever()
