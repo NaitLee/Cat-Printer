@@ -16,13 +16,14 @@ Note: not ordered. do whatever I/you want
 + Service for other init systems (a systemd unit file is there)
 + ...
 
-? Optimize PF2 text printing? It seems a bit slow (in algorithm).
-? Use Go as part of backend? It can boost things up, and build some (essential) image manipulation in, quicker. And strip some way-too-big Python libs away (for smaller Windows/Android dist).
+? Optimize PF2 text printing? It seems a bit slow (in bit processing).
+? Use something else as server part of backend? This can boost things up, and build some (essential) image manipulation in, quicker. And strip some way-too-big Python libs away (for smaller Windows/Android dist).
 ? Built-in PostScript (Even if very basic)
-? Data compression for GB03. Optional
+? Data compression for GB03 alike. Optional
 ? Plugin, for including community features (that involves usefulness but also bloatness)
   It's usually messy. Try forking in your own way, at the moment.
 ? Process picture with WebAssembly? (Web frontend only)
+  Tried, Not as efficient as pure JavaScript
 ? Put Android APP on F-Droid? But it needs automatic build system...
   Android guys can help this!
 ? ... Or put to APKPure? But make frontend well before doing all of these

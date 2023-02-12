@@ -451,6 +451,7 @@ iframe#frame {
     border: var(--border) solid var(--fore-color);
     padding: var(--span);
     margin: 0 var(--span);
+    overflow: auto;
 }
 #select-language option {
     cursor: pointer;

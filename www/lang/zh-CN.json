@@ -1,5 +1,5 @@
 {
-    "$language": "中文（简体）",
+    "$language": "中文（简体字）",
     "cat-printer": "猫咪打印机",
     "printer": "打印机",
     "device-": "设备：",
@@ -81,10 +81,11 @@
     "home-page-": "主页：",
     "contributors": "贡献者",
     "developer": "开发者",
+    "collaborator": "合作",
     "translator": "翻译",
     "all-users-and-developers": "每位用户及开发者",
     "everyone-is-awesome": "每个人都是好样的！",
-    "license": "许可证",
+    "license": "授权",
     "exiting": "退出中……",
 
     "dark-theme": "深色主题",
@@ -123,7 +124,7 @@
     "text-font": "字体",
     "text-size": "大小",
     "enter-text": "在此处输入文本",
-    "wrap-words-by-spaces": "空格处换行（不建议用于汉语）",
+    "wrap-words-by-spaces": "空格处换行（不建议用于中文）",
     "minor-tweaks": "细节调整",
     "serif": "衬线字体",
     "sans-serif": "无衬线字体",

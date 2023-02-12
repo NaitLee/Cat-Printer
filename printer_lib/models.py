@@ -1,8 +1,14 @@
-'Printer model specifications. License CC0-1.0-only'
+'''
+Printer model specifications.
+
+No rights reserved.
+License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
+'''
 
 class Model():
     ''' A printer model
-        Note: these currently make no obvious sense
+        `paper_width`: pixels per line for the model/paper
+        `is_new`: some models can use compressed data. the algorithm isn't implemented in Cat-Printer yet, but should be no harm.
     '''
     paper_width: int
     is_new_kind: bool
@@ -12,6 +18,8 @@ class Model():
 
 Models = {
     'YT01': Model(384, False),
+    'MX05': Model(384, False),
+    'MX06': Model(384, False),
     'GB01': Model(384, False),
     'GB02': Model(384, False),
     'GB03': Model(384, True),

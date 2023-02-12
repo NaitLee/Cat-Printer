@@ -1,0 +1,31 @@
+{
+  "name": "To Traditional Chinese (Taiwan standard, with phrases)",
+  "segmentation": {
+    "type": "mmseg",
+    "dict": {
+      "type": "ocd2",
+      "file": "STPhrases.ocd2"
+    }
+  },
+  "conversion_chain": [
+    {
+      "dict": {
+        "type": "group",
+        "dicts": [
+          {
+            "type": "text",
+            "file": "patch-twp.txt"
+          }, {
+            "type": "ocd2",
+            "file": "TWPhrases.ocd2"
+          }
+        ]
+      }
+    }, {
+      "dict": {
+        "type": "ocd2",
+        "file": "TWVariants.ocd2"
+      }
+    }
+  ]
+}

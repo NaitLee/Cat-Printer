@@ -1,6 +1,7 @@
 
 `
 Cat-Printer: Web Frontend
+Use together with 'index.html'
 
 Copyright © 2021-2022 NaitLee Soft. All rights reserved.
 

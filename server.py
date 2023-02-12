@@ -182,6 +182,10 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
                 for key in settings:
                     self.settings[key] = settings[key]
         else:
+            if IsAndroid:
+                self.settings['scan_time'] = 1.0
+            elif os.name in ('posix',):
+                self.settings['scan_time'] = 2.0
             self.save_config()
 
     def save_config(self):
@@ -349,7 +353,10 @@ def serve():
     # Request required bluetooth permissions (Android 12+)
     if IsAndroid:
         from android.permissions import request_permissions, Permission
-        request_permissions([Permission.BLUETOOTH_SCAN, Permission.BLUETOOTH_CONNECT])
+        try:
+            request_permissions([Permission.BLUETOOTH_SCAN, Permission.BLUETOOTH_CONNECT])
+        except Exception:
+            pass
     
     try:
         server.serve_forever()

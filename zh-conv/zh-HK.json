@@ -1,0 +1,26 @@
+{
+  "name": "To Traditional Chinese (Hong Kong variant)",
+  "segmentation": {
+    "type": "mmseg",
+    "dict": {
+      "type": "ocd2",
+      "file": "HKVariants.ocd2"
+    }
+  },
+  "conversion_chain": [
+    {
+      "dict": {
+        "type": "group",
+        "dicts": [
+          {
+            "type": "ocd2",
+            "file": "HKVariants.ocd2"
+          }, {
+            "type": "text",
+            "file": "patch-quotation.txt"
+          }
+        ]
+      }
+    }
+  ]
+}

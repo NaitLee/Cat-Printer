@@ -1,5 +1,5 @@
 '''
-Python lib for reading PF2 font files: http://grub.gibibit.com/New_font_format
+Python snippet for reading PF2 font files: http://grub.gibibit.com/New_font_format
 
 No rights reserved.
 License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
