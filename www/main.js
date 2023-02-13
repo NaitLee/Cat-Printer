@@ -822,7 +822,7 @@ class Main {
 
             if (this.settings['is_android']) {
                 document.body.classList.add('android');
-                // select[multiple] doesn't work well with Android
+                // select[multiple] doesn't work well with Android WebView
                 let div = document.createElement('div');
                 let select = document.getElementById('select-language');
                 Array.from(select.children).forEach(e => {

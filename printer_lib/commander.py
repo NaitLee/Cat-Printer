@@ -1,5 +1,5 @@
 '''
-Cat-Printer Commander, way to communicate with cat printers via bluetooth
+Cat-Printer Commander(s), binary interface(s) to communicate with cat printers
 
 No rights reserved.
 License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
@@ -65,9 +65,16 @@ def int_to_bytes(i: int, big_endian=False):
     return result
 
 class Commander(metaclass=ABCMeta):
-    'Semi-abstract class, to be inherited by `PrinterDriver`'
+    ''' Semi-abstract class, to be inherited by `PrinterDriver`
+        Contains binary data communication interface for individual functions
+        "Commander" of kind of printers like GB0X, GT01
+        Class structure is not guaranteed to be stable
+    '''
 
     dry_run: bool = False
+
+    data_flow_pause = b'\x51\x78\xae\x01\x01\x00\x10\x70\xff'
+    data_flow_resume = b'\x51\x78\xae\x01\x01\x00\x00\x00\xff'
 
     def make_command(self, command_bit, payload: bytearray, *,
                      prefix=bytearray(), suffix=bytearray()):

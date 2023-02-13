@@ -315,7 +315,10 @@ class PrinterDriver(Commander):
 
     def loop(self, *futures):
         ''' Run coroutines in order in current event loop until complete,
-            return its result directly, or their result as tuple
+            return its result directly, or their result as tuple.
+
+            This 1) ensures exiting gracefully (futures always get completed before exiting),
+            and 2) avoids function colors (use of "await", especially outside this script)
         '''
         results = []
         for future in futures:
@@ -344,9 +347,9 @@ class PrinterDriver(Commander):
         self.model = Models[name]
         self.device = BleakClient(address)
         def notify(_char, data):
-            if data == b'\x51\x78\xae\x01\x01\x00\x10\x70\xff':
+            if data == self.data_flow_pause:
                 self._paused = True
-            elif data == b'\x51\x78\xae\x01\x01\x00\x00\x00\xff':
+            elif data == self.data_flow_resume:
                 self._paused = False
         self.loop(
             self.device.connect(timeout=self.connection_timeout),
@@ -371,6 +374,7 @@ class PrinterDriver(Commander):
                 name, address = identifier.split(',')
                 if name not in Models:
                     error('model-0-is-not-supported-yet', name, exception=PrinterError)
+                # TODO: is this logic correct?
                 if address[2::3] != ':::::' and len(address.replace('-', '')) != 32:
                     error('invalid-address-0', address, exception=PrinterError)
                 if use_result:
