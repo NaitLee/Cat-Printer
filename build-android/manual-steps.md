@@ -87,11 +87,13 @@ If you’re in China Mainland (you guessed it!), or prefer manual setup:
 
 - Pick a working mirror. Currently there’s [Tencent Cloud](https://mirrors.cloud.tencent.com/AndroidSDK/).
 
+- Pay attention to [required version of Android NDK](https://python-for-android.readthedocs.io/en/latest/quickstart/#basic-sdk-install), this will increase by time. It’s currently r25b.
+
 - Fetch & extract some archives, as shown in this table:
 
 | Archive file                        | Top-level dir inside    | Target directory                    |
 | ----------------------------------- | ----------------------- | ----------------------------------- |
-| `android-ndk-r23b-linux.zip`        | `android-ndk-r23b`      | `android/android-ndk-r23b`          |
+| `android-ndk-r25b-linux.zip`        | `android-ndk-r25b`      | `android/android-ndk-r25b`          |
 | `build-tools_r33-linux.zip`         | `android-13`            | `android/build-tools/33.0.0`        |
 | `commandlinetools-linux-8512546_latest.zip` | `cmdline-tools` | `android/cmdline-tools/latest`      |
 | `platform-30_r03.zip`               | `android-11`            | `android/platforms/android-30`      |
@@ -104,7 +106,7 @@ So after that you will get:
 
 ```
 android
-  ├── android-ndk-r23b
+  ├── android-ndk-r25b
   ├── build-tools
   │   └── 33.0.0
   ├── cmdline-tools
@@ -123,7 +125,7 @@ System doesn’t understand it. Let’s replace them as symlinks:
 ```bash
 # you may already have these from p4a guide
 ANDROIDSDK="$DIR_BUILD/android"
-ANDROIDNDK="$DIR_BUILD/android/android-ndk-r23b"
+ANDROIDNDK="$DIR_BUILD/android/android-ndk-r25b"
 # feel free to check this script
 python3 $DIR_GIT/Cat-Printer/build-android/fix-ndk-execs.py $ANDROIDNDK
 ```
@@ -185,7 +187,7 @@ We should glue them up by hand.
 echo '
 export DIR_BUILD="/mnt/data/@"
 export ANDROIDSDK="$DIR_BUILD/android"
-export ANDROIDNDK="$DIR_BUILD/android/android-ndk-r23b"
+export ANDROIDNDK="$DIR_BUILD/android/android-ndk-r25b"
 export ANDROIDAPI="30"
 export NDKAPI="21"' >> .bashrc
 

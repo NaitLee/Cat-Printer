@@ -1,4 +1,4 @@
-English | [Deutsch](./readme.i18n/README.de_DE.md) | [中文（简体字）](./readme.i18n/README.zh_CN.md) | [中文（正體字）](./readme.i18n/README.zh_TW.md) | [中文（香港字）](./readme.i18n/README.zh_HK.md)
+English | [Deutsch](./readme.i18n/README.de-DE.md) | [中文（简体字）](./readme.i18n/README.zh-CN.md) | [中文（正體字）](./readme.i18n/README.zh-TW.md) | [中文（香港字）](./readme.i18n/README.zh-HK.md)
 
 # Cat-Printer
 
