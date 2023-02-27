@@ -1,0 +1,7 @@
+
+h3 -- How do I scan & connect to a device? --
+p -- When you tap “Print”, the application will automatically connect to an available device (that is near you & powered on & waiting for connection), and print directly afterwards. --
+p -- The connection will persist until you close either the application or the printer. If the printer is shutdown after a connection, the application will automatically search for another one when requested to print. --
+
+h3 -- What if I have multiple printers available and want to print to a specific one? --
+p -- Tap “Show More Options”, an option for manually scanning & selecting devices is there. --

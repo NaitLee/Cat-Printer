@@ -121,7 +121,7 @@
     "strength-": "HOW MUCH INK>",
     "or-drag-file-to-below": "THRW PIC OR MEOW HERE",
     "reset": "STRT OVR",
-    "cat-face-toward": "WANT KITTE FACE NOT BUTT",
+    "cat-face-upward": "WANT KITTE FACE NOT BUTT",
     "quality-": "CAREFUL STEP>",
     "print-quality": "HOW CAREFUL R STEPS",
     "show-more-options": "LOT CFGS HERE",
@@ -136,5 +136,7 @@
     "rotate-image": "ROLL PIC",
     "test-unknown-device": "I HAV STRENGE KITTE",
     "now-will-scan-for-all-bluetooth-devices-nearby": "WIL FIND ALL THINY KITTE OR NOT",
-    "scan": "FIND"
+    "scan": "FIND",
+    "frequently-asked-questions": "CONFUSED KITTEZ",
+    "glossary": "WAT DO TIS MEAN"
 }

@@ -13,7 +13,7 @@ window.exports = {};
 
     var fallbacks;
     if (location.href.indexOf('?debug') !== -1)
-        fallbacks = ['i18n-ext.js', 'i18n.js', 'image.js', 'accessibility.js', 'main.js'];
+        fallbacks = ['i18n-ext.js', 'i18n.js', 'image.js', 'dash-xml.js', 'accessibility.js', 'main.js'];
     else
         fallbacks = ['~every.js', 'main.comp.js'];
     var trial_count = 0;

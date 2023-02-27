@@ -1,0 +1,2 @@
+helps/en-US/frequently-asked-questions--	frequently-asked-questions
+helps/en-US/glossary--	glossary

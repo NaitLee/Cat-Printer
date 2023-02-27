@@ -70,7 +70,7 @@
                 </div>
                 <div class="panel active" id="panel-help">
                     <div>
-                        <p data-i18n="coming-soon">Coming Soon...</p>
+                        <ul id="help-content"></ul>
                         <p>
                             <a href="about.html" target="frame" data-i18n="about" data-key>About</a>
                             <a href="jslicense.html" data-jslicense="1" target="frame"
@@ -88,7 +88,7 @@
                     </div>
                     <label class="label-input-span">
                         <input type="checkbox" name="flip" data-key />
-                        <span data-i18n="cat-face-toward">Cat Face Toward</span>
+                        <span data-i18n="cat-face-upward">Cat Face Upward</span>
                     </label>
                     <!-- <hr /> -->
                     <label class="label-input-span">
@@ -225,11 +225,12 @@
             </div>
         </div>
         <iframe id="frame" src="about:blank" name="frame" title="frame" data-key="v"></iframe>
+        <div id="dashdoc"></div>
     </div>
     <div id="dialog" class="hidden">
         <div class="shade"></div>
         <div class="content">
-            <div id="dialog-content">
+            <div id="dialog-content" data-key="b">
                 <!-- Dialog content -->
             </div>
             <div id="dialog-choices">

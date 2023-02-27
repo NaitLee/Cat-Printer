@@ -96,7 +96,6 @@
     "everyone-is-awesome": "Everyone is awesome!",
     "license": "License",
     "exiting": "Exiting…",
-    
     "dark-theme": "Dark Theme",
     "high-contrast": "High Contrast",
     "welcome": "Welcome!",
@@ -126,7 +125,7 @@
     "strength-": "Strength:",
     "or-drag-file-to-below": "Or drag file to below",
     "reset": "Reset",
-    "cat-face-toward": "Cat Face Toward",
+    "cat-face-upward": "Cat Face Upward",
     "quality-": "Quality:",
     "print-quality": "Print quality",
     "show-more-options": "Show More Options",
@@ -158,5 +157,8 @@
     "rotate-image": "Rotate Image",
     "test-unknown-device": "Test Unknown Device",
     "scan": "Scan",
-    "now-will-scan-for-all-bluetooth-devices-nearby": "Scan set to search for all bluetooth devides nearby."
+    "now-will-scan-for-all-bluetooth-devices-nearby": "Scan set to search for all bluetooth devices nearby.",
+
+    "frequently-asked-questions": "Frequently Asked Questions",
+    "glossary": "Glossary"
 }

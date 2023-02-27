@@ -46,6 +46,7 @@ mime_type = {
     'html': 'text/html;charset=utf-8',
     'css': 'text/css;charset=utf-8',
     'js': 'text/javascript;charset=utf-8',
+    'mjs': 'text/javascript;charset=utf-8',
     'txt': 'text/plain;charset=utf-8',
     'json': 'application/json;charset=utf-8',
     'png': 'image/png',
@@ -55,6 +56,9 @@ mime_type = {
 }
 def mime(url: str):
     'Get pre-defined MIME type of a certain url by extension name'
+    if url.endswith('--'):
+        # dash markup / dash xml
+        return 'text/plain;charset=utf-8'
     return mime_type.get(url.rsplit('.', 1)[-1], mime_type['octet-stream'])
 
 def concat_files(*paths, prefix_format='', buffer=4 * 1024 * 1024) -> bytes:

@@ -2,5 +2,6 @@ polyfill.js
 i18n-ext.js
 i18n.js
 image.js
+dash-xml.js
 accessibility.js
 main.js

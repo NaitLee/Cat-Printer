@@ -365,8 +365,8 @@ dl {
     margin: var(--span) 0;
     display: block;
 }
-dt { display: inline-block; min-width: 6em; text-align: end; }
-dd { display: inline-block; margin: 0 calc(var(--font-size) / 4); }
+.contributors dt { display: inline-block; min-width: 6em; text-align: end; }
+.contributors dd { display: inline-block; margin: 0 calc(var(--font-size) / 4); }
 .contributors dt {
     min-width: 12em;
     text-align: center;
@@ -465,6 +465,21 @@ iframe#frame {
     white-space: nowrap;
     margin: 1em;
 }
+
+#dashdoc {
+    text-align: left;
+    font-size: large;
+}
+#dashdoc h3 {
+    font-size: large;
+}
+#dashdoc p, #dashdoc li, #dashdoc dl {
+    margin: var(--span) 0;
+}
+dd {
+    margin-left: 2em;
+}
+
 @keyframes jump {
     0% { transform: translateY(0); }
     50% { transform: translateY(var(--font-size)); }
@@ -605,7 +620,7 @@ iframe#frame {
         z-index: 0;
     }
     #dialog-content {
-        padding: var(--span) 0;
+        padding: var(--span);
     }
     .blank {
         height: var(--compact-menu-height);

@@ -87,7 +87,6 @@
     "everyone-is-awesome": "每個人都是好樣的！",
     "license": "授權",
     "exiting": "退出中……",
-
     "dark-theme": "深色主題",
     "high-contrast": "高對比度",
     "welcome": "歡迎！",
@@ -117,7 +116,7 @@
     "strength-": "力度：",
     "or-drag-file-to-below": "或拖拽文件至下方",
     "reset": "重置",
-    "cat-face-toward": "貓臉朝上",
+    "cat-face-upward": "貓臉朝上",
     "quality-": "質量：",
     "print-quality": "打印質量",
     "show-more-options": "顯示更多選項",
@@ -148,5 +147,7 @@
     "javascript-accessibilityjs-description": "一些無障礙功能",
     "javascript-catprinter-description": "貓咪打印機 (Cat-Printer) 主腳本",
     "free-software": "自由軟件",
-    "free-software-description": "尊重您計算自由的軟件。"
+    "free-software-description": "尊重您計算自由的軟件。",
+    "frequently-asked-questions": "常見問題",
+    "glossary": "術語解釋"
 }

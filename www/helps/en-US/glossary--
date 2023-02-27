@@ -1,0 +1,36 @@
+
+h3 -- Interesting ones: --
+dl -
+dt -- Cat Face Upward --
+dd -- Flip the image data sent to printer, so that after printing both your picture and the printer itself faces upward, natually. --
+-
+
+h3 -- “Brightness”, “Strength”, and “Quality” --
+dl -
+dt -- Brightness --
+dd -- directly affect how your picture is processed to pixels that fits the printer’s “black and white” color; --
+-
+dl -
+dt -- Strength --
+dd -- tell the printer how deep to print those resulting pixels, i.e. the thermal energy used; --
+-
+dl -
+dt -- Quality --
+dd -- indeed affect paper feeding speed, lower “Quality” means higher speed printing but unstable heating & visual quality. --
+-
+
+h3 -- “Picture”, “Pattern”, and “Text” Process --
+p -- Since the printer can only print black pixels (not even gray), ordinary pictures should be specifically processed with a algorithm that suits its use best. --
+p -- Pictures are first processed to grayscale (in a natual-for-eyes way), then processed as: --
+dl -
+dt -- Picture --
+dd -- use black & white pixels in place of “gray” parts of original image, which is best for ordinary pictures; --
+-
+dl -
+dt -- Pattern --
+dd -- use variable sized dots in place of “gray” parts of original image, which may be good for simple shapes; --
+-
+dl -
+dt -- Text --
+dd -- simply determine black or white per-pixel by brightness, good for snapshots of text. --
+-

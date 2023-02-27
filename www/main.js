@@ -681,8 +681,9 @@ async function initI18n(current_language) {
     }
     if (!navigator.languages) {
         if (!navigator.language) return;
-        else navigator.languages = [navigator.language, 'en-US'];
+        else navigator.languages = [navigator.language];
     }
+    navigator.languages = navigator.languages.concat('en-US');
     if (current_language) {
         for (let option of language_select.children)
             if (option.value === current_language)
@@ -707,6 +708,52 @@ async function testI18n(lang) {
 async function fakeAndroid(enable) {
     await callApi('/set', { 'is_android': enable });
     window.location.reload();
+}
+const dashDoc = (function() {
+    const dashdoc = document.getElementById('dashdoc');
+    const dashxml = new DashXml();
+    return async function(path) {
+        let html = '';
+        const t = await fetch(path).then(r => r.ok ? r.text() : '');
+        if (t === '') return false;
+        for (const line of t.split('\n'))
+            html += dashxml.translateLine(line);
+        dashdoc.innerHTML = html;
+        if (dashxml.tags.length !== 0) {
+            console.warn('Warning: there are leftover Dash XML tags, cleaning up')
+            dashxml.tags.splice(0, dashxml.tags.length);
+        }
+        return true;
+    }
+})();
+
+async function initHelp() {
+    const help_content = document.getElementById('help-content');
+    for (const lang of navigator.languages) {
+        const content = await fetch(`/helps/${lang}/content.txt`)
+            .then(r => r.ok ? r.text() : '')
+            .catch(_ => '');
+        if (content === '') continue;
+        const list = content.split('\n').map(s => s.split('\t'));
+        for (const [path, title] of list) {
+            if (!path || !title) continue;
+            const entry = document.createElement('li');
+            const a = document.createElement('a');
+            a.href = 'javascript:';
+            a.addEventListener('click', () => {
+                if (dashDoc(path))
+                    Dialog.alert('#dashdoc');
+                else
+                    Dialog.alert('failed-to-load-this-help');
+            });
+            a.setAttribute('data-i18n', title);
+            a.setAttribute('data-key', '');
+            a.innerText = i18n(title);
+            entry.appendChild(a);
+            help_content.appendChild(entry);
+        }
+        break;
+    }
 }
 
 class Main {
@@ -816,6 +863,7 @@ class Main {
             await this.loadConfig();
             await initI18n(this.settings['language']);
             await this.activateConfig();
+            initHelp();
 
             // one exception
             this.conf('#select-language', 'change', 'language');
