@@ -462,7 +462,11 @@ class PrinterDriver(Commander):
     def _finish(self):
         self.end_lattice()
         self.set_speed(8)
-        self.feed_paper(128)
+        if self.model.problem_feeding:
+            for _ in range(128):
+                self.draw_bitmap(bytes(self.model.paper_width // 8))
+        else:
+            self.feed_paper(128)
         self.get_device_state()
         self.flush()
 

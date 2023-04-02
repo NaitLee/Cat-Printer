@@ -196,3 +196,11 @@ But hey, in this rewrite some algorithm practial overhead was removed, thus much
 
 In main.js the event handler was reworked too. No more double event dispatches.
 Thanks to this, another image processing performance problem is fixed.
+
+YEAR 2023
+
+APRIL
+
+2nd
+
+Anniversary days to Cat-Printer! Thank all of you! Keep it up!

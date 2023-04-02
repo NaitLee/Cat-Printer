@@ -924,6 +924,7 @@ class Main {
             error_details.name === 'org.freedesktop.DBus.Error.UnknownObject' ||
             error_details.name === 'org.bluez.Error.NotReady' ||
             error_details.details.includes('not turned on') ||
+            error_details.details.includes('No powered Bluetooth adapter') ||
             error_details.details.includes('WinError -2147020577')
         ) Notice.warn('please-enable-bluetooth');
         else if (
