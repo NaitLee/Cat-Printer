@@ -158,5 +158,6 @@
     "rotate-image": "Rotate Image",
     "test-unknown-device": "Test Unknown Device",
     "scan": "Scan",
-    "now-will-scan-for-all-bluetooth-devices-nearby": "Scan set to search for all bluetooth devides nearby."
+    "now-will-scan-for-all-bluetooth-devices-nearby": "Scan set to search for all bluetooth devides nearby.",
+    "pf2-font-not-found-or-broken-0": "PF2 font not found or broken: '{0}'"
 }

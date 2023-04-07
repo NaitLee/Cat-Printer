@@ -53,8 +53,8 @@ class Character():
 class PF2():
     'The PF2 class, for serializing a PF2 font file'
 
-    is_pf2: bool
-    'Sets to false if the read file is not PF2 font file'
+    broken: bool = False
+    'Sets to True if the font file is bad'
 
     missing_character_code: int
     in_memory: bool
@@ -70,12 +70,11 @@ class PF2():
     descent: int
     character_index: Dict[int, Tuple[int, int]]
     data_offset: int
-    data_io: io.BufferedIOBase
+    data_io: io.BufferedIOBase = None
 
-    def __init__(self, path='font.pf2', *, read_to_mem=True, missing_character: str='?'):
+    def __init__(self, file: io.BufferedIOBase, *, read_to_mem=True, missing_character: str='?'):
         self.missing_character_code = ord(missing_character)
         self.in_memory = read_to_mem
-        file = open(path, 'rb')
         if read_to_mem:
             self.data_io = io.BytesIO(file.read())
             file.close()
@@ -142,7 +141,8 @@ class PF2():
     __getitem__ = get_char
 
     def __del__(self):
-        self.data_io.close()
+        if self.data_io is not None:
+            self.data_io.close()
 
 
 class CharacterS(Character):
@@ -168,6 +168,8 @@ class PF2S(PF2):
 
     def __init__(self, *args, scale: int=1, **kwargs):
         super().__init__(*args, **kwargs)
+        if self.broken:
+            return
         self.scale = scale
         self.point_size *= scale
         self.max_width *= scale

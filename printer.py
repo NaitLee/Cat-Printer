@@ -1,7 +1,7 @@
 '''
 Cat-Printer Core
 
-Copyright © 2021-2022 NaitLee Soft. All rights reserved.
+Copyright © 2021-2023 NaitLee Soft. All rights reserved.
 
 License GPL-3.0-or-later: https://www.gnu.org/licenses/gpl-3.0.html
 '''
@@ -13,6 +13,7 @@ import argparse
 import subprocess
 import asyncio
 import platform
+import zipfile
 
 class ExitCodes():
     'Exit codes'
@@ -311,7 +312,7 @@ class PrinterDriver(Commander):
     _pending_data: io.BytesIO = None
 
     def __init__(self):
-        self._loop = asyncio.get_event_loop_policy().get_event_loop()
+        self._loop = asyncio.get_event_loop_policy().new_event_loop()
 
     def loop(self, *futures):
         ''' Run coroutines in order in current event loop until complete,
@@ -484,13 +485,37 @@ class PrinterDriver(Commander):
                 dump_pbm.write(next(data.to_pbm(merge_pages=True)))
         self._finish()
 
+    def _get_pf2(self, path: str):
+        ''' Get file io of a PF2 font in several ways
+        '''
+        path += '.pf2'
+        file = None
+        parents = ('', 'pf2/')
+        if not path:
+            path = 'unifont'
+        for parent in parents:
+            if os.path.exists(full_path := os.path.join(parent, path)):
+                file = open(full_path, 'rb')
+                break
+        else: # if didn't break
+            if os.path.exists('pf2.zip'):
+                with zipfile.ZipFile('pf2.zip') as pf2zip:
+                    for name in pf2zip.namelist():
+                        if name == path:
+                            with pf2zip.open(name) as f:
+                                file = io.BytesIO(f.read())
+                            break
+        return file
+
     def _print_text(self, file: io.BufferedIOBase):
         paper_width = self.model.paper_width
         text_io = io.TextIOWrapper(file, encoding='utf-8')
         if self.text_canvas is None:
             self.text_canvas = TextCanvas(paper_width, wrap=self.wrap,
                     rtl=self.rtl, font_path=self.font_family + '.pf2',
-                    scale=self.font_scale)
+                    font_data_io=self._get_pf2(self.font_family), scale=self.font_scale)
+            if self.text_canvas.broken:
+                error(i18n('pf2-font-not-found-or-broken-0', self.font_family), exception=PrinterError)
         # with stdin you maybe trying out a typewriter
         # so print a "ruler", indicating max characters in one line
         if file is sys.stdin.buffer:
@@ -667,9 +692,9 @@ def _main():
     if args.energy is not None:
         printer.energy = int(args.energy * 0xffff)
     elif args.convert == 'text' or args.text:
-        printer.energy = 96
+        printer.energy = 0x6000
     else:
-        printer.energy = 64
+        printer.energy = 0x4000
     if args.quality is not None:
         printer.speed = 4 * (args.quality + 5)
 
