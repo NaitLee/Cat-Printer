@@ -1,0 +1,22 @@
+--private ..
+--dist_name "cat-printer"
+--package "io.github.naitlee.catprinter"
+--name "Cat Printer"
+--icon icon.png
+--bootstrap webview
+--window
+--blacklist-requirements sqlite3,openssl
+--port 8095
+--arch arm64-v8a
+--blacklist "blacklist.txt"
+--presplash blank.png
+--presplash-color black
+--add-source "advancedwebview"
+--manifest-orientation user
+--android_api 30
+--permission BLUETOOTH
+--permission BLUETOOTH_SCAN
+--permission BLUETOOTH_CONNECT
+--permission BLUETOOTH_ADMIN
+--permission ACCESS_FINE_LOCATION
+--permission ACCESS_COARSE_LOCATION
