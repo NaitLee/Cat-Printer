@@ -137,5 +137,7 @@
     "test-unknown-device": "I HAV STRENGE KITTE",
     "now-will-scan-for-all-bluetooth-devices-nearby": "WIL FIND ALL THINY KITTE OR NOT",
     "scan": "FIND",
-    "pf2-font-not-found-or-broken-0": "KITTE FONT LOST OR DEAD> {0}"
+    "pf2-font-not-found-or-broken-0": "KITTE FONT LOST OR DEAD> {0}",
+    "image-magick-not-found": "IMAGEMAGICK NOT FINDZ, PLZ INSTALL IT BEFORE TRYIN ANY COMMAND LINE FEATUREZ."
+
 }
