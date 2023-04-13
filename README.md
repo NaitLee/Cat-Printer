@@ -83,12 +83,13 @@ sudo pacman -S bluez bluez-utils
 ```
 <details>
 <summary>Further steps</summary>
-You may want to use the command line interface for hackiness... …  
+You may want to use the command line interface for hackiness...
+
 You may or may not need to install ImageMagick and Ghostscript, depending on your distro.
+
 ```bash
 sudo apt install imagemagick ghostscript
 ```
-Or the package manager of your distro.
 
 Extra configuration is required for ImageMagick to work. Because IM is made for external webserver, a strict security policy is applied. You need to add the following line to `/etc/ImageMagick-6/policy.xml` before `</policymap>`:
 ```xml
