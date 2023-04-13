@@ -150,5 +150,5 @@
     "free-software": "自由软件",
     "free-software-description": "尊重您计算自由的软件。",
     "pf2-font-not-found-or-broken-0": "PF2 字体丢失或损坏：'{0}'",
-    "image-magick-not-found": "未找到 ImageMagick，请在尝试任何命令行功能之前安装它。"
+    "image-magick-not-found": "未找到 ImageMagick，请安装并重试。"
 }
