@@ -81,6 +81,8 @@ On Arch Linux based distros you may install `bluez` first, as it may not be inst
 ```bash
 sudo pacman -S bluez bluez-utils
 ```
+
+  
 <details>
 <summary>Further steps</summary>
 
@@ -94,15 +96,16 @@ sudo apt install imagemagick ghostscript
 ```
 or use your distro's package manager.
 
-
+  
 Extra configuration is required for ImageMagick to work. Because IM is made for external webserver, a strict security policy is applied. You need to add the following line to `/etc/ImageMagick-6/policy.xml` before `</policymap>`:
 ```xml
  <policy domain="coder" rights="read | write" pattern="PDM" />
 ```
+  
 Because this script is only accesible by localhost, or at most your local network, this is safe.
 </details>
-
-
+  
+  
 
 *Packaging is also on the way!*
 
