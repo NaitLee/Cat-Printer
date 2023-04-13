@@ -593,7 +593,7 @@ def fallback_program(*programs):
 
 _MagickExe = fallback_program('magick', 'magick.exe', 'convert', 'convert.exe')
 if _MagickExe is None:
-    error('ImageMagic not found. Please install and configure as per readme.')
+    error(i18n("imagemagick-not-found"))
 
 def magick_text(stdin, image_width, font_size, font_family):
     'Pipe an io to ImageMagick for processing text to image, return output io'
