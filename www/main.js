@@ -3,7 +3,7 @@
 Cat-Printer: Web Frontend
 Use together with 'index.html'
 
-Copyright © 2021-2022 NaitLee Soft. All rights reserved.
+Copyright © 2021-2023 NaitLee Soft. All rights reserved.
 
 License GPL-3.0-or-later: https://www.gnu.org/licenses/gpl-3.0.html
 `;
@@ -922,7 +922,6 @@ class Main {
         if (
             error_details.name === 'org.bluez.Error.NotReady' ||
             error_details.name === 'org.freedesktop.DBus.Error.UnknownObject' ||
-            error_details.name === 'org.bluez.Error.NotReady' ||
             error_details.details.includes('not turned on') ||
             error_details.details.includes('No powered Bluetooth adapter') ||
             error_details.details.includes('WinError -2147020577')

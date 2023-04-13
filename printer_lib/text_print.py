@@ -4,6 +4,7 @@ from .pf2 import PF2S
 
 class TextCanvas():
     'Canvas for text printing, requires PF2 lib'
+    broken: bool = False
     width: int
     height: int
     canvas: bytearray = None
@@ -12,8 +13,13 @@ class TextCanvas():
     scale: int
     pf2 = None
     def __init__(self, width, *, wrap=False, rtl=False,
-            font_path='font.pf2', scale=1):
-        self.pf2 = PF2S(font_path, scale=scale)
+            font_path='font.pf2', font_data_io=None, scale=1):
+        if font_data_io is None:
+            font_data_io = open(font_path, 'rb')
+        self.pf2 = PF2S(font_data_io, scale=scale)
+        if self.pf2.broken:
+            self.broken = True
+            return
         self.width = width
         self.wrap = wrap
         self.rtl = rtl

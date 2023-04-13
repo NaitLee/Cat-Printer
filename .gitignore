@@ -24,13 +24,16 @@ build-common/python-win32*
 build-common/python-w32*
 # bleak_winrt is now outside python-w32
 build-common/bleak_winrt
+# local pf2
+pf2
+pf2.zip
+*.pf2
 # dev config
 config.json
 # dev backup
 *.bak
 # test files
 *.dump
-*.pf2
 *.pbm
 test.png
 # some other junk

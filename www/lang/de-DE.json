@@ -140,5 +140,7 @@
     "monospace": "Monospace",
     "rotate-image": "Bild drehen",
     "test-unknown-device": "Unbekanntes Gerät testen",
-    "now-will-scan-for-all-bluetooth-devices-nearby": "Der Scan sucht jetzt nach allen Bluetooth-Geräten in der Nähe"
+    "now-will-scan-for-all-bluetooth-devices-nearby": "Der Scan sucht jetzt nach allen Bluetooth-Geräten in der Nähe",
+
+    "pf2-font-not-found-or-broken-0": "PF2 font not found or broken: '{0}'"
 }

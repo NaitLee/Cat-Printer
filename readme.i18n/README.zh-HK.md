@@ -147,7 +147,7 @@ Copyright © 2021-2022 NaitLee Soft. 保留一些權利。
 
 - 當然不能沒有 Python 和 Web 技術！
 - [Bleak](https://bleak.readthedocs.io/en/latest/) 跨平台藍牙低功耗庫，牛！
-- [roddeh-i18n](https://github.com/roddeh/i18njs)，當前內置的國際化功能受此啓發
+- [roddeh-i18n](https://github.com/roddeh/i18njs)，當前內置的國際化功能受此啟發
 - [PF2 font](http://grub.gibibit.com/New_font_format)，很好的簡易像素字體格式
 - ImageMagick 和 Ghostscript，有用的東西已經在系統裏，就當然不用考慮別的了
 - [python-for-android](https://python-for-android.readthedocs.io/en/latest/)，雖然有些麻煩的地方

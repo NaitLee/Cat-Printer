@@ -20,7 +20,7 @@ class I18nLib():
 
     def __init__(self, search_path='lang', lang=None, fallback=None):
         self.fallback = fallback or 'en-US'
-        self.lang = lang or (locale.getdefaultlocale()[0] or fallback).replace('_', '-')
+        self.lang = lang or (locale.getdefaultlocale()[0] or self.fallback).replace('_', '-')
         with open(os.path.join(search_path, self.fallback + '.json'),
                   'r', encoding='utf-8') as file:
             self.data = json.load(file)

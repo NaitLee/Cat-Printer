@@ -5,34 +5,26 @@ Expecting to cost about half a day.
 
 Worthy to work on! This gives possibility to everything about Android in your mind!
 
+See [#Troubleshooting](#troubleshooting) for some problems you may meet.
+
 Note: not being confirmed to 100% work yet. Be the first bird to try! Or bookmark this, arrange your time & come back later.
 
 ## Prepare
 
-First, think about what will be your build environment. I choose to use a Ubuntu Docker container.
+First, think about what will be your build environment. I choose to use a Docker container with a newer GNU/Linux distribution.
 
 <details>
 
-<summary>Expand Comparison</summary>
+<summary>Expand Notes</summary>
 
-|                             | Minimal Ubuntu | Ubuntu | [Artix](https://artixlinux.org/) |
-| :-------------------------- | :------------: | :----: | :------: |
-| Base system<sup>1</sup>     |   | ✓ | ✓ |
-| Pkg diversity               | ✓ | ✓ | ✓ |
-| Fresh pkg<sup>2</sup>       |   |   | ✓ |
-| Less hassle<sup>3</sup>     | ✓ |   | ✓ |
-| Maintainability<sup>4</sup> | ✓ |   |   |
+Notes:
 
-Note: “Minimal Ubuntu” can mean a Ubuntu [Docker](https://docs.docker.com/get-started/overview/) image, a Ubuntu chroot environment, etc.
-
-1. In theory you can just have Ubuntu as base system, but see 2, 3, and 4.
+1. In theory you can just use your existing system, if you don’t afraid of messing it up.
 2. Rolling distribution have newer packages offered.  
   It may give great experience in daily use, but will heavily bloat the update if many development packages are installed alltogether.  
-  That said, Artix alone *worked* in those days. If you want, go ahead.
-3. Mis-designs will stress you down. systemd will ruin your mood.
-4. By operating in an isolated environment, a mess taking place inside won’t affect the host.
-
-(Some say Docker isn’t intended to be “stateful”. But nothing is better in my mere knowledge.)
+3. By operating in an isolated environment, a mess taking place inside won’t affect the host.
+4. Good candidates are: Arch, Artix, OpenSUSE Leap, and their neighbors.
+5. Some say Docker isn’t intended to be “stateful”. But nothing is better in my mere knowledge.
 
 </details>
 
@@ -66,7 +58,11 @@ cd $DIR_GIT
 # Cat-Printer
 git clone https://github.com/NaitLee/Cat-Printer.git
 # Bleak, we need some Java code from its source
-git clone https://github.com/hbldh/bleak.git
+# git clone https://github.com/hbldh/bleak.git
+# Use an older version for being compatible with p4a recipes (setup.py)
+wget https://files.pythonhosted.org/packages/e6/b4/e63829826a157d180831a1c5d3720e75d613c1290cb239510d148b906836/bleak-0.19.5.tar.gz
+tar -xzf bleak-0.19.5.tar.gz && rm bleak-0.19.5.tar.gz
+mv bleak-0.19.5 bleak
 # AdvancedWebView, in order to give Android WebView capability to use <input type="file" />
 git clone https://github.com/delight-im/Android-AdvancedWebView.git
 
@@ -83,17 +79,17 @@ After that, continue to [Fix the NDK](#fix-the-ndk).
 
 ----
 
-If you’re in China Mainland (you guessed it!), or prefer manual setup:
+If Google isn’t available there, or you prefer manual setup:
 
 - Pick a working mirror. Currently there’s [Tencent Cloud](https://mirrors.cloud.tencent.com/AndroidSDK/).
 
-- Pay attention to [required version of Android NDK](https://python-for-android.readthedocs.io/en/latest/quickstart/#basic-sdk-install), this will increase by time. It’s currently r25b.
+- Pay attention to [required version of Android NDK](https://python-for-android.readthedocs.io/en/latest/quickstart/#basic-sdk-install), this will increase by time. It’s currently r25b, but let’s use r25c.
 
 - Fetch & extract some archives, as shown in this table:
 
 | Archive file                        | Top-level dir inside    | Target directory                    |
 | ----------------------------------- | ----------------------- | ----------------------------------- |
-| `android-ndk-r25b-linux.zip`        | `android-ndk-r25b`      | `android/android-ndk-r25b`          |
+| `android-ndk-r25c-linux.zip`        | `android-ndk-r25c`      | `android/android-ndk-r25c`          |
 | `build-tools_r33-linux.zip`         | `android-13`            | `android/build-tools/33.0.0`        |
 | `commandlinetools-linux-8512546_latest.zip` | `cmdline-tools` | `android/cmdline-tools/latest`      |
 | `platform-30_r03.zip`               | `android-11`            | `android/platforms/android-30`      |
@@ -106,7 +102,7 @@ So after that you will get:
 
 ```
 android
-  ├── android-ndk-r25b
+  ├── android-ndk-r25c
   ├── build-tools
   │   └── 33.0.0
   ├── cmdline-tools
@@ -125,7 +121,7 @@ System doesn’t understand it. Let’s replace them as symlinks:
 ```bash
 # you may already have these from p4a guide
 ANDROIDSDK="$DIR_BUILD/android"
-ANDROIDNDK="$DIR_BUILD/android/android-ndk-r25b"
+ANDROIDNDK="$DIR_BUILD/android/android-ndk-r25c"
 # feel free to check this script
 python3 $DIR_GIT/Cat-Printer/build-android/fix-ndk-execs.py $ANDROIDNDK
 ```
@@ -147,10 +143,10 @@ after that, restart docker service, or reboot.
 
 ```bash
 # let’s create the container by first pulling the image
-docker pull ubuntu:latest
+docker pull archlinux:latest
 # please, pass previously mentioned directories (or their parent) via -v parameter, we will access them here
 # example: `-v /source1/android:/target1/android -v /source2/git-repo:/target2/git-repo`
-docker create --name catbuild -v /mnt/data:/mnt/data --tty -i ubuntu
+docker create --name catbuild -v /mnt/data:/mnt/data --tty -i archlinux
 
 # From now on, start the container like this
 docker start -i catbuild
@@ -161,17 +157,13 @@ docker start -i catbuild
 OK, we are now inside the container shell. Set it up:
 
 ```bash
-# (Optional) use a Ubuntu repository mirror
-# sed -i 's/archive.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
-dpkg --add-architecture i386
-apt update
-apt upgrade
+# (Optional) use a repository mirror:
+# cd /etc/pacman.d; mv mirrorlist mirrorlist.bak; echo 'Server = https://mirrors.ustc.edu.cn/archlinux/$repo/os/$arch' >mirrorlist
+pacman -Syuu jdk-openjdk python3 python-pip git cython zip nano vim tar wget unzip base-devel clang lld libffi
 # find python-for-android dependencies here:
 #   https://python-for-android.readthedocs.io/en/latest/quickstart/#installing-dependencies
-# there should be a command for Ubuntu that you can directly run
-# ... though we need more
-apt install -y python3-pip lld libffi-dev zip nano
-# (Optional) use a pypi mirror
+# there should be command for Arch/Ubuntu that you can directly run
+# (Optional) use a pypi mirror:
 # pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 pip install python-for-android cython bleak
 ```
@@ -187,7 +179,7 @@ We should glue them up by hand.
 echo '
 export DIR_BUILD="/mnt/data/@"
 export ANDROIDSDK="$DIR_BUILD/android"
-export ANDROIDNDK="$DIR_BUILD/android/android-ndk-r25b"
+export ANDROIDNDK="$DIR_BUILD/android/android-ndk-r25c"
 export ANDROIDAPI="30"
 export NDKAPI="21"' >> .bashrc
 
@@ -200,6 +192,7 @@ source ~/.bashrc
 ```bash
 # define shortcut(s). use your target paths!
 DIR_GIT="$DIR_BUILD/git-repo/"
+# note this involves python version, change as needed
 DIR_P4A="/usr/local/lib/python3.10/dist-packages/pythonforandroid/"
 
 # p4a will generate some intermediate data. “expose” this to the host for convenient manipulation.
@@ -343,7 +336,7 @@ Try the ultimate helper `1-build.sh`, if you also have everything in [developmen
 
 ## Troubleshooting
 
-Common issues and fixes:
+### Common
 
 | Error message | Fix |
 |-|-|
@@ -353,6 +346,33 @@ Common issues and fixes:
 | No such file or directory `bleak/setup.py` | Run `2-clean-up-build.sh` or [download the bleak source code from PyPi](https://pypi.org/project/bleak/#files) |
 | No such file or directory `build-android/dist` | Create a bare bundle before creating an APK |
 | JAVA_HOME is not set and no 'java' command could be found in your PATH. | Install a JDK (e.g. `openjdk-19-jdk`) |
+
+### Special
+
+Something like these:
+(pardon me for not memorizing the log well)
+
+```
+… platform is . …
+  is unsupported, assuming android-19 …
+……
+……
+……
+crtbegin… … not found
+…
+crtend… … not found
+```
+
+Change `$ANDROIDNDK/build/gmsl/__gmsl` line 512:
+```
+int_encode = $(__gmsl_tr1)$(wordlist 1,$1,$(__gmsl_input_int))
+```
+to this:
+```
+int_encode = $(__gmsl_tr1)$(wordlist 1,$(if $1, $1,0),$(__gmsl_input_int))
+```
+
+(Thanks to a comment around [here](https://stackoverflow.com/questions/10285242/openssl-using-androids-ndk-problems#answer-14369078))
 
 ## The End
 

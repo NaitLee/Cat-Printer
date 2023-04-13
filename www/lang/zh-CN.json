@@ -148,5 +148,6 @@
     "javascript-accessibilityjs-description": "一些无障碍功能",
     "javascript-catprinter-description": "猫咪打印机 (Cat-Printer) 主脚本",
     "free-software": "自由软件",
-    "free-software-description": "尊重您计算自由的软件。"
+    "free-software-description": "尊重您计算自由的软件。",
+    "pf2-font-not-found-or-broken-0": "PF2 字体丢失或损坏：'{0}'"
 }

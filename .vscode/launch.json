@@ -43,7 +43,7 @@
             "request": "launch",
             "program": "printer.py",
             "args": [
-                "-m", "-f", "GB02", "-t", "1,font,pf2", "COPYING"
+                "-m", "-f", "GB02", "-t", "1,unifont,pf2", "dev-diary.txt"
             ],
             "console": "integratedTerminal",
             "justMyCode": true
