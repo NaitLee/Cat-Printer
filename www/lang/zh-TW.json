@@ -149,5 +149,5 @@
     "javascript-catprinter-description": "貓咪印表機 (Cat-Printer) 主指令碼",
     "free-software": "自由軟體",
     "free-software-description": "尊重您計算自由的軟體。",
-    "pf2-font-not-found-or-broken-0": "PF2 字型丟失或損壞：'{0}'"
+    "pf2-font-not-found-or-broken-0": "未找到 ImageMagick，請安裝並重試。"
 }

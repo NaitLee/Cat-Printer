@@ -596,6 +596,9 @@ _MagickExe = fallback_program('magick', 'magick.exe', 'convert', 'convert.exe')
 def magick_text(stdin, image_width, font_size, font_family):
     'Pipe an io to ImageMagick for processing text to image, return output io'
     read_fd, write_fd = os.pipe()
+    if _MagickExe is None:
+        fatal(i18n("imagemagick-not-found"), code=129)
+        
     subprocess.Popen([_MagickExe, '-background', 'white', '-fill', 'black',
             '-size', f'{image_width}x', '-font', font_family, '-pointsize',
             str(font_size), 'caption:@-', 'pbm:-'],
@@ -605,6 +608,9 @@ def magick_text(stdin, image_width, font_size, font_family):
 def magick_image(stdin, image_width, dither):
     'Pipe an io to ImageMagick for processing "usual" image to pbm, return output io'
     read_fd, write_fd = os.pipe()
+    if _MagickExe is None:
+        fatal(i18n("imagemagick-not-found"), code=129)
+
     subprocess.Popen([_MagickExe, '-', '-fill', 'white', '-opaque', 'transparent',
             '-resize', f'{image_width}x', '-dither', dither, '-monochrome', 'pbm:-'],
             stdin=stdin, stdout=io.FileIO(write_fd, 'w'))
