@@ -1,13 +1,14 @@
 # Maintainer : 
 
 pkgname=cat-printer-git
-pkgver=r30.eafaa6e
+pkgver=r153.85cb5a8
 pkgrel=1
 pkgdesc="A project that provides support to some Bluetooth Cat Printer models, on many platforms!"
 arch=('any')
 url="https://github.com/NaitLee/Cat-Printer"
 license=('GPL3')
-depends=('python' 'bluez' 'bluez-utils' 'python-bleak' 'ghostscript' 'imagemagick')
+depends=('python' 'bluez' 'python-bleak')
+optdepends=('bluez-utils' 'ghostscript' 'imagemagick')
 makedepends=('git' 'unzip')
 provides=("cat-printer=${pkgver}")
 source=("$pkgname::git+https://github.com/NaitLee/Cat-Printer.git")

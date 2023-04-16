@@ -74,13 +74,13 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
 
     settings = DictAsObject({
         'config_path': 'config.json',
-        'version': 3,
+        'version': 4,
         'first_run': True,
         'is_android': False,
         'scan_time': 4.0,
         'dry_run': False,
         'energy': 64,
-        'quality': 32
+        'quality': 36
     })
     _settings_blacklist = (
         'printer', 'is_android'

@@ -142,5 +142,11 @@
     "test-unknown-device": "Unbekanntes Gerät testen",
     "now-will-scan-for-all-bluetooth-devices-nearby": "Der Scan sucht jetzt nach allen Bluetooth-Geräten in der Nähe",
 
-    "pf2-font-not-found-or-broken-0": "PF2 font not found or broken: '{0}'"
+    "pf2-font-not-found-or-broken-0": "PF2 font not found or broken: '{0}'",
+    "try-to-print-through-an-unknown-device": "Try to print through an unknown device",
+    "scanning-for-all-bluetooth-devices-nearby": "Scanning for all bluetooth devices nearby…",
+    "there-are-multiple-devices-": "There are multiple devices:",
+    "choose-which-one-0-": "Choose which one? [{0}]: ",
+    "multiple-devices-found-please-specify-one": "Multiple devices found, please specify one",
+    "no-prompt-for-multiple-devices": "No prompt for multiple devices"
 }

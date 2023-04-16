@@ -23,6 +23,7 @@ class ExitCodes():
     PrinterError = 64
     IncompleteProgram = 128
     MissingDependency = 129
+    UserInterrupt = 254
 
 def info(*args, **kwargs):
     'Just `print` to `stdout`'
@@ -345,7 +346,7 @@ class PrinterDriver(Commander):
             self.device = None
         if name is None and address is None:
             return
-        self.model = Models[name]
+        self.model = Models.get(name, Models['_ZZ00'])
         self.device = BleakClient(address)
         def notify(_char, data):
             if data == self.data_flow_pause:
@@ -595,10 +596,10 @@ _MagickExe = fallback_program('magick', 'magick.exe', 'convert', 'convert.exe')
 
 def magick_text(stdin, image_width, font_size, font_family):
     'Pipe an io to ImageMagick for processing text to image, return output io'
-    read_fd, write_fd = os.pipe()
     if _MagickExe is None:
-        fatal(i18n("imagemagick-not-found"), code=129)
-        
+        fatal(i18n("imagemagick-not-found"), code=ExitCodes.MissingDependency)
+
+    read_fd, write_fd = os.pipe()
     subprocess.Popen([_MagickExe, '-background', 'white', '-fill', 'black',
             '-size', f'{image_width}x', '-font', font_family, '-pointsize',
             str(font_size), 'caption:@-', 'pbm:-'],
@@ -607,10 +608,10 @@ def magick_text(stdin, image_width, font_size, font_family):
 
 def magick_image(stdin, image_width, dither):
     'Pipe an io to ImageMagick for processing "usual" image to pbm, return output io'
-    read_fd, write_fd = os.pipe()
     if _MagickExe is None:
-        fatal(i18n("imagemagick-not-found"), code=129)
+        fatal(i18n("imagemagick-not-found"), code=ExitCodes.MissingDependency)
 
+    read_fd, write_fd = os.pipe()
     subprocess.Popen([_MagickExe, '-', '-fill', 'white', '-opaque', 'transparent',
             '-resize', f'{image_width}x', '-dither', dither, '-monochrome', 'pbm:-'],
             stdin=stdin, stdout=io.FileIO(write_fd, 'w'))
@@ -677,6 +678,10 @@ def _main():
             help=i18n('print-quality'))
     parser.add_argument('-d', '--dry', action='store_true',
             help=i18n('dry-run-test-print-process-only'))
+    parser.add_argument('-u', '--unknown', action='store_true',
+            help=i18n('try-to-print-through-an-unknown-device'))
+    parser.add_argument('-0', '--0th', action='store_true',
+            help=i18n('no-prompt-for-multiple-devices'))
     parser.add_argument('-f', '--fake', metavar='XY01', type=str, default='',
             help=i18n('virtual-run-on-specified-model'))
     parser.add_argument('-m', '--dump', action='store_true',
@@ -729,18 +734,6 @@ def _main():
 
     mode = 'pbm'
 
-    # Connect to printer
-    if args.dry:
-        info(i18n('dry-run-test-print-process-only'))
-        printer.dry_run = True
-    if args.fake:
-        printer.fake = True
-        printer.model = Models[args.fake]
-    else:
-        info(i18n('connecting'))
-        printer.scan(identifier, use_result=True)
-    printer.dump = args.dump
-
     # Prepare image / text
     if args.text:
         info(i18n('text-printing-mode'))
@@ -758,15 +751,46 @@ def _main():
             else 'FloydSteinberg')
         )
 
+    # Connect to printer
+    if args.dry:
+        info(i18n('dry-run-test-print-process-only'))
+        printer.dry_run = True
+    if args.fake:
+        printer.fake = True
+        printer.model = Models[args.fake]
+    else:
+        info(i18n('scanning-for-devices'))
+        devices = printer.scan(identifier, everything=args.unknown)
+
+    printer.dump = args.dump
+
     if args.nothing:
         global Printer
         Printer = printer
         return
+    if len(devices) == 0:
+        error(i18n('no-available-devices-found'), error=PrinterError)
+    if len(devices) == 1 or getattr(args, '0th'):
+        info(i18n('connecting'))
+        printer.connect(devices[0].name, devices[0].address)
+    else:
+        info(i18n('there-are-multiple-devices-'))
+        for i in range(len(devices)):
+            d = devices[i]
+            n = str(d.name) + "-" + d.address[3:5] + d.address[0:2]
+            info('%4i\t%s' % (i, n))
+        choice = 0
+        try:
+            choice = int(input(i18n('choose-which-one-0-', choice)))
+        except KeyboardInterrupt:
+            raise
+        except:
+            pass
+        info(i18n('connecting'))
+        printer.connect(devices[choice].name, devices[choice].address)
     try:
         printer.print(file, mode=mode)
         info(i18n('finished'))
-    except KeyboardInterrupt:
-        info(i18n('stopping'))
     finally:
         file.close()
         printer.unload()
@@ -778,8 +802,9 @@ def main():
     except BleakError as e:
         error_message = str(e)
         if (
-            ('not turned on' in error_message) or   # windows or android
-            (isinstance(e, BleakDBusError) and      # linux/dbus/bluetoothctl
+            'not turned on' in error_message or
+            'No powered Bluetooth adapter' in error_message or
+            (isinstance(e, BleakDBusError) and
              getattr(e, 'dbus_error') == 'org.bluez.Error.NotReady')
         ):
             fatal(i18n('please-enable-bluetooth'), code=ExitCodes.GeneralError)
@@ -789,9 +814,11 @@ def main():
         fatal(e.message_localized, code=ExitCodes.PrinterError)
     except RuntimeError as e:
         if 'no running event loop' in str(e):
-            pass    # non-sense
+            pass    # ignore this
         else:
             raise
+    except KeyboardInterrupt:
+        fatal(i18n('stopping'), code=ExitCodes.UserInterrupt)
 
 if __name__ == '__main__':
     main()

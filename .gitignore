@@ -28,6 +28,10 @@ build-common/bleak_winrt
 pf2
 pf2.zip
 *.pf2
+# archlinux package build files
+cat-printer-git
+pkg
+*.pkg.tar.zst
 # dev config
 config.json
 # dev backup

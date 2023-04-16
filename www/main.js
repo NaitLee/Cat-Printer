@@ -191,16 +191,14 @@ async function callApi(path, body, errorPreHandler) {
     }).then(async (response) => {
         if (response.ok) return response.json()
         else {
+            const response_clone = response.clone();
             try {
-                // forgive this dirty trick
-                let json = response.json();
-                response.json = () => json;
-                if (errorPreHandler) return await errorPreHandler(response);
+                if (errorPreHandler) return await errorPreHandler(response_clone);
                 else throw new Error('API Failure');
             } catch (error) {
                 ErrorHandler.report(
                     error,
-                    JSON.stringify(await response.json(), undefined, 4)
+                    JSON.stringify(await response_clone.json(), undefined, 4)
                 )
                 return Promise.reject('API Failure');
             }
@@ -417,7 +415,7 @@ class CanvasController {
         this.algorithm = name;
         // Ev.dispatch('[name="algo"]', 'change', { value: name });
         Ev.dispatch('[name="threshold"]', 'change', { value: CanvasController.defaultThreshold });
-        Ev.dispatch('[name="energy"]', 'change', { value: (name == 'algo-direct' ? 96 : 64) });
+        Ev.dispatch('[name="energy"]', 'change', { value: (name == 'algo-direct' ? 96 : 68) });
         this.activatePreview();
     }
     expand(length = CanvasController.defaultHeight) {
@@ -723,12 +721,16 @@ class Main {
      * use this flag to avoid
      */
     allowSet;
+    devices;
+    connected;
     constructor() {
         this.allowSet = false;
         this.testUnknownDevice = false;
         this.deviceOptions = document.getElementById('device-options');
         this.settings = {};
         this.selectorMap = {};
+        this.devices = [];
+        this.connected = false;
         // window.addEventListener('unload', () => this.exit());
         /** @type {HTMLIFrameElement} */
         let iframe = document.getElementById('frame');
@@ -755,15 +757,16 @@ class Main {
         Ev.put('#set-accessibility'   , 'click', () => Dialog.alert('#accessibility'));
         Ev.put('a[target="frame"]', 'click', () => Dialog.alert('#frame'));
         Ev.put('#test-unknown-device' , 'click', () => {
-            Dialog.alert(i18n('now-will-scan-for-all-bluetooth-devices-nearby'), null, true);
             this.testUnknownDevice = true;
             Panel('panel-print');
             Hider.show('print');
             this.searchDevices();
+            Notice.wait(i18n('scanning-for-all-bluetooth-devices-nearby'));
         });
 
         this.conf('#device-options', 'change', 'printer', 
-            (value) => callApi('/connect', { device: value })
+            (value) =>
+                callApi('/connect', { device: value }).then(() => this.connected = true)
         );
         this.conf('[name="algo"]'  , 'change', 'mono_algorithm',
             (value) => this.settings['text_mode'] = (value === 'algo-direct')
@@ -938,31 +941,47 @@ class Main {
     }
     async searchDevices() {
         Notice.wait('scanning-for-devices');
-        let search_result = await callApi('/devices', {
+        const search_result = await callApi('/devices', {
             everything: this.testUnknownDevice
         }, this.handleBluetoothProblem);
-        if (search_result === null) return false;
-        let devices = search_result.devices;
-        for (let e of this.deviceOptions.children) e.remove();
+        this.devices = [];
+        this.connected = false;
+        if (search_result === null) return 0;
+        const devices = this.devices = search_result.devices;
+        // for (const e of this.deviceOptions.children) e.remove();
+        this.deviceOptions.innerHTML = '';
         if (devices.length === 0) {
             Notice.note('no-available-devices-found');
             hint('#device-refresh');
-            return false;
+            return 0;
         }
         Notice.note('found-0-available-devices', [devices.length]);
         hint('#insert-picture');
-        for (let device of devices) {
-            let option = document.createElement('option');
+        for (const device of devices) {
+            const option = document.createElement('option');
             option.value = `${device.name},${device.address}`;
             option.innerText = `${device.name}-${device.address.slice(3, 5)}${device.address.slice(0, 2)}`;
             this.deviceOptions.appendChild(option);
         }
         Ev.dispatch('#device-options', 'change');
-        return true;
+        return devices.length;
     }
     async print() {
         if (this.canvasController.imageUrl === null) return;
         await this.set(this.settings);
+        if (!this.connected) {
+            const count = await this.searchDevices();
+            if (count === 0) {
+                Notice.warn('no-available-devices-found');
+                return;
+            } else if (count === 1)
+                void 0;
+            else {
+                Notice.note('multiple-devices-found-please-specify-one')
+                Hider.show('print');
+                return;
+            }
+        }
         Notice.wait('printing');
         await fetch('/print', {
             method: 'POST',

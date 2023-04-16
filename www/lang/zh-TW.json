@@ -149,5 +149,12 @@
     "javascript-catprinter-description": "貓咪印表機 (Cat-Printer) 主指令碼",
     "free-software": "自由軟體",
     "free-software-description": "尊重您計算自由的軟體。",
-    "pf2-font-not-found-or-broken-0": "未找到 ImageMagick，請安裝並重試。"
+    "pf2-font-not-found-or-broken-0": "PF2 字型丟失或損壞：'{0}'",
+    "imagemagick-not-found": "未找到 ImageMagick，請安裝並重試。",
+    "try-to-print-through-an-unknown-device": "試著用未知的裝置列印",
+    "scanning-for-all-bluetooth-devices-nearby": "正在搜尋附近所有藍芽裝置……",
+    "there-are-multiple-devices-": "有多個裝置：",
+    "choose-which-one-0-": "選擇哪一個？[{0}]：",
+    "multiple-devices-found-please-specify-one": "找到多個裝置，請指定",
+    "no-prompt-for-multiple-devices": "發現多個裝置時不提示選擇"
 }

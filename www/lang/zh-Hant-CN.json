@@ -150,5 +150,11 @@
     "free-software": "自由軟件",
     "free-software-description": "尊重您計算自由的軟件。",
     "pf2-font-not-found-or-broken-0": "PF2 字體丟失或損壞：'{0}'",
-    "imagemagick-not-found": "未找到 ImageMagick，請安裝並重試。"
+    "imagemagick-not-found": "未找到 ImageMagick，請安裝並重試。",
+    "try-to-print-through-an-unknown-device": "試着用未知的設備打印",
+    "scanning-for-all-bluetooth-devices-nearby": "正在搜索附近所有藍牙設備……",
+    "there-are-multiple-devices-": "有多個設備：",
+    "choose-which-one-0-": "選擇哪一個？[{0}]：",
+    "multiple-devices-found-please-specify-one": "找到多個設備，請指定",
+    "no-prompt-for-multiple-devices": "發現多個設備時不提示選擇"
 }

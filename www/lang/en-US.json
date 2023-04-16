@@ -158,8 +158,12 @@
     "rotate-image": "Rotate Image",
     "test-unknown-device": "Test Unknown Device",
     "scan": "Scan",
-    "now-will-scan-for-all-bluetooth-devices-nearby": "Scan set to search for all bluetooth devides nearby.",
     "pf2-font-not-found-or-broken-0": "PF2 font not found or broken: '{0}'",
-    "imagemagick-not-found": "ImageMagick not found, please install it and retry."
-
+    "imagemagick-not-found": "ImageMagick not found, please install it and retry.",
+    "try-to-print-through-an-unknown-device": "Try to print through an unknown device",
+    "scanning-for-all-bluetooth-devices-nearby": "Scanning for all bluetooth devices nearby…",
+    "there-are-multiple-devices-": "There are multiple devices:",
+    "choose-which-one-0-": "Choose which one? [{0}]: ",
+    "multiple-devices-found-please-specify-one": "Multiple devices found, please specify one",
+    "no-prompt-for-multiple-devices": "No prompt for multiple devices"
 }
