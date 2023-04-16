@@ -8,7 +8,7 @@ English | [Deutsch](./readme.i18n/README.de-DE.md) | [中文（简体字）](./r
 
 ## Models
 
-Known to support: `GB0X, GT01, YT01` (`X` represents any digit)
+Known to support: `GB01, GB02, GB03, GT01, YT01, MX05, MX06, MX08`
 
 You can test other models with the Web UI, in `Settings -> Test Unknown Device`  
 It may work!

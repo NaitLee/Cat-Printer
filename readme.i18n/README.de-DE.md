@@ -7,12 +7,7 @@
 
 ## Unterstützte Geräte
 
-
-|    |    |
-|----|----|
-| Untersützt | GB01, GB02, GT01, GB03  |
-<!-- | Maybe     | N/A | -->
-<!-- | Planned   | N/A | -->
+Untersützt: `GB01, GB02, GB03, GT01, YT01, MX05, MX06, MX08`
 
 ## Funktionen
 
@@ -23,8 +18,6 @@
    
    oder 
   - über die Android-App!
-
-
 
 - Friendly!
   - Sprachunterstützung - beteiligen Sie sich an der Übersetzung!
