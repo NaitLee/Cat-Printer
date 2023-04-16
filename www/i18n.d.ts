@@ -29,6 +29,10 @@ type AllConditions = {
         'single': string,
         'multiple': string
     },
+    'nl-NL': {
+        'single': string,
+        'multiple': string
+    },
     'zh-CN': {
         'measure': string
     }
