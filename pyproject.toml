@@ -1,0 +1,20 @@
+[project]
+name = "cat-printer"
+version = "0.6.3.0"
+description = "🐱🖨 A project that provides support to some Bluetooth “Cat Printer” models"
+
+authors = [
+    { name = "NaitLee", email = "naitli@foxmail.com" }
+]
+
+dependencies = ["bleak~=0.20.2", "pyobjc~=9.1.1"]
+readme = "README.md"
+requires-python = ">= 3.8"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
