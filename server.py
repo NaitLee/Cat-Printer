@@ -182,9 +182,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
                 for key in settings:
                     self.settings[key] = settings[key]
         else:
-            if IsAndroid:
-                self.settings['scan_time'] = 1.0
-            elif os.name in ('posix',):
+            if os.name in ('posix',) or IsAndroid:
                 self.settings['scan_time'] = 2.0
             self.save_config()
 
@@ -356,7 +354,11 @@ def serve():
         try:
             request_permissions([Permission.BLUETOOTH_SCAN, Permission.BLUETOOTH_CONNECT])
         except Exception:
+            print('Exception on requesting Android Permissions. Continuing', file=sys.stderr)
             pass
+        from android.app import Activity
+        from android.content import Intent
+        print(Intent.getIntent().getType())
     
     try:
         server.serve_forever()
