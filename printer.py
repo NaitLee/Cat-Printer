@@ -769,7 +769,7 @@ def _main():
         Printer = printer
         return
     if len(devices) == 0:
-        error(i18n('no-available-devices-found'), error=PrinterError)
+        error(i18n('no-available-devices-found'), exception=PrinterError)
     if len(devices) == 1 or getattr(args, '0th'):
         info(i18n('connecting'))
         printer.connect(devices[0].name, devices[0].address)
