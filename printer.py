@@ -734,23 +734,6 @@ def _main():
 
     mode = 'pbm'
 
-    # Prepare image / text
-    if args.text:
-        info(i18n('text-printing-mode'))
-        printer.font_family = font_family or 'font'
-        if 'pf2' not in text_param:
-            file = magick_text(file, printer.model.paper_width,
-                    font_size, font_family)
-        else:
-            printer.font_scale = font_size
-            mode = 'text'
-    elif args.convert:
-        file = magick_image(file, printer.model.paper_width, (
-            'None'
-            if args.convert == 'text'
-            else 'FloydSteinberg')
-        )
-
     # Connect to printer
     if args.dry:
         info(i18n('dry-run-test-print-process-only'))
@@ -788,6 +771,25 @@ def _main():
             pass
         info(i18n('connecting'))
         printer.connect(devices[choice].name, devices[choice].address)
+
+    # Prepare image / text
+    print(f"printer: {printer.model}")
+    if args.text:
+        info(i18n('text-printing-mode'))
+        printer.font_family = font_family or 'font'
+        if 'pf2' not in text_param:
+            file = magick_text(file, printer.model.paper_width,
+                    font_size, font_family)
+        else:
+            printer.font_scale = font_size
+            mode = 'text'
+    elif args.convert:
+        file = magick_image(file, printer.model.paper_width, (
+            'None'
+            if args.convert == 'text'
+            else 'FloydSteinberg')
+        )
+
     try:
         printer.print(file, mode=mode)
         info(i18n('finished'))
