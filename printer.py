@@ -773,7 +773,6 @@ def _main():
         printer.connect(devices[choice].name, devices[choice].address)
 
     # Prepare image / text
-    print(f"printer: {printer.model}")
     if args.text:
         info(i18n('text-printing-mode'))
         printer.font_family = font_family or 'font'
