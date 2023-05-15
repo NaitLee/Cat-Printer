@@ -44,3 +44,4 @@ test.png
 .directory
 thumbs.db
 thumbs.db:encryptable
+env/
