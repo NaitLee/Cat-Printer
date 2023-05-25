@@ -85,7 +85,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
     _settings_blacklist = (
         'printer', 'is_android'
     )
-    all_js: list = []
+    all_script: list = []
 
     printer: PrinterDriver = PrinterDriver()
 
@@ -120,7 +120,7 @@ class PrinterServerHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-Type', mime(path))
                 self.end_headers()
-                for data in concat_files(*(self.all_js), prefix_format='\n// {0}\n'):
+                for data in concat_files(*(self.all_script), prefix_format='\n// {0}\n'):
                     self.wfile.write(data)
                 return
         path = 'www' + path
@@ -321,10 +321,10 @@ class PrinterServer(HTTPServer):
         if self.handler is None:
             self.handler = self.handler_class(request, client_address, self)
             self.handler.load_config()
-            with open(os.path.join('www', 'all_js.txt'), 'r', encoding='utf-8') as file:
+            with open(os.path.join('www', 'all-scripts.txt'), 'r', encoding='utf-8') as file:
                 for path in file.read().split('\n'):
                     if path != '':
-                        self.handler.all_js.append(os.path.join('www', path))
+                        self.handler.all_script.append(os.path.join('www', path))
             return
         self.handler.__init__(request, client_address, self)
 

@@ -1,6 +1,8 @@
 
+/// <reference path="./image.d.ts" />
+
 export function monoGrayscale(rgba: Uint32Array, brightness: i32, alpha_as_white: bool): Uint8ClampedArray {
-    let mono = new Uint8ClampedArray(rgba.length);
+    const mono = new Uint8ClampedArray(rgba.length);
     let r: f32 = 0.0, g: f32 = 0.0, b: f32 = 0.0, a: f32 = 0.0, m: f32 = 0.0, n: i32 = 0;
     for (let i: i32 = 0; i < mono.length; ++i) {
         n = rgba[i];
@@ -22,7 +24,7 @@ export function monoGrayscale(rgba: Uint32Array, brightness: i32, alpha_as_white
 
 /** Note: returns a `Uint32Array` */
 export function monoToRgba(mono: Uint8ClampedArray): Uint32Array {
-    let rgba = new Uint32Array(mono.length);
+    const rgba = new Uint32Array(mono.length);
     for (let i: i32 = 0; i < mono.length; ++i) {
         // little endian
         rgba[i] = 0xff000000 | (mono[i] << 16) | (mono[i] << 8) | mono[i];
@@ -30,7 +32,7 @@ export function monoToRgba(mono: Uint8ClampedArray): Uint32Array {
     return rgba;
 }
 
-export function monoDirect(mono: Uint8ClampedArray, w: i32, h:i32): Uint8ClampedArray {
+export function monoDirect(mono: Uint8ClampedArray, _w: i32, _h:i32): Uint8ClampedArray {
     for (let i: i32 = 0; i < mono.length; ++i) {
         mono[i] = mono[i] > 0x80 ? 0xff : 0x00;
     }
@@ -62,7 +64,7 @@ export function monoSteinberg(mono: Uint8ClampedArray, w: i32, h: i32): Uint8Cla
 export function monoHalftone(mono: Uint8ClampedArray, w: i32, h: i32): Uint8ClampedArray {
     const spot: i32 = 4;
     const spot_h: i32 = spot / 2 + 1;
-    const spot_d: i32 = spot * 2;
+    // const spot_d: i32 = spot * 2;
     const spot_s: i32 = spot * spot;
     let i: i32, j: i32, x: i32, y: i32, o: f64 = 0.0;
     for (j = 0; j < h - spot; j += spot) {
@@ -85,8 +87,8 @@ export function monoHalftone(mono: Uint8ClampedArray, w: i32, h: i32): Uint8Clam
 }
 
 export function monoToPbm(data: Uint8ClampedArray): Uint8ClampedArray {
-    let length: i32 = (data.length / 8) | 0;
-    let result = new Uint8ClampedArray(length);
+    const length: i32 = (data.length / 8) | 0;
+    const result = new Uint8ClampedArray(length);
     for (let i: i32 = 0, p: i32 = 0; i < data.length; ++p) {
         result[p] = 0;
         for (let d: u8 = 0; d < 8; ++i, ++d)
@@ -105,7 +107,7 @@ export function rotateRgba(before: Uint32Array, w: i32, h: i32): Uint32Array {
      *    +------+   |   | after
      *     before    +---+
      */
-    let after = new Uint32Array(before.length);
+    const after = new Uint32Array(before.length);
     for (let j: i32 = 0; j < h; j++) {
         for (let i: i32 = 0; i < w; i++) {
             after[j * w + i] = before[(w - i - 1) * h + j];

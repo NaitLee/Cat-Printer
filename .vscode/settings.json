@@ -1,5 +1,6 @@
 {
     "js/ts.implicitProjectConfig.strictNullChecks": false,
     "js/ts.implicitProjectConfig.checkJs": false,
-    "js/ts.implicitProjectConfig.experimentalDecorators": true
+    "js/ts.implicitProjectConfig.experimentalDecorators": true,
+    "deno.enable": true
 }

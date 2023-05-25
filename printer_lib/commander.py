@@ -41,16 +41,9 @@ def crc8(data):
 
 def reverse_bits(i: int):
     'Reverse the bits of this byte (as `int`)'
-    return (
-        (i & 0b10000000) >> 7 |
-        (i & 0b01000000) >> 5 |
-        (i & 0b00100000) >> 3 |
-        (i & 0b00010000) >> 1 |
-        (i & 0b00001000) << 1 |
-        (i & 0b00000100) << 3 |
-        (i & 0b00000010) << 5 |
-        (i & 0b00000001) << 7
-    )
+    i = ((i & 0b10101010) >> 1) | ((i & 0b01010101) << 1)
+    i = ((i & 0b11001100) >> 2) | ((i & 0b00110011) << 2)
+    return ((i & 0b11110000) >> 4) | ((i & 0b00001111) << 4)
 
 def int_to_bytes(i: int, big_endian=False):
     ''' Turn `int` into `bytearray`, that have
