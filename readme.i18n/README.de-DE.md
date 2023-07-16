@@ -85,7 +85,7 @@ PRs natürlich sind willkommen!
 
 ## Lizenz
 
-Copyright © 2021-2022 NaitLee Soft. Einige Rechte sind vorbehalten.
+Copyright © 2021-2023 NaitLee Soft. Einige Rechte sind vorbehalten.
 
 ```
 Dieses Programm ist Freie Software: Sie können es unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation, Version 3 der Lizenz oder (nach Ihrer Wahl) jeder neueren veröffentlichten Version, weiter verteilen und/oder modifizieren.
