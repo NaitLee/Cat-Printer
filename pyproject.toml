@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling", "bleak"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cat-printer"
+version = "0.7.0"
+authors = [
+  { name="NaitLee" },
+]
+description = "App & Driver for Bluetooth thermal “Cat Printers”"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/NaitLee/Cat-Printer"
+"Bug Tracker" = "https://github.com/NaitLee/Cat-Printer/issues"

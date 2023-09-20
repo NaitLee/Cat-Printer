@@ -1,0 +1,5 @@
+__pycache__
+venv
+pf2
+dist
+src/*.dump.bin
