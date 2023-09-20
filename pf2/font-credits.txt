@@ -1,0 +1,22 @@
+Fantasque Sans Mono
+SIL Open Font License
+Copyright (c) 2013-2016, Jany Belluz (jany.belluz@hotmail.fr)
+https://github.com/belluzj/fantasque-sans
+    fantasque-24.pf2
+
+Happy Times at the IKOB
+SIL OFL 1.1 and Bitstream Vera v0.00
+https://www.fontsquirrel.com/fonts/happy-times-at-the-ikob
+    times-24.pf2
+    times-24-i.pf2
+
+Noto Sans
+Copyright 2012 Google Inc. All Rights Reserved.
+https://www.fontsquirrel.com/fonts/noto-sans
+    noto-sans-24.pf2
+
+Unifont
+GNU GPLv2+ with the GNU Font Embedding Exception and the SIL Open Font License version 1.1
+http://unifoundry.com/unifont/index.html
+    unifont-16.pf2
+    unifont-16-s.pf2 "-r 32-1327"
