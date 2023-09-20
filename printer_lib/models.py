@@ -19,7 +19,7 @@ class Model():
 Models = {}
 
 # all known supported models
-for name in '_ZZ00 GB01 GB02 GB03 GT01 MX05 MX06 MX08 YT01'.split(' '):
+for name in '_ZZ00 GB01 GB02 GB03 GT01 MX05 MX06 MX08 MX09 YT01'.split(' '):
     Models[name] = Model()
 
 # that can receive compressed data
@@ -27,5 +27,5 @@ for name in 'GB03'.split(' '):
     Models[name].is_new_kind = True
 
 # that have problem giving feed command
-for name in 'MX05 MX06 MX08'.split(' '):
+for name in 'MX05 MX06 MX08 MX09'.split(' '):
     Models[name].problem_feeding = True
