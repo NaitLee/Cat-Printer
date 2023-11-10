@@ -45,17 +45,16 @@ def reverse_bits(i: int):
     i = ((i & 0b11001100) >> 2) | ((i & 0b00110011) << 2)
     return ((i & 0b11110000) >> 4) | ((i & 0b00001111) << 4)
 
-def int_to_bytes(i: int, big_endian=False):
-    ''' Turn `int` into `bytearray`, that have
-        least bytes possible to represent the int
-    '''
-    result = bytearray()
+def int_to_bytes(i: int, length=1, big_endian=False) -> bytes:
+    b = bytearray(length)
+    p = 0
     while i != 0:
-        result.append(i & 0xff)
+        b[p] = i & 0xff
         i >>= 8
+        p += 1
     if big_endian:
-        result.reverse()
-    return result
+        b = reversed(b)
+    return bytes(b)
 
 class Commander(metaclass=ABCMeta):
     ''' Semi-abstract class, to be inherited by `PrinterDriver`
@@ -122,11 +121,11 @@ class Commander(metaclass=ABCMeta):
 
     def retract_paper(self, pixels: int):
         'Retract the paper for some pixels'
-        self.send( self.make_command(0xa0, int_to_bytes(pixels)) )
+        self.send( self.make_command(0xa0, int_to_bytes(pixels, length=2)) )
 
     def feed_paper(self, pixels: int):
         'Feed the paper for some pixels'
-        self.send( self.make_command(0xa1, int_to_bytes(pixels)) )
+        self.send( self.make_command(0xa1, int_to_bytes(pixels, length=2)) )
 
     def set_speed(self, value: int):
         ''' Set how quick to feed/retract paper. **The lower, the quicker.**
@@ -140,7 +139,7 @@ class Commander(metaclass=ABCMeta):
         ''' Set thermal energy, max to `0xffff`
             By default, it's seems around `0x3000` (1 / 5)
         '''
-        self.send( self.make_command(0xaf, int_to_bytes(amount)) )
+        self.send( self.make_command(0xaf, int_to_bytes(amount, length=2)) )
 
     def draw_bitmap(self, bitmap_data: bytearray):
         'Print `bitmap_data`. Also does the bit-reversing job.'
