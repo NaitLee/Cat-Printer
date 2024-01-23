@@ -17,7 +17,8 @@ var I18nExtensions = (function() {
         'en-US': English,
         'zh-CN': Chinese,
         'de-DE': German,
-	'nl-NL': Dutch,
+		'nl-NL': Dutch,
+		'fr': French,
         'ar': Arabic
     };
 
@@ -118,6 +119,20 @@ var I18nExtensions = (function() {
      * @type {ExtensionOf<'nl-NL'>}
      */
     function Dutch(things, conditions) {
+        if (typeof conditions === 'string')
+            return conditions;
+        for (let index in things) {
+            let value = things[index];
+            if (typeof value === 'number') {
+                if (value == 1) return conditions['single'];
+                else return conditions['multiple'];
+            }
+        }
+    }
+    /**
+     * @type {ExtensionOf<'fr'>}
+     */
+    function French(things, conditions) {
         if (typeof conditions === 'string')
             return conditions;
         for (let index in things) {
