@@ -8,7 +8,7 @@ English | [Deutsch](./readme.i18n/README.de-DE.md) | [中文（简体字）](./r
 
 ## Models
 
-Known to support: `GB01, GB02, GB03, GT01, YT01, MX05, MX06, MX08`
+Known to support: `GB01, GB02, GB03, GT01, YT01, MX05, MX06, MX08, MX10`
 
 You can test other models with the Web UI, in `Settings -> Test Unknown Device`  
 It may work!
@@ -51,6 +51,8 @@ It may work!
 - and Fun!
   - Do whatever you like!
 
+***Didn’t find your feature? Or can’t set it up? Try the simple Web-app, [kitty-printer](https://print.unseen-site.fun/).***
+
 ## Get Started
 
 ### Android
@@ -60,23 +62,36 @@ Get the newest apk release and install, then well done!
 It may ask for background location permission, you can deny it safely.  
 (Foreground) Location permission is required for scanning Bluetooth devices in newer Android system.
 
-Recommend to set scan time to 1 second.
+It is recommended to set scan time to 1 second.
+
+The 3rd-party F-Droid repository [IzzyOnDroid](https://android.izzysoft.de/repo) is known to include Cat-Printer.
 
 ### Windows
 
-Get the newest release archive with “windows” in the file name,  
-extract to somewhere and run `start.bat`
+1. Download [source code](https://github.com/NaitLee/Cat-Printer/archive/refs/heads/main.zip) of this repository and install newest version of [Python](https://www.python.org/).
+2. Extract the source code archive, run `install.bat`, wait for it to complete
+3. After that, you will get `server.bat` for opening the Web interface. Run it and enjoy
+
+<!-- Build system broken -->
+<!-- Get the newest release archive with “windows” in the file name,  
+extract to somewhere and run `start.bat` -->
 
 Windows typically needs longer scan time. Defaults to 4 seconds, try to find your case.
 
+For those who know Python development — see `requirements.txt` to find your way, it’s very simple.
+
 ### GNU/Linux
 
-You can get the “pure” release, extract it, fire up a terminal and run:  
-```bash
-python3 server.py
+Get source code and run `./install.sh` to set the environment up.
+
+After that, you can always use Cat-Printer inside the given virtual environment:
+
+```
+(venv) $ python3 server.py
 ```
 
 It is recommended to set the scan time to 2 seconds.
+
 On Arch Linux based distros you may install `bluez` first, as it may not be installed by default
 ```bash
 sudo pacman -S bluez bluez-utils
@@ -85,7 +100,11 @@ sudo pacman -S bluez bluez-utils
 <details>
 <summary>Further steps</summary>
 
-You may want to use the command line interface for hackiness...  
+You may want to use the command line interface for hackiness:
+
+```
+$ python printer.py --help
+```
 
 You may or may not need to install ImageMagick and Ghostscript, depending on your distro.
 
@@ -112,7 +131,7 @@ then install `pyobjc` and `bleak` via `pip` in terminal:
 pip3 install pyobjc bleak
 ```
 
-After that, fetch & use a “bare” release:  
+After that, get the source code and run:  
 ```bash
 python3 server.py
 ```
@@ -133,9 +152,10 @@ Please use Issue or Discussion if there’s something in your mind!
 
 Of course Pull Requests are welcome if you can handle them!
 
-## License
+## Licensefdroidhowtomarkets
 
-Copyright © 2021-2023 NaitLee Soft. Some rights reserved.
+
+Copyright © 2021-2024 NaitLee Soft. Some rights reserved.
 
 ```
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.

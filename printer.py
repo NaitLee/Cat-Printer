@@ -751,26 +751,27 @@ def _main():
         global Printer
         Printer = printer
         return
-    if len(devices) == 0:
-        error(i18n('no-available-devices-found'), exception=PrinterError)
-    if len(devices) == 1 or getattr(args, '0th'):
-        info(i18n('connecting'))
-        printer.connect(devices[0].name, devices[0].address)
-    else:
-        info(i18n('there-are-multiple-devices-'))
-        for i in range(len(devices)):
-            d = devices[i]
-            n = str(d.name) + "-" + d.address[3:5] + d.address[0:2]
-            info('%4i\t%s' % (i, n))
-        choice = 0
-        try:
-            choice = int(input(i18n('choose-which-one-0-', choice)))
-        except KeyboardInterrupt:
-            raise
-        except:
-            pass
-        info(i18n('connecting'))
-        printer.connect(devices[choice].name, devices[choice].address)
+    if not args.fake:
+        if len(devices) == 0:
+            error(i18n('no-available-devices-found'), exception=PrinterError)
+        if len(devices) == 1 or getattr(args, '0th'):
+            info(i18n('connecting'))
+            printer.connect(devices[0].name, devices[0].address)
+        else:
+            info(i18n('there-are-multiple-devices-'))
+            for i in range(len(devices)):
+                d = devices[i]
+                n = str(d.name) + "-" + d.address[3:5] + d.address[0:2]
+                info('%4i\t%s' % (i, n))
+            choice = 0
+            try:
+                choice = int(input(i18n('choose-which-one-0-', choice)))
+            except KeyboardInterrupt:
+                raise
+            except:
+                pass
+            info(i18n('connecting'))
+            printer.connect(devices[choice].name, devices[choice].address)
 
     # Prepare image / text
     if args.text:
