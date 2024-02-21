@@ -7,11 +7,11 @@ License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
 'use strict';
 
 function isHidden(element) {
-    let parents = [element];
+    const parents = [element];
     while (parents[0].parentElement)
         parents.unshift(parents[0].parentElement);
     return parents.some(e => {
-        let rect = e.getBoundingClientRect();
+        const rect = e.getBoundingClientRect();
         return (
             e.classList.contains('hidden') ||
             e.classList.contains('hard-hidden') ||
@@ -65,11 +65,11 @@ function initKeyboardShortcuts() {
             inputs = Array.from(document.querySelectorAll('*[data-key]'));
         else inputs = Array.from(document.querySelectorAll('#dialog *[data-key]'));
         /** @type {{ [key: string]: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement }} */
-        let keys2 = keys.split('');
+        const keys2 = keys.split('');
         shortcuts = {};
         if (focusing) shortcuts = { 'ESC': focus };
         else
-            for (let input of inputs) {
+            for (const input of inputs) {
                 if (isHidden(input)) continue;
                 key = input.getAttribute('data-key');
                 if ((index = keys2.indexOf(key)) !== -1) keys2.splice(index, 1);
@@ -78,15 +78,15 @@ function initKeyboardShortcuts() {
             }
         // Array.from(layer.children).forEach(e => e.remove());
         for (let i = layer.children.length; i <= inputs.length; i++) {
-            let span = document.createElement('span');
+            const span = document.createElement('span');
             layer.appendChild(span);
         }
         index = 0;
         for (key in shortcuts) {
-            let span = layer.children[index++];
-            let input = shortcuts[key];
-            let position = input.getBoundingClientRect();
-            let text = i18n(keyToLetter(key.toUpperCase()));
+            const span = layer.children[index++];
+            const input = shortcuts[key];
+            const position = input.getBoundingClientRect();
+            const text = i18n(keyToLetter(key.toUpperCase()));
             if (span.innerText !== text) span.innerText = text;
             span.style.top = (position.y || position.top) + 'px';
             span.style.left = (position.x || position.left) + 'px';
@@ -99,7 +99,7 @@ function initKeyboardShortcuts() {
     const start = () => setInterval(mark_keys, 1000);
     const types_to_click = ['submit', 'file', 'checkbox', 'radio', 'A'];
     document.body.addEventListener('keyup', (event) => {
-        let key = event.key || keyFromCode(event.keyCode);
+        const key = event.key || keyFromCode(event.keyCode);
         if (!started) {
             if (key !== 'Tab') return;
             mark_keys();
@@ -107,7 +107,7 @@ function initKeyboardShortcuts() {
             started = true;
         }
         requestAnimationFrame(mark_keys)
-        let input = shortcuts[key];
+        const input = shortcuts[key];
         if (input) {
             if (types_to_click.includes(input.type || input.tagName))
                 input.dispatchEvent(new MouseEvent(event.shiftKey ? 'contextmenu' : 'click'));
