@@ -19,6 +19,7 @@ var I18nExtensions = (function() {
         'de-DE': German,
 		'nl-NL': Dutch,
 		'fr': French,
+        'ru': Russian,
         'ar': Arabic
     };
 
@@ -133,6 +134,20 @@ var I18nExtensions = (function() {
      * @type {ExtensionOf<'fr'>}
      */
     function French(things, conditions) {
+        if (typeof conditions === 'string')
+            return conditions;
+        for (let index in things) {
+            let value = things[index];
+            if (typeof value === 'number') {
+                if (value == 1) return conditions['single'];
+                else return conditions['multiple'];
+            }
+        }
+    }
+    /**
+     * @type {ExtensionOf<'ru'>}
+     */
+    function Russian(things, conditions) {
         if (typeof conditions === 'string')
             return conditions;
         for (let index in things) {
