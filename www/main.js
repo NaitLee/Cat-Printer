@@ -373,7 +373,26 @@ class CanvasController {
             }
             return prevent_default(event);
         });
-
+        document.body.addEventListener('paste', (event) => {
+            const items = event.clipboardData.items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].kind === 'file' && items[i].type.startsWith('image/')) {
+                    const file = items[i].getAsFile();
+                    const reader = new FileReader();
+    
+                    reader.onload = (e) => {
+                        const imageUrl = e.target.result;
+                        this.putImage(imageUrl);
+                        this.imageUrl = imageUrl;
+                        this.controls.classList.add('hidden');
+                    };
+    
+                    reader.readAsDataURL(file);
+                    event.preventDefault();
+                }
+            }
+        });
+        
         this.textArea.style["font-size"] = this.textSize.value + "px";
         this.textArea.style["font-family"] = this.textFont.value;
         this.textArea.style["word-break"] = this.wrapBySpace.checked ? "break-word" : "break-all";
@@ -625,10 +644,12 @@ class CanvasController {
             elem.classList.remove("hint");
         }
     }
+    
     makePbm() {
         let blob = new Blob([`P4\n${this.canvas.width} ${this.canvas.height}\n`, this.previewPbm]);
         return blob;
     }
+    
 }
 
 /** Global variable indicating current language */
