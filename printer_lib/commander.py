@@ -48,11 +48,11 @@ def reverse_bits(i: int):
 def int_to_bytes(i: int, length=1, big_endian=False) -> bytes:
     max_value = (1 << (length * 8)) - 1
     if type(i) is not int:
-        raise f'int_to_bytes: not int: {i}'
+        raise Exception(f'int_to_bytes: not int: {i}')
     if i < 0:
-        raise f'int_to_bytes: {i} < 0'
+        raise Exception(f'int_to_bytes: {i} < 0')
     if i > max_value:
-        raise f'int_to_bytes: {i} > {max_value}'
+        i = max_value
     b = bytearray(length)
     p = 0
     while i != 0:
