@@ -1,5 +1,7 @@
 English | [Deutsch](./readme.i18n/README.de-DE.md) | [中文（简体字）](./readme.i18n/README.zh-CN.md) | [中文（正體字）](./readme.i18n/README.zh-TW.md) | [中文（香港字）](./readme.i18n/README.zh-HK.md)
 
+> **NOTICE: I will no longer actively maintain Cat-Printer. Some info here should be treated historical.**
+
 # Cat-Printer
 
 🐱🖨 A project that provides support to some Bluetooth “Cat Printer” models, on *many* platforms!
