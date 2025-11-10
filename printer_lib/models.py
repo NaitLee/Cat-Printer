@@ -19,7 +19,7 @@ class Model():
 Models = {}
 
 # all known supported models
-for name in '_ZZ00 GB01 GB02 GB03 GT01 MX05 MX06 MX08 MX09 MX10 YT01'.split(' '):
+for name in '_ZZ00 GB01 GB02 GB03 GT01 MX05 MX06 MX08 MX09 MX10 YT01 MX11'.split(' '):
     Models[name] = Model()
 
 # that can receive compressed data
