@@ -1,0 +1,20 @@
+---
+version: '3.8'
+services:
+  catprinter:
+    container_name: "catprinter"
+    build:
+      context: ../
+      dockerfile: build-container/Containerfile
+      image: catprinter:latest
+    ports:
+      - 8095:8095
+    volumes:
+      - /run/dbus:/run/dbus
+      - /var/run/dbus:/var/run/dbus
+    security_opt:
+      - label:disable
+      - unmask:ALL
+    devices:
+      - /dev/usb/:/dev/usb
+    userns_mode: keep-id
