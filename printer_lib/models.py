@@ -16,6 +16,9 @@ class Model():
     is_new_kind: bool = False
     problem_feeding: bool = False
 
+def isValidModel(name):
+    return name and any(name.startswith(model) for model in Models)
+
 Models = {}
 
 # all known supported models
