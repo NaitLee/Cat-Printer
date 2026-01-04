@@ -74,11 +74,24 @@ class IppMessage:
                     # Unknown IPP attribute group tag: Ignore group.
                     current_group = None
                 continue
-            name = buffer.read(int16be(buffer.read(2)))
+            # tag is a value-tag
+            name_length = int16be(buffer.read(2))
+            if name_length > 0:
+                # RFC 8010, section 3.1.4 Attribute-with-one-value
+                # Despite the name there can be more than one value for each group,
+                # see else-branch "additional-value".
+                # Therefore, store all values in lists.
+                name = buffer.read(name_length)
+                attribute_groups[current_group][name] = []
+            else:
+                # RFC 8010, section 3.1.5 Additional-value
+                # use the name from most recent "attribute-with-one-value"
+                # and append the value to that list
+                pass
             value = buffer.read(int16be(buffer.read(2)))
             if not current_group:
                 continue
-            attribute_groups[current_group][name] = (tag, value)
+            attribute_groups[current_group][name].append((tag, value))
         return attribute_groups
 
 class IppRequest(IppMessage):
