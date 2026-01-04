@@ -8,6 +8,7 @@ License CC0-1.0-only: https://directory.fsf.org/wiki/License:CC0
 import io
 import platform
 import subprocess
+from enum import IntEnum
 
 from .pf2 import int16be, int32be
 
@@ -15,6 +16,17 @@ def int8(b: bytes):
     'Translate 1 byte as signed 8-bit int'
     u = b[0]
     return u - ((u >> 7 & 0b1) << 8)
+
+class IppAttributeGroups(IntEnum):
+    '''
+    Refer to RFC 8010, section 3.5.1 "delimiter-tag" values:
+    These tags are used to group attributes.
+    '''
+    OPERATION = 0x01   # operation-attributes-tag
+    JOB = 0x02         # job-attributes-tag
+    END = 0x03         # end-of-attributes-tag
+    PRINTER = 0x04     # printer-attributes-tag
+    UNSUPPORTED = 0x05 # unsupported-attributes-tag
 
 class IppMessage:
     '''
@@ -49,16 +61,25 @@ class IppMessage:
 
     @classmethod
     def parse_attributes(cls, buffer):
-        attributes = {}
+        attribute_groups = {}
+        current_group = None
         while int8(buffer.read(1)) != 0x03:
             buffer.seek(-1, 1)
             tag = int8(buffer.read(1))
             if tag < 0x10:   # delimiter-tag
+                try:
+                    current_group = IppAttributeGroups(tag)
+                    attribute_groups[current_group] = {}
+                except ValueError:
+                    # Unknown IPP attribute group tag: Ignore group.
+                    current_group = None
                 continue
             name = buffer.read(int16be(buffer.read(2)))
             value = buffer.read(int16be(buffer.read(2)))
-            attributes[name] = (tag, value)
-        return attributes
+            if not current_group:
+                continue
+            attribute_groups[current_group][name] = (tag, value)
+        return attribute_groups
 
 class IppRequest(IppMessage):
     '''
