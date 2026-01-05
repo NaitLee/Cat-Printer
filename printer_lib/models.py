@@ -16,10 +16,13 @@ class Model():
     is_new_kind: bool = False
     problem_feeding: bool = False
 
+def isValidModel(name):
+    return name and any(name.startswith(model) for model in Models)
+
 Models = {}
 
 # all known supported models
-for name in '_ZZ00 GB01 GB02 GB03 GT01 MX05 MX06 MX08 MX09 MX10 YT01 MX11'.split(' '):
+for name in '_ZZ00 GB01 GB02 GB03 GT01 MX05 MX06 MX08 MX09 MX10 YT01 MX11 SC03h'.split(' '):
     Models[name] = Model()
 
 # that can receive compressed data
