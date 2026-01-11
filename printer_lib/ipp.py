@@ -17,6 +17,27 @@ def int8(b: bytes):
     u = b[0]
     return u - ((u >> 7 & 0b1) << 8)
 
+class IppOperations(IntEnum):
+    '''
+    From RFC 8011, Table 19
+    '''
+    PRINT_JOB = 0x0002
+    PRINT_URI = 0x0003
+    VALIDATE_JOB = 0x0004
+    CREATE_JOB = 0x0005
+    SEND_DOCUMENT = 0x0006
+    SEND_URI = 0x0007
+    CANCEL_JOB = 0x0008
+    GET_JOB_ATTRIBUTES = 0x0009
+    GET_JOBS = 0x000a
+    GET_PRINTER_ATTRIBUTES = 0x000b
+    HOLD_JOB = 0x000c
+    RELEASE_JOB = 0x000d
+    RESTART_JOB = 0x000e
+    PAUSE_PRINTER = 0x0010
+    RESUME_PRINTER = 0x0011
+    PURGE_JOBS = 0x0012
+
 class IppAttributeGroups(IntEnum):
     '''
     Refer to RFC 8010, section 3.5.1 "delimiter-tag" values:
@@ -44,7 +65,13 @@ class IppMessage:
         version, code, request_id, attributes = cls.parse_header(buffer)
         message = None
         if is_request:
-            message = IppRequest(version, code, request_id, attributes)
+            # Convert code to IppOperations if possible
+            try:
+                opid = IppOperations(code)
+            except ValueError:
+                # Unknown IPP operation ID: Keep as integer
+                opid = code
+            message = IppRequest(version, opid, request_id, attributes)
         else:
             message = IppResponse(version, code, request_id, attributes)
         message.data = buffer.read()
@@ -104,9 +131,13 @@ class IppRequest(IppMessage):
 
     def __str__(self):
         data_info = f"{len(self.data)} bytes" if self.data else "no data"
+        if isinstance(self.opid, IppOperations):
+            opid_str = f"{self.opid.name}(0x{self.opid.value:04x})"
+        else:
+            opid_str = f"0x{self.opid:04x}"
         return (
             f'IppRequest(version={self.version}, '
-            f'opid={self.opid:04x}, '
+            f'opid={opid_str}, '
             f'request_id={self.request_id}, '
             f'attributes={self.attributes}), '
             f'data={data_info}'
