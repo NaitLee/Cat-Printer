@@ -10,12 +10,16 @@ import platform
 import subprocess
 from enum import IntEnum
 
-from .pf2 import int16be, int32be
+from .pf2 import int16be, int32be, int16_to_be_bytes, int32_to_be_bytes
 
 def int8(b: bytes):
     'Translate 1 byte as signed 8-bit int'
     u = b[0]
     return u - ((u >> 7 & 0b1) << 8)
+
+def int8_to_be_bytes(value: int) -> bytes:
+    'Convert signed 8-bit int to 1 byte'
+    return bytes([value & 0xFF])
 
 class IppOperations(IntEnum):
     '''
@@ -161,6 +165,52 @@ class IppResponse(IppMessage):
             f'data={data_info}'
         )
 
+    def tobytes(self) -> bytes:
+        'Convert IppResponse to bytes according to RFC 8010'
+        message = []
+
+        # Header: version (2 bytes), status (2 bytes), request_id (4 bytes)
+        major, minor = self.version
+        message.append(int8_to_be_bytes(major))
+        message.append(int8_to_be_bytes(minor))
+        message.append(int16_to_be_bytes(self.status))
+        message.append(int32_to_be_bytes(self.request_id))
+
+        # attribute-group, RFC 8010, section 3.1.2 - 3.1.5
+        # TODO: section 3.1.6 and 3.1.7
+        for group_tag, group_attrs in self.attributes.items():
+            # begin-attribute-group-tag / delimiter-tag
+            message.append(int8_to_be_bytes(group_tag.value))
+
+            # all attributes in this group
+            for name, values in group_attrs.items():
+                message.append(int16_to_be_bytes(len(name)))
+                message.append(name)
+
+                first_value = True
+                for (tag, value) in values:
+                    # value-tag
+                    message.append(int8_to_be_bytes(tag))
+
+                    # name-length 0 for additional values
+                    if first_value:
+                        first_value = False
+                    else:
+                        message.append(int16_to_be_bytes(0))
+
+                    value_length = len(value)
+                    message.append(int16_to_be_bytes(value_length))
+                    message.append(value)
+
+        # End-of-attributes-tag
+        message.append(int8_to_be_bytes(IppAttributeGroups.END.value))
+
+        # Optional data
+        if self.data:
+            message.append(self.data)
+
+        return b''.join(message)
+
 class IPP():
     'https://datatracker.ietf.org/doc/html/rfc8010'
     server = None
@@ -178,8 +228,9 @@ class IPP():
                 server.send_response(200)
                 server.send_header('Content-Type', 'application/ipp')
                 server.end_headers()
+                response = IppResponse((1,1), 0, request.request_id, {})
                 server.wfile.write(
-                    b'\x01\x01\x00\x00\x00\x00\x00\x01\x01\x03'
+                    response.tobytes()
                 )
             except BrokenPipeError:
                 pass
@@ -219,8 +270,9 @@ class IPP():
             server.send_response(200)
             server.send_header('Content-Type', 'application/ipp')
             server.end_headers()
+            response = IppResponse((1,1), 0, request.request_id, {})
             server.wfile.write(
-                b'\x01\x01\x00\x00\x00\x00\x00\x01\x01\x03'
+                response.tobytes()
             )
         except Exception as _:
             server.send_response(500)

@@ -33,6 +33,42 @@ def int16be(b: bytes):
     u = uint16be(b)
     return u - ((u >> 15 & 0b1) << 16)
 
+def uint32_to_be_bytes(value: int) -> bytes:
+    'Convert unsigned 32-bit int to 4 bytes in big-endian'
+    return bytes([
+        (value >> 24) & 0xFF,
+        (value >> 16) & 0xFF,
+        (value >> 8) & 0xFF,
+        value & 0xFF
+    ])
+
+def int32_to_be_bytes(value: int) -> bytes:
+    'Convert signed 32-bit int to 4 bytes in big-endian'
+    # Convert to unsigned representation (two's complement)
+    u = value & 0xFFFFFFFF
+    return bytes([
+        (u >> 24) & 0xFF,
+        (u >> 16) & 0xFF,
+        (u >> 8) & 0xFF,
+        u & 0xFF
+    ])
+
+def uint16_to_be_bytes(value: int) -> bytes:
+    'Convert unsigned 16-bit int to 2 bytes in big-endian'
+    return bytes([
+        (value >> 8) & 0xFF,
+        value & 0xFF
+    ])
+
+def int16_to_be_bytes(value: int) -> bytes:
+    'Convert signed 16-bit int to 2 bytes in big-endian'
+    # Convert to unsigned representation (two's complement)
+    u = value & 0xFFFF
+    return bytes([
+        (u >> 8) & 0xFF,
+        u & 0xFF
+    ])
+
 
 class Character():
     'A PF2 character'
