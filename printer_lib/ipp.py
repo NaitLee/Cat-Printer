@@ -155,7 +155,7 @@ class IppResponse(IppMessage):
         data_info = f"{len(self.data)} bytes" if self.data else "no data"
         return (
             f'IppResponse(version={self.version}, '
-            f'opid=0x{self.status:04x}, '
+            f'status=0x{self.status:04x}, '
             f'request_id={self.request_id}, '
             f'attributes={self.attributes}), '
             f'data={data_info}'
