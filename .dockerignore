@@ -1,0 +1,11 @@
+*
+!printer_lib
+!i18n.i18n
+!www
+!main.py
+!printer.py
+!server.py
+!config.json
+!requirements.txt
+!build-container/entrypoint.sh
+
