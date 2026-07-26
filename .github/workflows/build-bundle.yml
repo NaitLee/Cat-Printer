@@ -1,0 +1,42 @@
+name: Build bundle workflow
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get content from git
+        uses: actions/checkout@v2
+      - name: update ubuntu-latest
+        run: |
+          sudo apt update
+          sudo apt upgrade -y 
+      - name: setup python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - name: install dependencies
+        run: |
+          pip install bleak
+      - name: build bundle
+        run: |
+          cd build-common
+          python3 bundle.py -b $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+          svn checkout https://github.com/hbldh/bleak/trunk/bleak
+          python3 bundle.py $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+          cd ..
+          mv cat-printer-bare-*.zip cat-printer-bare-bundle.zip
+          mv cat-printer-pure-*.zip cat-printer-pure-bundle.zip
+          b2sum cat-printer-bare-bundle.zip > cat-printer-bare-bundle.zip.b2sum
+          b2sum cat-printer-pure-bundle.zip > cat-printer-pure-bundle.zip.b2sum
+      - name: upload bundle to tags
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            cat-printer-bare-bundle.zip
+            cat-printer-bare-bundle.zip.b2sum
+            cat-printer-pure-bundle.zip
+            cat-printer-pure-bundle.zip.b2sum
