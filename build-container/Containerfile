@@ -1,0 +1,33 @@
+FROM        alpine:3.19.1 as base
+LABEL       description="Main Alpine Base Image"
+
+# --- Python Builder Image ---
+FROM        base as builder
+LABEL       description="Builder Container"
+ENV         insdir="/install"
+RUN         mkdir ${insdir}
+RUN         apk add --update --no-cache \
+            py3-pip
+COPY        requirements.txt /requirements.txt
+WORKDIR     ${insdir}
+RUN         pip3 install -U pip;pip3 install --prefix="${insdir}" -r /requirements.txt
+
+# --- Final Container Image ---
+FROM        base as final
+LABEL       description="Building the final container"
+ENV         FD="/proc/1/fd/1"
+RUN         apk add --update --no-cache \
+            py3-pip \
+            bluez \
+            && rm -Rf /var/cache/apk/*
+COPY        --from=builder /install /usr
+COPY        . /app
+COPY        build-container/entrypoint.sh /app
+EXPOSE      8095/tcp
+RUN         ln -sf "$FD" /var/log/messages;chmod +x /app/entrypoint.sh
+RUN         adduser -D -h /app catprinter; \
+            chown -R catprinter:catprinter /app ;\
+            rm -rf /app/requirements.txt build-container
+WORKDIR     /app
+USER        catprinter
+ENTRYPOINT  ["/app/entrypoint.sh"]
