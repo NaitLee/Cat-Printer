@@ -33,6 +33,16 @@ Alright, you are well done for basic development & debugging. See [files](#files
 
 For more stuffs, read on...
 
+### Managed
+
+0. Clone this repository
+
+    git clone https://github.com/NaitLee/Cat-Printer.git
+
+1. Install python and dependencies
+
+    rye sync
+
 ### Optional
 
 Sorry, I’m not a dev package manager enthusiast.
